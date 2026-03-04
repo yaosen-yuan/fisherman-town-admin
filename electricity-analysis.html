@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>漁人町 · 電力分析表</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;--bg2:#131921;--bg3:#0f172a;
+  --border:#1e293b;--border2:#0f172a;
+  --red:#e8522a;--blue:#3a7bd5;--gold:#f0a830;--green:#22c55e;--purple:#a855f7;
+  --t1:#e2e8f0;--t2:#94a3b8;--t3:#64748b;--t4:#475569;--t5:#334155;
+  --mono:'JetBrains Mono',monospace;
+}
+html{font-size:16px}
+body{min-height:100vh;background:var(--bg);color:var(--t1);font-family:'Noto Sans TC',sans-serif;padding-bottom:40px}
+
+/* BACK BAR */
+.back-bar{position:sticky;top:0;z-index:100;background:rgba(13,17,23,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:12px}
+.back-btn{color:var(--t3);font-size:13px;background:none;border:1px solid var(--border);border-radius:6px;padding:6px 14px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.back-btn:hover{color:var(--t2);border-color:var(--t5)}
+.bar-title{font-size:14px;font-weight:700;color:var(--red);letter-spacing:.5px}
+.bar-sub{font-size:12px;color:var(--t5)}
+
+/* HEADER */
+.header{padding:28px 24px 0;max-width:1040px;margin:0 auto}
+.header-inner{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:20px}
+.header-left{}
+.accent-bar{width:4px;height:28px;background:var(--red);border-radius:2px;display:inline-block;vertical-align:middle;margin-right:10px}
+.h1{font-size:22px;font-weight:700;letter-spacing:-.02em;display:inline}
+.h-sub{color:var(--t3);font-size:13px;margin-top:4px;padding-left:14px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab-btn{padding:7px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--t3);transition:all .2s;font-family:'Noto Sans TC',sans-serif}
+.tab-btn:hover{border-color:var(--t5);color:var(--t2)}
+.tab-btn.active{background:var(--red);color:#fff;border-color:var(--red)}
+.tab-btn.report-active{background:rgba(30,58,95,.6);color:#93c5fd;border-color:var(--blue)}
+
+/* KPI ROW */
+.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.kpi-period{color:var(--t3);font-size:11px;letter-spacing:.05em;margin-bottom:6px}
+.kpi-val{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--t1)}
+.kpi-footer{display:flex;justify-content:space-between;margin-top:8px}
+.kpi-usage{color:var(--t4);font-size:12px}
+.kpi-diff{font-size:12px;font-weight:600}
+.kpi-diff.up{color:#ef4444}
+.kpi-diff.dn{color:var(--green)}
+
+/* CONTENT */
+.content{max-width:1040px;margin:0 auto;padding:0 24px}
+.panel{display:none}
+.panel.active{display:block}
+
+/* CARD */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+.card-title{font-size:14px;font-weight:600;color:var(--t2);margin-bottom:14px}
+
+/* CHART WRAP */
+.chart-wrap{position:relative;width:100%;margin-bottom:4px}
+
+/* MONTH PICKER */
+.month-pick{display:flex;gap:8px;margin-bottom:14px}
+.m-btn{padding:5px 16px;border-radius:6px;cursor:pointer;font-size:13px;border:1px solid var(--border);background:transparent;color:var(--t3);font-family:'Noto Sans TC',sans-serif;transition:all .2s}
+.m-btn.sel{background:#1e3a5f;border-color:var(--blue);color:#93c5fd}
+.m-btn:not(.sel):hover{border-color:var(--t5);color:var(--t2)}
+
+/* GRID 2COL */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* PROGRESS BAR */
+.pbar-item{margin-bottom:10px}
+.pbar-lbl{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.pbar-name{color:var(--t2)}
+.pbar-pct{font-family:var(--mono)}
+.pbar-bg{background:#1e293b;border-radius:4px;height:6px}
+.pbar-fill{height:100%;border-radius:4px;transition:width .5s ease}
+
+/* KPI SPOTS */
+.spot-list{display:grid;gap:12px}
+.spot{display:flex;gap:12px;align-items:flex-start}
+.spot-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.spot-lbl{font-size:12px;color:var(--t2)}
+.spot-val{font-size:13px;font-weight:600;color:var(--t1);font-family:var(--mono)}
+.spot-sub{font-size:11px;color:var(--t4)}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;color:var(--t4);font-size:11px;letter-spacing:.05em;padding:8px 12px;border-bottom:1px solid var(--border);font-weight:500}
+td{padding:8px 12px;border-bottom:1px solid var(--border2)}
+tr:hover td{background:rgba(255,255,255,.02)}
+.mono{font-family:var(--mono)}
+.tr{text-align:right}
+.highlight-row td{border-left:3px solid var(--red)}
+.highlight-row td:first-child{color:#fca5a5;font-weight:600}
+td:not(.highlight-row td){border-left:3px solid transparent}
+.pct-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;background:#1e293b;color:var(--t3);font-family:var(--mono)}
+
+/* ─── REPORT ─── */
+.rpt{max-width:800px;margin:0 auto}
+.rpt-cover{background:linear-gradient(135deg,#131921,#0d1117);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:24px;position:relative;overflow:hidden}
+.rpt-cover::before{content:'';position:absolute;top:0;right:0;width:220px;height:220px;background:radial-gradient(circle at 80% 20%,rgba(232,82,42,.08),transparent 70%);pointer-events:none}
+.rpt-eyebrow{font-size:11px;color:var(--t5);letter-spacing:.1em;margin-bottom:8px}
+.rpt-h{font-size:21px;font-weight:700;color:var(--t1);margin-bottom:4px}
+.rpt-meta{font-size:13px;color:var(--t3);margin-bottom:20px}
+.rpt-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.rpt-kpi{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:10px 14px}
+.rpt-kpi-lbl{font-size:11px;color:var(--t4);margin-bottom:4px}
+.rpt-kpi-val{font-size:16px;font-weight:700;font-family:var(--mono)}
+
+.section{margin-bottom:28px}
+.sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.sec-tag{color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.05em;flex-shrink:0}
+.sec-title{font-size:15px;font-weight:700;color:var(--t1)}
+
+.insight{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:14px 16px;margin-bottom:12px}
+.insight-hdr{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.insight-icon{font-size:15px}
+.insight-title{font-size:13px;font-weight:700;color:var(--t1)}
+.insight-body{font-size:13px;color:var(--t2);line-height:1.85}
+
+.pill{display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px;font-weight:600;font-family:var(--mono);margin-right:4px}
+
+.tbl-sec{background:var(--bg3);border-radius:8px;overflow:hidden}
+.tbl-sec-hdr{display:grid;padding:8px 14px;border-bottom:1px solid var(--border)}
+.tbl-sec-row{display:grid;padding:9px 14px;border-bottom:1px solid var(--bg2)}
+
+.rec-item{display:flex;gap:14px;margin-bottom:14px;background:var(--bg2);border-radius:8px;padding:14px 16px}
+.rec-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+.rec-title{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:6px}
+.rec-body{font-size:13px;color:var(--t2);line-height:1.8}
+
+.rpt-closing{background:rgba(58,123,213,.05);border:1px solid #1e3a5f;border-radius:10px;padding:16px 20px;margin-bottom:8px}
+.rpt-closing-lbl{font-size:11px;color:var(--blue);letter-spacing:.08em;margin-bottom:6px;font-weight:600}
+.rpt-closing-body{font-size:13px;color:var(--t2);line-height:1.85}
+.rpt-credit{text-align:center;font-size:11px;color:var(--t5);margin-top:12px;padding-bottom:8px}
+
+.footer-note{text-align:center;font-size:11px;color:var(--t5);margin-top:20px}
+
+/* RWD */
+@media(max-width:640px){
+  .content,.header{padding-left:14px;padding-right:14px}
+  .kpi-row{grid-template-columns:1fr}
+  .g2{grid-template-columns:1fr}
+  .rpt-kpis{grid-template-columns:1fr 1fr}
+  .tabs{gap:6px}
+  .tab-btn{padding:6px 12px;font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<!-- BACK BAR -->
+<div class="back-bar">
+  <button class="back-btn" onclick="location.href='index.html'">← 返回</button>
+  <span class="bar-title">電力分析表</span>
+  <span class="bar-sub">漁人町業務系統</span>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="header-left">
+      <div style="margin-bottom:4px">
+        <span class="accent-bar"></span>
+        <span class="h1">漁人町 電力分析表</span>
+      </div>
+      <div class="h-sub">2025/10/26 ～ 2026/01/25　共三期帳單</div>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('overview',this)">總覽</button>
+      <button class="tab-btn" onclick="switchTab('trend',this)">趨勢</button>
+      <button class="tab-btn" onclick="switchTab('detail',this)">明細</button>
+      <button class="tab-btn" onclick="switchTab('report',this)" id="tab-report">📋 季度分析書</button>
+    </div>
+  </div>
+
+  <!-- KPI ROW -->
+  <div class="kpi-row" id="kpi-row"></div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- OVERVIEW -->
+  <div class="panel active" id="panel-overview">
+    <div class="card">
+      <div class="card-title">各項目費用比較</div>
+      <div class="month-pick" id="month-pick"></div>
+      <div class="chart-wrap" style="height:280px">
+        <canvas id="barChart"></canvas>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-title">費用佔比（最新期 01月）</div>
+        <div id="pbar-list"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">重點觀察</div>
+        <div class="spot-list" id="spot-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TREND -->
+  <div class="panel" id="panel-trend">
+    <div class="card">
+      <div class="card-title">電費總計趨勢</div>
+      <div class="chart-wrap" style="height:200px"><canvas id="trendTotal"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">主要項目費用趨勢</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="trendItems"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">主要項目用電度數趨勢</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="trendUsage"></canvas></div>
+    </div>
+  </div>
+
+  <!-- DETAIL -->
+  <div class="panel" id="panel-detail"></div>
+
+  <!-- REPORT -->
+  <div class="panel" id="panel-report">
+    <div class="rpt">
+      <!-- cover -->
+      <div class="rpt-cover">
+        <div class="rpt-eyebrow">QUARTERLY ELECTRICITY REPORT · 漁人町</div>
+        <div class="rpt-h">電力費用季度分析書</div>
+        <div class="rpt-meta">計費區間：2025 / 10 / 26 ～ 2026 / 01 / 25　｜　共三期帳單　｜　非夏季電價 $5.3 / 度</div>
+        <div class="rpt-kpis">
+          <div class="rpt-kpi"><div class="rpt-kpi-lbl">三期合計</div><div class="rpt-kpi-val" style="color:var(--red)">$514,078</div></div>
+          <div class="rpt-kpi"><div class="rpt-kpi-lbl">最高單月</div><div class="rpt-kpi-val" style="color:var(--gold)">$195,189</div></div>
+          <div class="rpt-kpi"><div class="rpt-kpi-lbl">最低單月</div><div class="rpt-kpi-val" style="color:var(--green)">$159,068</div></div>
+          <div class="rpt-kpi"><div class="rpt-kpi-lbl">水產街平均佔比</div><div class="rpt-kpi-val" style="color:var(--blue)">38%</div></div>
+        </div>
+      </div>
+
+      <!-- 01 趨勢 -->
+      <div class="section">
+        <div class="sec-hdr"><span class="sec-tag" style="background:var(--blue)">01</span><span class="sec-title">整體電費趨勢</span></div>
+        <p style="font-size:13px;color:var(--t2);line-height:1.85;margin-bottom:14px">本季三期帳單全程適用非夏季電價（每度 <strong style="color:var(--t1)">$5.3</strong>）。整體走勢呈現「<strong style="color:var(--gold)">11月高峰 → 12月顯著下降 → 1月持平</strong>」格局，主要降幅來自空調系統的季節性收斂。</p>
+        <div class="tbl-wrap tbl-sec">
+          <div class="tbl-sec-hdr" style="grid-template-columns:2fr 1fr 1fr 2fr">
+            <span style="font-size:11px;color:var(--t4)">計費期間</span><span style="font-size:11px;color:var(--t4)">電費合計</span><span style="font-size:11px;color:var(--t4)">環比</span><span style="font-size:11px;color:var(--t4)">主要原因</span>
+          </div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 2fr;background:rgba(240,168,48,.04)">
+            <span style="font-size:13px;color:var(--t2)">10/26–11/25（基期）</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$195,189</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">—</span><span style="font-size:12px;color:var(--t3)">入秋仍有空調需求，三期最高</span>
+          </div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 2fr">
+            <span style="font-size:13px;color:var(--t2)">11/26–12/25</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$159,068</span><span style="font-size:13px;font-family:var(--mono);color:var(--green)">↓ 18.5%</span><span style="font-size:12px;color:var(--t3)">空調 & 警衛室用電大幅收斂</span>
+          </div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 2fr">
+            <span style="font-size:13px;color:var(--t2)">12/26–01/25</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$159,821</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">↑ 0.5%</span><span style="font-size:12px;color:var(--t3)">水產街 & 外展微增，整體持平</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 02 關鍵分析 -->
+      <div class="section">
+        <div class="sec-hdr"><span class="sec-tag" style="background:var(--gold)">02</span><span class="sec-title">關鍵用電節點解析</span></div>
+        <div class="insight" style="border-left:3px solid var(--blue)">
+          <div class="insight-hdr"><span class="insight-icon">❄️</span><span class="insight-title">空調 ACMP1 — 季節性降幅最顯著</span></div>
+          <div class="insight-body">用電量由 11 月的 <span class="pill" style="background:rgba(240,168,48,.15);color:var(--gold)">3,936 度 ($20,861)</span> 驟降至 1 月的 <span class="pill" style="background:rgba(34,197,94,.12);color:var(--green)">592 度 ($3,138)</span>，單項費用三個月內下降逾 <strong style="color:var(--green)">85%</strong>，是本季電費整體下滑的第一主因。<br><br>⚠️ <strong style="color:var(--gold)">前瞻提醒：</strong>6 月起切換夏季費率（$5.5/度），空調重啟後預估月電費將重返 $25 萬以上。建議第二季前完成空調保養與濾網清潔，並評估智慧溫控的可行性。</div>
+        </div>
+        <div class="insight" style="border-left:3px solid var(--red)">
+          <div class="insight-hdr"><span class="insight-icon">🏪</span><span class="insight-title">水產街電錶★ — 冬季逆勢成長，為重點監控項目</span></div>
+          <div class="insight-body">水產街為全場最大單一耗電節點，三期費用佔總電費比例穩定落在 <strong style="color:var(--t1)">36–40%</strong>，且呈逆勢成長：<span class="pill" style="background:rgba(148,163,184,.1);color:var(--t2)">11月：$58,433</span><span class="pill" style="background:rgba(148,163,184,.1);color:var(--t2)">12月：$57,373</span><span class="pill" style="background:rgba(232,82,42,.15);color:var(--red)">01月：$63,245 ↑</span><br>冬季用電不降反升，建議釐清現行電費是否按比例向攤商分攤，避免管理方長期承擔隱性成本。</div>
+        </div>
+        <div class="insight" style="border-left:3px solid var(--green)">
+          <div class="insight-hdr"><span class="insight-icon">🏠</span><span class="insight-title">漁人町手抄（警衛室）— 持續遞減，幅度超出預期</span></div>
+          <div class="insight-body">用電量連續三期下降：<span class="pill" style="background:rgba(34,197,94,.1);color:var(--green)">4,718度</span> → <span class="pill" style="background:rgba(34,197,94,.1);color:var(--green)">3,893度</span> → <span class="pill" style="background:rgba(34,197,94,.1);color:var(--green)">2,800度</span>，三期降幅達 41%，略超出氣溫影響的合理預期，建議現場確認是否有設備調整或量表異常。</div>
+        </div>
+        <div class="insight" style="border-left:3px solid var(--purple)">
+          <div class="insight-hdr"><span class="insight-icon">💡</span><span class="insight-title">哈魚碼頭 & 照明 — 基礎剛性支出，表現穩定</span></div>
+          <div class="insight-body">哈魚碼頭用電維持 <strong style="color:var(--t1)">10,000–12,600 度</strong>，照明 1L1 穩定維持在 <strong style="color:var(--t1)">1,200 度上下</strong>，顯示照明管理執行一致，可作為後續各期比對的穩定基準線。</div>
+        </div>
+      </div>
+
+      <!-- 03 佔比 -->
+      <div class="section">
+        <div class="sec-hdr"><span class="sec-tag" style="background:var(--purple)">03</span><span class="sec-title">各計費節點費用佔比彙整（最新期 12/26–01/25）</span></div>
+        <div class="tbl-wrap tbl-sec">
+          <div class="tbl-sec-hdr" style="grid-template-columns:2fr 1fr 1fr 1fr">
+            <span style="font-size:11px;color:var(--t4)">項目</span><span style="font-size:11px;color:var(--t4)">度數</span><span style="font-size:11px;color:var(--t4)">費用</span><span style="font-size:11px;color:var(--t4)">佔比</span>
+          </div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 1fr;border-left:3px solid var(--red);background:rgba(232,82,42,.06)"><span style="font-size:13px;color:#fca5a5;font-weight:600">水產街電錶★</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">11,933</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$63,245</span><span style="font-size:13px;font-family:var(--mono);color:var(--red);font-weight:700">39.6%</span></div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 1fr;border-left:3px solid transparent"><span style="font-size:13px;color:var(--t2)">哈魚碼頭(B廠區)</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">10,998</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$58,289</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">36.5%</span></div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 1fr;border-left:3px solid transparent"><span style="font-size:13px;color:var(--t2)">漁人町手抄(警衛室)</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">2,800</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$14,840</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">9.3%</span></div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 1fr;border-left:3px solid transparent"><span style="font-size:13px;color:var(--t2)">外展B</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">1,827</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$9,683</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">6.1%</span></div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 1fr;border-left:3px solid transparent"><span style="font-size:13px;color:var(--t2)">照明1L1</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">1,291</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$6,842</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">4.3%</span></div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 1fr;border-left:3px solid transparent"><span style="font-size:13px;color:var(--t2)">其他合計</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">—</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$6,922</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">4.3%</span></div>
+        </div>
+      </div>
+
+      <!-- 04 建議 -->
+      <div class="section">
+        <div class="sec-hdr"><span class="sec-tag" style="background:var(--green)">04</span><span class="sec-title">後續營運建議</span></div>
+        <div class="rec-item" style="border-left:3px solid var(--red)">
+          <div class="rec-num" style="background:rgba(232,82,42,.2);color:var(--red)">1</div>
+          <div><div class="rec-title">水產街成本結構釐清（優先處理）</div><div class="rec-body">水產街電錶佔總電費近 40% 且呈成長趨勢，是最值得優先釐清的成本區塊。建議確認現行租約對電費的分攤依據，中長期可考慮引入子電錶進行精細化管理。</div></div>
+        </div>
+        <div class="rec-item" style="border-left:3px solid var(--gold)">
+          <div class="rec-num" style="background:rgba(240,168,48,.2);color:var(--gold)">2</div>
+          <div><div class="rec-title">備戰夏季電費：第二季前啟動節能評估</div><div class="rec-body">6 月起進入夏季電價（$5.5/度），若依本季 11 月基準推估，夏季月電費可能突破 $25 萬。建議：①空調設備保養；②大型設備排程最佳化；③與台電確認契約容量。</div></div>
+        </div>
+        <div class="rec-item" style="border-left:3px solid var(--blue)">
+          <div class="rec-num" style="background:rgba(58,123,213,.2);color:var(--blue)">3</div>
+          <div><div class="rec-title">警衛室用電異常確認</div><div class="rec-body">警衛室三期降幅達 41%，建議現場確認監視器主機、照明系統及其他常駐設備是否有異動，確保計費數字的準確性。</div></div>
+        </div>
+        <div class="rec-item" style="border-left:3px solid var(--green)">
+          <div class="rec-num" style="background:rgba(34,197,94,.2);color:var(--green)">4</div>
+          <div><div class="rec-title">建立月度電費基準線與預警機制</div><div class="rec-body">建議以本三期數據作為非夏季基準（月電費 $159k–$195k），並為各主要節點設定正常波動區間。若任一項目單月超出基準 ±15%，啟動現場查核。</div></div>
+        </div>
+      </div>
+
+      <div class="rpt-closing">
+        <div class="rpt-closing-lbl">結語</div>
+        <div class="rpt-closing-body">本季電費管理整體平穩，季節性降幅如期發生。核心挑戰在於水產街電錶的持續成長，以及即將到來的夏季電費壓力。建議管理階層在第二季初啟動節能評估與水產街分攤機制審查，確保營運成本結構的合理性與長期可持續性。</div>
+      </div>
+      <div class="rpt-credit">本報告資料來源：台中市魚市場股份有限公司公共費用帳單　｜　分析製作：漁人町管理部</div>
+    </div>
+  </div>
+
+  <div class="footer-note">★ 水產街電錶為重點監控項目　｜　資料來源：台中市魚市場股份有限公司帳單</div>
+</div>
+
+<script>
+/* ── DATA ── */
+const RAW = [
+  { period:"10/26–11/25", label:"11月", total:195189,
+    items:[
+      {name:"哈魚碼頭(B廠區)",usage:12612,amt:66844},
+      {name:"水舞舞台110V",usage:298,amt:1579},
+      {name:"水舞舞台220V",usage:1065,amt:5645},
+      {name:"漁人町手抄(警衛室)",usage:4718,amt:25005},
+      {name:"廣告燈(環中路圍牆)",usage:258,amt:1367},
+      {name:"照明1L1",usage:1215,amt:6437},
+      {name:"空調ACMP1",usage:3936,amt:20861},
+      {name:"公設電費1R1",usage:null,amt:358},
+      {name:"外展B",usage:1634,amt:8660},
+      {name:"水產街電錶★",usage:11025,amt:58433},
+    ]},
+  { period:"11/26–12/25", label:"12月", total:159068,
+    items:[
+      {name:"哈魚碼頭(B廠區)",usage:10266,amt:54410},
+      {name:"水舞舞台110V",usage:370,amt:1961},
+      {name:"水舞舞台220V",usage:719,amt:3811},
+      {name:"漁人町手抄(警衛室)",usage:3893,amt:20633},
+      {name:"廣告燈(環中路圍牆)",usage:320,amt:1696},
+      {name:"照明1L1",usage:1225,amt:6493},
+      {name:"空調ACMP1",usage:640,amt:3392},
+      {name:"公設電費1R1",usage:null,amt:326},
+      {name:"外展B",usage:1693,amt:8973},
+      {name:"水產街電錶★",usage:10825,amt:57373},
+    ]},
+  { period:"12/26–01/25", label:"01月", total:159821,
+    items:[
+      {name:"哈魚碼頭(B廠區)",usage:10998,amt:58289},
+      {name:"水舞舞台110V",usage:359,amt:1903},
+      {name:"水舞舞台220V",usage:40,amt:212},
+      {name:"漁人町手抄(警衛室)",usage:2800,amt:14840},
+      {name:"廣告燈(環中路圍牆)",usage:266,amt:1410},
+      {name:"照明1L1",usage:1291,amt:6842},
+      {name:"空調ACMP1",usage:592,amt:3138},
+      {name:"公設電費1R1",usage:null,amt:259},
+      {name:"外展B",usage:1827,amt:9683},
+      {name:"水產街電錶★",usage:11933,amt:63245},
+    ]},
+];
+const COLORS=["#e8522a","#f0a830","#3a7bd5","#22c55e","#a855f7","#ec4899","#14b8a6","#f97316","#64748b","#ef4444"];
+const MONTH_LABELS=RAW.map(d=>d.label);
+const fmt=n=>n!=null?Number(n).toLocaleString('zh-TW'):'—';
+
+/* ── TABS ── */
+function switchTab(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>{b.classList.remove('active');b.classList.remove('report-active');});
+  document.getElementById('panel-'+id).classList.add('active');
+  if(id==='report') btn.classList.add('report-active');
+  else btn.classList.add('active');
+}
+
+/* ── KPI ROW ── */
+function buildKPI(){
+  const tu=RAW.map(d=>d.items.reduce((s,i)=>s+(i.usage||0),0));
+  document.getElementById('kpi-row').innerHTML=RAW.map((d,i)=>{
+    const prev=i>0?RAW[i-1].total:null;
+    const diff=prev!==null?d.total-prev:null;
+    return`<div class="kpi">
+      <div class="kpi-period">${d.period}</div>
+      <div class="kpi-val">$${fmt(d.total)}</div>
+      <div class="kpi-footer">
+        <span class="kpi-usage">用電 ${fmt(tu[i])} 度</span>
+        ${diff!==null?`<span class="kpi-diff ${diff>0?'up':'dn'}">${diff>0?'▲':'▼'} ${fmt(Math.abs(diff))}</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ── BAR CHART ── */
+let barChart=null, selMonth=0;
+function buildMonthPick(){
+  document.getElementById('month-pick').innerHTML=MONTH_LABELS.map((m,i)=>
+    `<button class="m-btn ${i===selMonth?'sel':''}" onclick="selectMonth(${i})">${m}</button>`
+  ).join('');
+}
+function selectMonth(i){selMonth=i;buildMonthPick();updateBarChart();}
+function updateBarChart(){
+  const data=RAW[selMonth].items.filter(it=>it.usage!==null).sort((a,b)=>b.amt-a.amt);
+  const labels=data.map(it=>it.name.replace('(B廠區)','').replace('(環中路圍牆)','').replace('(警衛室)',''));
+  const vals=data.map(it=>it.amt);
+  const colors=data.map((_,i)=>COLORS[i%COLORS.length]);
+  if(barChart){barChart.data.labels=labels;barChart.data.datasets[0].data=vals;barChart.data.datasets[0].backgroundColor=colors;barChart.update();return;}
+  barChart=new Chart(document.getElementById('barChart'),{
+    type:'bar',
+    data:{labels,datasets:[{data:vals,backgroundColor:colors,borderRadius:4,borderSkipped:false}]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`$${fmt(ctx.raw)}`}}},
+      scales:{
+        x:{ticks:{color:'#64748b',font:{size:11},maxRotation:35},grid:{color:'#1e293b'}},
+        y:{ticks:{color:'#64748b',font:{size:11},callback:v=>`${(v/1000).toFixed(0)}k`},grid:{color:'#1e293b'}}
+      }
+    }
+  });
+}
+
+/* ── PROGRESS BARS ── */
+function buildPBars(){
+  const latest=RAW[2];
+  const sorted=[...latest.items].filter(i=>i.usage).sort((a,b)=>b.amt-a.amt).slice(0,5);
+  document.getElementById('pbar-list').innerHTML=sorted.map((item,i)=>{
+    const pct=((item.amt/latest.total)*100).toFixed(1);
+    return`<div class="pbar-item">
+      <div class="pbar-lbl"><span class="pbar-name">${item.name.replace('(B廠區)','').replace('(警衛室)','')}</span><span class="pbar-pct" style="color:${COLORS[i]}">${pct}%</span></div>
+      <div class="pbar-bg"><div class="pbar-fill" style="width:${pct}%;background:${COLORS[i]}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+/* ── SPOTS ── */
+function buildSpots(){
+  const spots=[
+    {lbl:'最高單月電費',val:'11月 $195,189',sub:'空調高峰期',c:'#e8522a'},
+    {lbl:'水產街電錶佔比',val:'平均 38%',sub:'最大耗電節點，冬季逆增',c:'#f0a830'},
+    {lbl:'空調ACMP1',val:'降幅 -85%',sub:'3,936→592度，季節性收斂',c:'#3a7bd5'},
+    {lbl:'警衛室電錶',val:'降幅 -41%',sub:'4,718→2,800度，建議確認',c:'#22c55e'},
+  ];
+  document.getElementById('spot-list').innerHTML=spots.map(s=>`<div class="spot">
+    <div class="spot-dot" style="background:${s.c}"></div>
+    <div><div class="spot-lbl">${s.lbl}</div><div class="spot-val" style="color:${s.c}">${s.val}</div><div class="spot-sub">${s.sub}</div></div>
+  </div>`).join('');
+}
+
+/* ── TREND CHARTS ── */
+const chartOpts=(yFmt)=>({
+  responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{labels:{color:'#64748b',font:{size:11}}},tooltip:{mode:'index',intersect:false,callbacks:{label:ctx=>`${ctx.dataset.label}：${yFmt(ctx.raw)}`}}},
+  scales:{
+    x:{ticks:{color:'#64748b'},grid:{color:'#1e293b'}},
+    y:{ticks:{color:'#64748b',callback:yFmt},grid:{color:'#1e293b'}}
+  }
+});
+function buildTrends(){
+  // Total
+  new Chart(document.getElementById('trendTotal'),{type:'line',data:{
+    labels:MONTH_LABELS,
+    datasets:[{label:'電費總計',data:RAW.map(d=>d.total),borderColor:'#e8522a',backgroundColor:'rgba(232,82,42,.1)',fill:true,tension:.3,pointRadius:5,pointBackgroundColor:'#e8522a'}]
+  },options:chartOpts(v=>`${(v/1000).toFixed(0)}k`)});
+  // Items amt
+  const keys=[{k:'哈魚碼頭(B廠區)',c:'#3a7bd5'},{k:'水產街電錶★',c:'#e8522a'},{k:'空調ACMP1',c:'#f0a830'},{k:'漁人町手抄(警衛室)',c:'#22c55e'}];
+  new Chart(document.getElementById('trendItems'),{type:'line',data:{
+    labels:MONTH_LABELS,
+    datasets:keys.map(k=>({label:k.k.replace('(B廠區)','').replace('(警衛室)',''),data:RAW.map(d=>d.items.find(i=>i.name===k.k)?.amt||0),borderColor:k.c,backgroundColor:'transparent',tension:.3,pointRadius:4,pointBackgroundColor:k.c}))
+  },options:chartOpts(v=>`${(v/1000).toFixed(0)}k`)});
+  // Items usage
+  new Chart(document.getElementById('trendUsage'),{type:'bar',data:{
+    labels:MONTH_LABELS,
+    datasets:keys.map(k=>({label:k.k.replace('(B廠區)','').replace('(警衛室)',''),data:RAW.map(d=>d.items.find(i=>i.name===k.k)?.usage||0),backgroundColor:k.c+'bb',borderRadius:3}))
+  },options:{...chartOpts(v=>v),plugins:{...chartOpts(v=>v).plugins,legend:{labels:{color:'#64748b',font:{size:11}}}}}});
+}
+
+/* ── DETAIL ── */
+function buildDetail(){
+  document.getElementById('panel-detail').innerHTML=RAW.map(d=>{
+    const sorted=[...d.items].sort((a,b)=>b.amt-a.amt);
+    return`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div class="card-title" style="margin:0">${d.period}</div>
+      <span style="font-family:var(--mono);color:var(--red);font-weight:700;font-size:15px">$${fmt(d.total)}</span>
+    </div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>項目</th><th class="tr">使用度數</th><th class="tr">應收金額</th><th class="tr">佔比</th></tr></thead>
+      <tbody>${sorted.map(item=>`<tr class="${item.name.includes('水產街')?'highlight-row':''}">
+        <td>${item.name}</td>
+        <td class="mono tr" style="color:var(--t3)">${fmt(item.usage)}</td>
+        <td class="mono tr">$${fmt(item.amt)}</td>
+        <td class="tr"><span class="pct-badge">${((item.amt/d.total)*100).toFixed(1)}%</span></td>
+      </tr>`).join('')}</tbody>
+    </table></div></div>`;
+  }).join('');
+}
+
+/* ── INIT ── */
+buildKPI();buildMonthPick();buildPBars();buildSpots();buildDetail();
+requestAnimationFrame(()=>{updateBarChart();buildTrends();});
+
+// Chart.js global defaults
+Chart.defaults.color='#64748b';
+</script>
+</body>
+</html>
