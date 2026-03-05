@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>漁人町 · 印表機分析表</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;--bg2:#0d1a1a;--bg3:#0a0f14;
+  --border:#1e3a3a;--border2:#0a1010;
+  --teal:#14b8a6;--blue:#3a7bd5;--gold:#f0a830;--green:#22c55e;--red:#e8522a;--purple:#a855f7;
+  --t1:#e2e8f0;--t2:#94a3b8;--t3:#64748b;--t4:#475569;--t5:#334155;
+  --mono:'JetBrains Mono',monospace;
+}
+html{font-size:16px}
+body{min-height:100vh;background:var(--bg);color:var(--t1);font-family:'Noto Sans TC',sans-serif;padding-bottom:40px}
+
+/* BACK BAR */
+.back-bar{position:sticky;top:0;z-index:100;background:rgba(13,17,23,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:12px}
+.back-btn{color:var(--t3);font-size:13px;background:none;border:1px solid var(--border);border-radius:6px;padding:6px 14px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.back-btn:hover{color:var(--t2);border-color:var(--t5)}
+.bar-title{font-size:14px;font-weight:700;color:var(--teal);letter-spacing:.5px}
+.bar-sub{font-size:12px;color:var(--t5)}
+
+/* HEADER */
+.header{padding:28px 24px 0;max-width:1040px;margin:0 auto}
+.header-inner{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:20px}
+.accent-bar{width:4px;height:28px;background:var(--teal);border-radius:2px;display:inline-block;vertical-align:middle;margin-right:10px}
+.h1{font-size:22px;font-weight:700;letter-spacing:-.02em;display:inline}
+.h-sub{color:var(--t4);font-size:13px;margin-top:4px;padding-left:14px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab-btn{padding:7px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--t3);transition:all .2s;font-family:'Noto Sans TC',sans-serif}
+.tab-btn:hover{border-color:var(--t5);color:var(--t2)}
+.tab-btn.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+.tab-btn.report-active{background:linear-gradient(135deg,#0d3333,#1e293b);color:#5eead4;border-color:var(--border)}
+
+/* KPI ROW */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.kpi-lbl{color:var(--t4);font-size:11px;margin-bottom:6px}
+.kpi-val{font-family:var(--mono);font-size:20px;font-weight:700}
+.kpi-sub{font-size:11px;color:var(--t5);margin-top:5px}
+
+/* CONTENT */
+.content{max-width:1040px;margin:0 auto;padding:0 24px}
+.panel{display:none}
+.panel.active{display:block}
+
+/* CARD */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+.card-title{font-size:14px;font-weight:600;color:var(--t2);margin-bottom:4px}
+.card-note{font-size:12px;color:var(--t4);margin-bottom:14px}
+.chart-wrap{position:relative;width:100%}
+
+/* G2 */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* OBSERVATION GRID */
+.obs-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.obs-item{display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,.02);border-radius:8px;padding:10px 12px}
+.obs-dot{width:6px;height:6px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.obs-lbl{font-size:12px;color:var(--t2)}
+.obs-val{font-family:var(--mono);font-size:14px;font-weight:700}
+.obs-sub{font-size:11px;color:var(--t4)}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;color:var(--t4);font-size:11px;letter-spacing:.05em;padding:8px 12px;border-bottom:1px solid var(--border);font-weight:500}
+td{padding:8px 12px;border-bottom:1px solid var(--border2)}
+.tr{text-align:right}
+tr:hover td{background:rgba(20,184,166,.03)}
+.mono{font-family:var(--mono)}
+.legend-row{margin-top:14px;display:flex;gap:16px;font-size:12px;color:var(--t4)}
+
+/* REPORT */
+.rpt{max-width:780px;margin:0 auto}
+.rpt-cover{background:linear-gradient(135deg,#0d1a1a,#0d1117);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:24px;position:relative;overflow:hidden}
+.rpt-cover::before{content:'';position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle at 80% 20%,rgba(20,184,166,.08),transparent 70%);pointer-events:none}
+.rpt-eyebrow{font-size:11px;color:var(--t4);letter-spacing:.1em;margin-bottom:8px}
+.rpt-h{font-size:21px;font-weight:700;color:var(--t1);margin-bottom:4px}
+.rpt-meta{font-size:13px;color:var(--t3);margin-bottom:20px}
+.rpt-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.rpt-kpi{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:10px 14px}
+.rpt-kpi-lbl{font-size:11px;color:var(--t4);margin-bottom:4px}
+.rpt-kpi-val{font-size:15px;font-weight:700;font-family:var(--mono)}
+
+.sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.sec-tag{color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.05em;flex-shrink:0}
+.sec-title{font-size:15px;font-weight:700;color:var(--t1)}
+
+.tbl-sec{background:var(--bg3);border-radius:8px;overflow:hidden;margin-bottom:14px}
+.tbl-sec-hdr{display:grid;padding:8px 14px;border-bottom:1px solid var(--border)}
+.tbl-sec-row{display:grid;padding:9px 14px;border-bottom:1px solid var(--bg2)}
+
+.insight{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:14px 16px;margin-bottom:12px}
+.insight-hdr{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.insight-icon{font-size:15px}
+.insight-title{font-size:13px;font-weight:700;color:var(--t1)}
+.insight-body{font-size:13px;color:var(--t2);line-height:1.85}
+.pill{display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px;font-weight:600;font-family:var(--mono);margin-right:4px}
+
+.forecast-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+.f-card{background:rgba(255,255,255,.02);border-radius:8px;padding:12px 14px}
+.f-lbl{font-size:11px;color:var(--t4);margin-bottom:6px}
+.f-val{font-size:18px;font-weight:700;font-family:var(--mono);margin-bottom:4px}
+.f-sub{font-size:11px;color:var(--t4)}
+
+.rec-item{display:flex;gap:14px;margin-bottom:12px;background:var(--bg2);border-radius:8px;padding:14px 16px}
+.rec-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+.rec-title{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px}
+.rec-body{font-size:13px;color:var(--t2);line-height:1.8}
+
+.rpt-closing{background:rgba(20,184,166,.04);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:8px}
+.rpt-closing-lbl{font-size:11px;color:var(--teal);letter-spacing:.08em;margin-bottom:6px;font-weight:600}
+.rpt-closing-body{font-size:13px;color:var(--t2);line-height:1.85}
+.rpt-credit{text-align:center;font-size:11px;color:var(--t5);margin-top:12px;padding-bottom:8px}
+
+.footer-note{text-align:center;font-size:11px;color:var(--t5);margin-top:20px}
+
+/* RWD */
+@media(max-width:640px){
+  .content,.header{padding-left:14px;padding-right:14px}
+  .kpi-row{grid-template-columns:1fr 1fr}
+  .g2{grid-template-columns:1fr}
+  .obs-grid{grid-template-columns:1fr}
+  .rpt-kpis{grid-template-columns:1fr 1fr}
+  .forecast-grid{grid-template-columns:1fr}
+  .tabs{gap:6px}
+  .tab-btn{padding:6px 12px;font-size:12px}
+  .tbl-sec-hdr,.tbl-sec-row{font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<!-- BACK BAR -->
+<div class="back-bar">
+  <a href="index.html" class="back-btn">← 返回</a>
+  <span class="bar-title">印表機分析表</span>
+  <span class="bar-sub">漁人町業務系統</span>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <div style="margin-bottom:4px">
+        <span class="accent-bar"></span>
+        <span class="h1">漁人町 印表機分析表</span>
+      </div>
+      <div class="h-sub">ApeosPort-V C3376　｜　114/03 – 115/03　共 13 期</div>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('overview',this)">總覽</button>
+      <button class="tab-btn" onclick="switchTab('trend',this)">趨勢</button>
+      <button class="tab-btn" onclick="switchTab('detail',this)">明細</button>
+      <button class="tab-btn" id="tab-report" onclick="switchTab('report',this)">📋 年度分析 &amp; 2026推測</button>
+    </div>
+  </div>
+
+  <!-- KPI ROW -->
+  <div class="kpi-row" id="kpi-row"></div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- OVERVIEW -->
+  <div class="panel active" id="panel-overview">
+    <div class="card">
+      <div class="card-title">月費用趨勢（含稅）</div>
+      <div class="card-note" id="note-avg"></div>
+      <div class="chart-wrap" style="height:260px"><canvas id="areaChart"></canvas></div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-title">黑白 vs 彩色用量（張數）</div>
+        <div class="chart-wrap" style="height:200px"><canvas id="bwColorBar"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">費用結構：租金 vs 計張費</div>
+        <div class="chart-wrap" style="height:200px"><canvas id="stackedBar"></canvas></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:12px">重點觀察</div>
+      <div class="obs-grid" id="obs-grid"></div>
+    </div>
+  </div>
+
+  <!-- TREND -->
+  <div class="panel" id="panel-trend">
+    <div class="card">
+      <div class="card-title">費用分解趨勢：黑白費 vs 彩色費</div>
+      <div class="card-note">彩色費率 $4.2/張 vs 黑白 $0.37/張，差距 11.4 倍</div>
+      <div class="chart-wrap" style="height:240px"><canvas id="trendDecomp"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">含稅費用 vs 月均基準線</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="trendLine"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">總用量趨勢（黑白＋彩色 合計張數）</div>
+      <div class="chart-wrap" style="height:200px"><canvas id="trendUsage"></canvas></div>
+    </div>
+  </div>
+
+  <!-- DETAIL -->
+  <div class="panel" id="panel-detail">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:16px">逐月明細（含稅費用）</div>
+      <div class="tbl-wrap">
+        <table id="detail-table">
+          <thead>
+            <tr>
+              <th>期別</th>
+              <th class="tr">黑白（張）</th>
+              <th class="tr">彩色（張）</th>
+              <th class="tr">黑白費</th>
+              <th class="tr">彩色費</th>
+              <th class="tr">計張費小計</th>
+              <th class="tr">含稅總計</th>
+              <th class="tr">環比</th>
+            </tr>
+          </thead>
+          <tbody id="detail-tbody"></tbody>
+        </table>
+      </div>
+      <div class="legend-row">
+        <span>⚠️ 異常高峰</span>
+        <span>🔻 縮編轉折月</span>
+        <span style="color:#5eead4">● 2026年資料</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPORT -->
+  <div class="panel" id="panel-report">
+    <div class="rpt" id="rpt-content"></div>
+  </div>
+
+  <div class="footer-note">設備初始化：2022/04/18　｜　報表日期：2026/03/04　｜　租金 $2,500/月　｜　黑白 $0.37/張　｜　彩色 $4.2/張</div>
+</div>
+
+<script>
+/* ── DATA ── */
+const RAW = [
+  { date:"114/03", label:"25年3月",  short:"3月",  year:2025, bw:541,  color:1343, printFee:5841,  total:8466  },
+  { date:"114/04", label:"25年4月",  short:"4月",  year:2025, bw:807,  color:996,  printFee:4482,  total:7107  },
+  { date:"114/05", label:"25年5月",  short:"5月",  year:2025, bw:273,  color:1238, printFee:5301,  total:7926  },
+  { date:"114/06", label:"25年6月",  short:"6月",  year:2025, bw:1350, color:1386, printFee:6321,  total:8946  },
+  { date:"114/07", label:"25年7月",  short:"7月",  year:2025, bw:658,  color:834,  printFee:3746,  total:6371  },
+  { date:"114/08", label:"25年8月",  short:"8月",  year:2025, bw:723,  color:1208, printFee:5341,  total:7966  },
+  { date:"114/09", label:"25年9月",  short:"9月",  year:2025, bw:544,  color:757,  printFee:3381,  total:6006  },
+  { date:"114/10", label:"25年10月", short:"10月", year:2025, bw:266,  color:302,  printFee:1367,  total:3992  },
+  { date:"114/11", label:"25年11月", short:"11月", year:2025, bw:563,  color:1570, printFee:6802,  total:9427  },
+  { date:"114/12", label:"25年12月", short:"12月", year:2025, bw:576,  color:538,  printFee:2473,  total:5098  },
+  { date:"115/01", label:"26年1月",  short:"1月",  year:2026, bw:535,  color:201,  printFee:1042,  total:3667  },
+  { date:"115/02", label:"26年2月",  short:"2月",  year:2026, bw:319,  color:126,  printFee:647,   total:3272  },
+  { date:"115/03", label:"26年3月",  short:"3月",  year:2026, bw:421,  color:170,  printFee:870,   total:3495  },
+];
+const RENTAL = 2625;
+const BW_RATE = 0.37;
+const COLOR_RATE = 4.2;
+const SHRINK_MONTH = "114/10";
+
+const data2025 = RAW.filter(d=>d.year===2025);
+const data2026 = RAW.filter(d=>d.year===2026);
+const avg2026 = Math.round(data2026.reduce((s,d)=>s+d.total,0)/data2026.length);
+const forecast2026Total = data2026.reduce((s,d)=>s+d.total,0) + avg2026*9;
+const avgAll = Math.round(RAW.reduce((s,d)=>s+d.total,0)/RAW.length);
+const maxMonth = RAW.reduce((a,b)=>a.total>b.total?a:b);
+const minMonth = RAW.reduce((a,b)=>a.total<b.total?a:b);
+const labels = RAW.map(d=>d.short);
+const fmt = n => n!=null ? Number(n).toLocaleString('zh-TW') : '—';
+const pct = (a,b) => ((a/b)*100).toFixed(1);
+
+/* ── TABS ── */
+function switchTab(id, btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>{b.classList.remove('active');b.classList.remove('report-active');});
+  document.getElementById('panel-'+id).classList.add('active');
+  if(id==='report') btn.classList.add('report-active');
+  else btn.classList.add('active');
+}
+
+/* ── KPI ── */
+function buildKPI(){
+  const items = [
+    { lbl:"13期月均費用", val:`$${fmt(avgAll)}`, sub:"含稅月租＋計張費", color:"var(--teal)" },
+    { lbl:"費用最高月", val:`$${fmt(maxMonth.total)}`, sub:`${maxMonth.label}（彩色暴增）`, color:"var(--red)" },
+    { lbl:"費用最低月", val:`$${fmt(minMonth.total)}`, sub:`${minMonth.label}（縮編後）`, color:"var(--green)" },
+    { lbl:"2026 YTD（3月）", val:`$${fmt(data2026.reduce((s,d)=>s+d.total,0))}`, sub:`月均 $${fmt(avg2026)}`, color:"var(--blue)" },
+  ];
+  document.getElementById('kpi-row').innerHTML = items.map(k=>`
+    <div class="kpi">
+      <div class="kpi-lbl">${k.lbl}</div>
+      <div class="kpi-val" style="color:${k.color}">${k.val}</div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>`).join('');
+}
+
+/* Chart defaults */
+Chart.defaults.color = '#64748b';
+const gridColor = '#1e3a3a';
+const tooltipPlugin = {
+  backgroundColor:'#0f1923',
+  borderColor:'#1e3a3a',
+  borderWidth:1,
+  titleColor:'#94a3b8',
+  bodyColor:'#e2e8f0',
+  padding:10,
+  callbacks:{ label: ctx => ` ${ctx.dataset.label || ''}：${fmt(ctx.raw)}` }
+};
+
+/* ── OVERVIEW CHARTS ── */
+function buildOverview(){
+  document.getElementById('note-avg').textContent = `橘色虛線 = 整體月均 $${fmt(avgAll)}　｜　灰色分隔 = 縮編轉折點（10月）`;
+
+  // Area chart
+  new Chart(document.getElementById('areaChart'),{
+    type:'line',
+    data:{
+      labels,
+      datasets:[{
+        label:'含稅費用',
+        data: RAW.map(d=>d.total),
+        borderColor:'#14b8a6', borderWidth:2.5,
+        backgroundColor:'rgba(20,184,166,0.15)',
+        fill:true, tension:.3,
+        pointBackgroundColor: RAW.map(d=>d.year===2026?'#3a7bd5':'#14b8a6'),
+        pointRadius:4,
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:tooltipPlugin,
+        annotation:{annotations:{
+          avg:{ type:'line', yMin:avgAll, yMax:avgAll, borderColor:'#f0a830', borderWidth:1.5, borderDash:[4,3] }
+        }}
+      },
+      scales:{
+        x:{ticks:{color:'#64748b',font:{size:11}},grid:{color:gridColor}},
+        y:{ticks:{color:'#64748b',font:{size:11},callback:v=>`${(v/1000).toFixed(0)}k`},grid:{color:gridColor}}
+      }
+    }
+  });
+
+  // BW vs Color bar
+  new Chart(document.getElementById('bwColorBar'),{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        { label:'黑白', data:RAW.map(d=>d.bw), backgroundColor:'#64748b', borderRadius:2 },
+        { label:'彩色', data:RAW.map(d=>d.color), backgroundColor:'#14b8a6', borderRadius:2 },
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{labels:{color:'#64748b',font:{size:11}}}, tooltip:tooltipPlugin },
+      scales:{
+        x:{ticks:{color:'#64748b',font:{size:10}},grid:{color:gridColor}},
+        y:{ticks:{color:'#64748b',font:{size:10}},grid:{color:gridColor}}
+      }
+    }
+  });
+
+  // Stacked bar
+  new Chart(document.getElementById('stackedBar'),{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        { label:'租金', data:RAW.map(()=>RENTAL), backgroundColor:'#1e3a5f', borderRadius:0 },
+        { label:'計張費', data:RAW.map(d=>d.printFee), backgroundColor:'#14b8a6', borderRadius:[2,2,0,0] },
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{labels:{color:'#64748b',font:{size:11}}}, tooltip:tooltipPlugin },
+      scales:{
+        x:{stacked:true, ticks:{color:'#64748b',font:{size:10}},grid:{color:gridColor}},
+        y:{stacked:true, ticks:{color:'#64748b',font:{size:10},callback:v=>`${(v/1000).toFixed(0)}k`},grid:{color:gridColor}}
+      }
+    }
+  });
+
+  // Obs grid
+  const preShrink = RAW.slice(0,7);
+  const postShrink = RAW.slice(7);
+  const obs = [
+    { lbl:"縮編前月均（114/03-09）", val:`$${fmt(Math.round(preShrink.reduce((s,d)=>s+d.total,0)/7))}`, sub:"彩色用量旺盛期", c:"var(--gold)" },
+    { lbl:"縮編後月均（114/10-）", val:`$${fmt(Math.round(postShrink.reduce((s,d)=>s+d.total,0)/6))}`, sub:"人員縮減後穩定低點", c:"var(--green)" },
+    { lbl:"114/11 異常高峰", val:"$9,427", sub:"彩色1,570張，疑年末大印", c:"var(--red)" },
+    { lbl:"租金固定支出（含稅）", val:"$2,625 / 月", sub:"縮編後佔比逾 75%", c:"var(--blue)" },
+  ];
+  document.getElementById('obs-grid').innerHTML = obs.map(o=>`
+    <div class="obs-item">
+      <div class="obs-dot" style="background:${o.c}"></div>
+      <div>
+        <div class="obs-lbl">${o.lbl}</div>
+        <div class="obs-val" style="color:${o.c}">${o.val}</div>
+        <div class="obs-sub">${o.sub}</div>
+      </div>
+    </div>`).join('');
+}
+
+/* ── TREND CHARTS ── */
+function buildTrend(){
+  // Decomp
+  new Chart(document.getElementById('trendDecomp'),{
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        { label:'彩色費', data:RAW.map(d=>Math.round(d.color*COLOR_RATE)), borderColor:'#14b8a6', backgroundColor:'rgba(20,184,166,.2)', fill:true, tension:.3, pointRadius:3 },
+        { label:'黑白費', data:RAW.map(d=>Math.round(d.bw*BW_RATE)), borderColor:'#64748b', backgroundColor:'transparent', borderDash:[4,2], tension:.3, pointRadius:3 },
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{labels:{color:'#64748b',font:{size:11}}}, tooltip:tooltipPlugin },
+      scales:{
+        x:{ticks:{color:'#64748b',font:{size:11}},grid:{color:gridColor}},
+        y:{ticks:{color:'#64748b',font:{size:11},callback:v=>`${(v/1000).toFixed(1)}k`},grid:{color:gridColor}}
+      }
+    }
+  });
+
+  // Line with avg
+  new Chart(document.getElementById('trendLine'),{
+    type:'line',
+    data:{
+      labels,
+      datasets:[{
+        label:'含稅費用',
+        data:RAW.map(d=>d.total),
+        borderColor:'#14b8a6', borderWidth:2.5,
+        pointBackgroundColor:RAW.map(d=>d.year===2026?'#3a7bd5':'#14b8a6'),
+        pointRadius:4, tension:.3,
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false}, tooltip:tooltipPlugin,
+      },
+      scales:{
+        x:{ticks:{color:'#64748b',font:{size:11}},grid:{color:gridColor}},
+        y:{
+          ticks:{color:'#64748b',font:{size:11},callback:v=>`${(v/1000).toFixed(0)}k`},
+          grid:{color:gridColor},
+          // draw reference lines via manual annotation in data instead
+        }
+      }
+    },
+    plugins:[{
+      afterDraw(chart){
+        const {ctx,chartArea:{left,right,top,bottom},scales:{y}} = chart;
+        const drawLine = (val,color,label)=>{
+          const yPos = y.getPixelForValue(val);
+          ctx.save();
+          ctx.strokeStyle = color; ctx.lineWidth=1; ctx.setLineDash([4,3]);
+          ctx.beginPath(); ctx.moveTo(left,yPos); ctx.lineTo(right,yPos); ctx.stroke();
+          ctx.fillStyle = color; ctx.font='10px Noto Sans TC'; ctx.textAlign='left';
+          ctx.fillText(label, left+4, yPos-4);
+          ctx.restore();
+        };
+        drawLine(avgAll,'#f0a830',`均 $${fmt(avgAll)}`);
+        drawLine(RENTAL,'#3a7bd5','租金底線');
+      }
+    }]
+  });
+
+  // Usage bar
+  new Chart(document.getElementById('trendUsage'),{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[{
+        label:'總用量（張）',
+        data:RAW.map(d=>d.bw+d.color),
+        backgroundColor:RAW.map(d=>d.year===2026?'rgba(58,123,213,.9)':'rgba(20,184,166,.7)'),
+        borderRadius:4,
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:tooltipPlugin },
+      scales:{
+        x:{ticks:{color:'#64748b',font:{size:11}},grid:{color:gridColor}},
+        y:{ticks:{color:'#64748b',font:{size:11}},grid:{color:gridColor}}
+      }
+    }
+  });
+}
+
+/* ── DETAIL TABLE ── */
+function buildDetail(){
+  document.getElementById('detail-tbody').innerHTML = RAW.map((d,i)=>{
+    const prev = i>0 ? RAW[i-1].total : null;
+    const diff = prev!==null ? d.total-prev : null;
+    const bwFee = Math.round(d.bw*BW_RATE);
+    const colorFee = Math.round(d.color*COLOR_RATE);
+    const isAnom = d.date==="114/11";
+    const isShrink = d.date===SHRINK_MONTH;
+    const rowBorder = isAnom?"3px solid var(--red)":isShrink?"3px solid var(--gold)":"3px solid transparent";
+    const labelColor = d.year===2026?"#5eead4":isAnom?"#fca5a5":"var(--t2)";
+    const diffHtml = diff!==null
+      ? `<span class="mono" style="font-size:12px;color:${diff>0?'#ef4444':'var(--green)'}">${diff>0?'▲':'▼'}${fmt(Math.abs(diff))}</span>`
+      : `<span style="color:var(--t5)">—</span>`;
+    return `<tr style="border-left:${rowBorder}">
+      <td style="color:${labelColor};font-weight:${isAnom||d.year===2026?600:400}">${d.label} ${isAnom?'⚠️':''} ${isShrink?'🔻':''}</td>
+      <td class="mono tr" style="color:var(--t3)">${fmt(d.bw)}</td>
+      <td class="mono tr" style="color:var(--teal)">${fmt(d.color)}</td>
+      <td class="mono tr" style="color:var(--t4)">$${fmt(bwFee)}</td>
+      <td class="mono tr" style="color:var(--teal)">$${fmt(colorFee)}</td>
+      <td class="mono tr" style="color:var(--t2)">$${fmt(d.printFee)}</td>
+      <td class="mono tr" style="color:var(--t1);font-weight:600">$${fmt(d.total)}</td>
+      <td class="tr">${diffHtml}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── REPORT ── */
+function buildReport(){
+  const total2025 = data2025.reduce((s,d)=>s+d.total,0);
+  const total2026ytd = data2026.reduce((s,d)=>s+d.total,0);
+  const preShrink = RAW.slice(0,7);
+  const postShrink = RAW.slice(7);
+  const avgPre = Math.round(preShrink.reduce((s,d)=>s+d.total,0)/preShrink.length);
+  const avgPost = Math.round(postShrink.reduce((s,d)=>s+d.total,0)/postShrink.length);
+  const drop = pct(avgPre-avgPost, avgPre);
+
+  document.getElementById('rpt-content').innerHTML = `
+  <!-- 封面 -->
+  <div class="rpt-cover">
+    <div style="position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle at 80% 20%,rgba(20,184,166,.08),transparent 70%);pointer-events:none"></div>
+    <div class="rpt-eyebrow">ANNUAL PRINTER REPORT · 漁人町</div>
+    <h2 class="rpt-h">印表機費用年度分析書</h2>
+    <div class="rpt-meta">設備：ApeosPort-V C3376（Xerox AP V）　｜　資料區間：114/03 – 115/03</div>
+    <div class="rpt-kpis">
+      ${[
+        { lbl:"2025年合計（10月）", val:`$${fmt(total2025)}`, c:"var(--teal)" },
+        { lbl:"2026年累計（3月）", val:`$${fmt(total2026ytd)}`, c:"var(--blue)" },
+        { lbl:"縮編前月均", val:`$${fmt(avgPre)}`, c:"var(--gold)" },
+        { lbl:"縮編後月均", val:`$${fmt(avgPost)}`, c:"var(--green)" },
+      ].map(k=>`<div class="rpt-kpi"><div class="rpt-kpi-lbl">${k.lbl}</div><div class="rpt-kpi-val" style="color:${k.c}">${k.val}</div></div>`).join('')}
+    </div>
+  </div>
+
+  <!-- 01 費用趨勢 -->
+  <div style="margin-bottom:28px">
+    <div class="sec-hdr"><span class="sec-tag" style="background:var(--blue)">01</span><span class="sec-title">費用趨勢總覽</span></div>
+    <p style="font-size:13px;color:var(--t2);line-height:1.85;margin-bottom:14px">
+      自 114 年 3 月起，印表機月費用整體呈現「<strong style="color:var(--gold)">前期波動 → 縮編轉折 → 持續低點</strong>」三段式走勢。<strong style="color:var(--red)">部門縮編</strong>是費用結構性下降的核心原因，使月均費用由縮編前的 <strong style="color:var(--gold)">$${fmt(avgPre)}</strong> 大幅降至 <strong style="color:var(--green)">$${fmt(avgPost)}</strong>，降幅約 <strong style="color:var(--green)">${drop}%</strong>。
+    </p>
+    <div class="tbl-sec">
+      <div class="tbl-sec-hdr" style="grid-template-columns:2fr 1fr 1fr 1fr 2fr">
+        ${["期間","月份","含稅費用","環比","備註"].map(h=>`<span style="font-size:11px;color:var(--t4)">${h}</span>`).join('')}
+      </div>
+      ${[
+        ["縮編前高峰","114/11","$9,427","↑ 136.0%","彩色用量暴增至 1,570 張","var(--red)","rgba(232,82,42,.04)"],
+        ["縮編轉折月","114/10","$3,992","↓ 55.4%","黑白266張、彩色302張，全期最低","var(--gold)","transparent"],
+        ["2025最終月","114/12","$5,098","↓ 45.9%","較峰值下降 46%","var(--t2)","transparent"],
+        ["2026最新月","115/03","$3,495","—","縮編後穩定低檔，彩色大幅萎縮","var(--green)","transparent"],
+      ].map(([a,b,c,d,e,tc,bg])=>`
+        <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 1fr 2fr;background:${bg}">
+          <span style="font-size:13px;color:var(--t2)">${a}</span>
+          <span style="font-size:13px;font-family:var(--mono);color:var(--t3)">${b}</span>
+          <span style="font-size:13px;font-family:var(--mono);color:var(--t1)">${c}</span>
+          <span style="font-size:13px;font-family:var(--mono);color:${tc}">${d}</span>
+          <span style="font-size:12px;color:var(--t3)">${e}</span>
+        </div>`).join('')}
+    </div>
+  </div>
+
+  <!-- 02 關鍵分析 -->
+  <div style="margin-bottom:28px">
+    <div class="sec-hdr"><span class="sec-tag" style="background:var(--gold)">02</span><span class="sec-title">關鍵用量節點解析</span></div>
+    <div class="insight" style="border-left:3px solid var(--red)">
+      <div class="insight-hdr"><span class="insight-icon">📉</span><span class="insight-title">部門縮編 — 費用結構性轉變的核心</span></div>
+      <div class="insight-body">自 114 年 10 月起，印列用量進入結構性低點。<strong style="color:var(--t1)">部門縮編導致人員減少</strong>，直接壓低日常文件列印需求。縮編前（114/03–09）月均用量為 <span class="pill" style="background:rgba(240,168,48,.15);color:var(--gold)">黑白 642 張</span><span class="pill" style="background:rgba(240,168,48,.15);color:var(--gold)">彩色 1,109 張</span>；縮編後（114/10–115/03）降至 <span class="pill" style="background:rgba(34,197,94,.12);color:var(--green)">黑白 454 張</span><span class="pill" style="background:rgba(34,197,94,.12);color:var(--green)">彩色 485 張</span>，彩色用量萎縮幅度達 <strong style="color:var(--green)">56%</strong>，為費用下降的主要驅動力。</div>
+    </div>
+    <div class="insight" style="border-left:3px solid var(--blue)">
+      <div class="insight-hdr"><span class="insight-icon">🖨️</span><span class="insight-title">彩色列印 — 費用貢獻佔比高，波動影響大</span></div>
+      <div class="insight-body">彩色費率（$4.2/張）為黑白（$0.37/張）的 <strong style="color:var(--t1)">11.4 倍</strong>，因此彩色用量的波動對月費影響遠大於黑白。縮編前彩色費用平均佔計張費的 <strong style="color:var(--gold)">~95%</strong>；縮編後雖仍佔約 <strong style="color:var(--green)">~75%</strong>，但因總量下降，整體費用已大幅收斂。<br><br><strong style="color:var(--red)">異常觀察：</strong>114/11（11月）彩色用量異常攀升至 1,570 張，費用達 $9,427，在縮編趨勢中呈反常高峰，可能與年末大批量列印需求有關，並非代表趨勢反轉。</div>
+    </div>
+    <div class="insight" style="border-left:3px solid var(--purple)">
+      <div class="insight-hdr"><span class="insight-icon">💰</span><span class="insight-title">固定租金佔比分析</span></div>
+      <div class="insight-body">月租金固定為 <strong style="color:var(--t1)">$2,500（含稅 $2,625）</strong>，在縮編後的低用量環境下，租金佔月總費用的比例大幅攀升：
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
+          <span class="pill" style="background:rgba(240,168,48,.15);color:var(--gold)">縮編前：租金佔 ~35–41%</span>
+          <span class="pill" style="background:rgba(34,197,94,.12);color:var(--green)">縮編後：租金佔 ~71–80%</span>
+        </div>
+        目前大部分費用為剛性固定支出，實際使用效益偏低。若未來用量持續維持低檔，應評估是否有更符合低用量情境的合約方案可供替換。
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 年度彙整 -->
+  <div style="margin-bottom:28px">
+    <div class="sec-hdr"><span class="sec-tag" style="background:var(--purple)">03</span><span class="sec-title">年度費用彙整對照</span></div>
+    <div class="tbl-sec">
+      <div class="tbl-sec-hdr" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr">
+        ${["年度/期間","月數","費用合計","月均費用","彩色佔計張費"].map(h=>`<span style="font-size:11px;color:var(--t4)">${h}</span>`).join('')}
+      </div>
+      ${[
+        ["2025年（3–12月）","10",`$${fmt(total2025)}`,`$${fmt(Math.round(total2025/10))}`,`${pct(data2025.reduce((s,d)=>s+d.color*COLOR_RATE,0),data2025.reduce((s,d)=>s+d.printFee,0))}%`,"var(--t2)","transparent","transparent"],
+        ["2026年YTD（1–3月）","3",`$${fmt(total2026ytd)}`,`$${fmt(Math.round(total2026ytd/3))}`,`${pct(data2026.reduce((s,d)=>s+d.color*COLOR_RATE,0),data2026.reduce((s,d)=>s+d.printFee,0))}%`,"var(--t2)","transparent","transparent"],
+        ["2026全年推估","12",`$${fmt(forecast2026Total)}`,`$${fmt(avg2026)}`,"—","#5eead4","rgba(20,184,166,.05)","3px solid var(--teal)"],
+      ].map(([a,b,c,d,e,tc,bg,bl])=>`
+        <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr;background:${bg};border-left:${bl||'3px solid transparent'}">
+          <span style="font-size:13px;color:${tc}">${a}</span>
+          <span style="font-size:13px;font-family:var(--mono);color:var(--t3)">${b}</span>
+          <span style="font-size:13px;font-family:var(--mono);color:var(--t1)">${c}</span>
+          <span style="font-size:13px;font-family:var(--mono);color:${tc}">${d}</span>
+          <span style="font-size:13px;font-family:var(--mono);color:var(--t3)">${e}</span>
+        </div>`).join('')}
+    </div>
+  </div>
+
+  <!-- 04 2026推估 -->
+  <div style="margin-bottom:28px">
+    <div class="sec-hdr"><span class="sec-tag" style="background:var(--teal)">04</span><span class="sec-title">2026 年全年費用推估</span></div>
+    <p style="font-size:13px;color:var(--t2);line-height:1.85;margin-bottom:14px">以 2026 年 1–3 月實際數據為基礎（月均 <strong style="color:var(--teal)">$${fmt(avg2026)}</strong>），於縮編後人員結構不變的前提下，保守推估全年費用如下：</p>
+    <div class="forecast-grid" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:16px">
+      ${[
+        { lbl:"保守情境（+5%）", val:`$${fmt(Math.round(forecast2026Total*1.05))}`, sub:"偶有大量列印需求", c:"var(--gold)" },
+        { lbl:"基準情境（持平）", val:`$${fmt(forecast2026Total)}`, sub:"維持目前低用量節奏", c:"var(--teal)" },
+        { lbl:"樂觀情境（-10%）", val:`$${fmt(Math.round(forecast2026Total*0.9))}`, sub:"進一步壓縮用量或換約", c:"var(--green)" },
+      ].map(s=>`<div class="f-card" style="border:1px solid ${s.c}25">
+        <div class="f-lbl">${s.lbl}</div>
+        <div class="f-val" style="color:${s.c}">${s.val}</div>
+        <div class="f-sub">${s.sub}</div>
+      </div>`).join('')}
+    </div>
+    ${[
+      { num:"1", title:"合約重新評估（建議優先）", accent:"var(--teal)", desc:"縮編後月均用量已大幅降低，租金固定支出佔比超過 75%。建議與廠商重新協商：評估調降月租金方案、採用純計張計費模式，或切換至更符合低用量規格的設備/方案，以提升費用效益比。" },
+      { num:"2", title:"彩色列印管控", accent:"var(--blue)", desc:"彩色費率為黑白的 11 倍以上，但目前彩色用量仍佔計張費約 75%。建議設定月度彩色列印配額或審核機制，針對非必要的彩色文件改以黑白或數位分享替代，每月可節省約 $200–$500。" },
+      { num:"3", title:"設備使用紀錄追蹤", accent:"var(--purple)", desc:"Counter 報表顯示設備自 2022/04 初始化迄今總列印頁數達 73,064 頁，設備已使用約 4 年。建議在合約到期前評估設備使用年限與維護成本，作為是否換機的判斷依據。" },
+    ].map(item=>`
+      <div class="rec-item" style="border-left:3px solid ${item.accent}">
+        <div class="rec-num" style="background:${item.accent}20;color:${item.accent}">${item.num}</div>
+        <div>
+          <div class="rec-title">${item.title}</div>
+          <div class="rec-body">${item.desc}</div>
+        </div>
+      </div>`).join('')}
+  </div>
+
+  <!-- 結語 -->
+  <div class="rpt-closing">
+    <div class="rpt-closing-lbl">結語</div>
+    <p class="rpt-closing-body">部門縮編已明確帶動印表機費用進入新的低基期區間。在固定租金佔比偏高的結構下，建議管理層把握合約換約時機，重新議定符合現有使用規模的計費條件，可望將年費壓縮至 <strong style="color:var(--teal)">$35,000 以下</strong>，較 2025 年節省逾 50%。</p>
+  </div>
+  <div class="rpt-credit">設備：ApeosPort-V C3376　｜　初始化：2022/04/18　｜　分析製作：漁人町管理部</div>
+  `;
+}
+
+/* ── INIT ── */
+buildKPI();
+buildOverview();
+buildDetail();
+buildReport();
+requestAnimationFrame(()=>buildTrend());
+</script>
+</body>
+</html>
