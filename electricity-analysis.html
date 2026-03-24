@@ -39,10 +39,10 @@ body{min-height:100vh;background:var(--bg);color:var(--t1);font-family:'Noto San
 .tab-btn.report-active{background:rgba(30,58,95,.6);color:#93c5fd;border-color:var(--blue)}
 
 /* KPI ROW */
-.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
-.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 16px}
 .kpi-period{color:var(--t3);font-size:11px;letter-spacing:.05em;margin-bottom:6px}
-.kpi-val{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--t1)}
+.kpi-val{font-family:var(--mono);font-size:17px;font-weight:700;color:var(--t1)}
 .kpi-footer{display:flex;justify-content:space-between;margin-top:8px}
 .kpi-usage{color:var(--t4);font-size:12px}
 .kpi-diff{font-size:12px;font-weight:600}
@@ -168,7 +168,7 @@ td:not(.highlight-row td){border-left:3px solid transparent}
         <span class="accent-bar"></span>
         <span class="h1">漁人町 電力分析表</span>
       </div>
-      <div class="h-sub">2025/10/26 ～ 2026/01/25　共三期帳單</div>
+      <div class="h-sub">2025/04/26 ～ 2026/01/25　共八期帳單</div>
     </div>
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('overview',this)">總覽</button>
@@ -230,33 +230,48 @@ td:not(.highlight-row td){border-left:3px solid transparent}
     <div class="rpt">
       <!-- cover -->
       <div class="rpt-cover">
-        <div class="rpt-eyebrow">QUARTERLY ELECTRICITY REPORT · 漁人町</div>
-        <div class="rpt-h">電力費用季度分析書</div>
-        <div class="rpt-meta">計費區間：2025 / 10 / 26 ～ 2026 / 01 / 25　｜　共三期帳單　｜　非夏季電價 $5.3 / 度</div>
+        <div class="rpt-eyebrow">ANNUAL ELECTRICITY REPORT · 漁人町</div>
+        <div class="rpt-h">電力費用年度分析書</div>
+        <div class="rpt-meta">計費區間：2025 / 04 / 26 ～ 2026 / 01 / 25　｜　共八期帳單　｜　夏季 $5.5 / 度・非夏季 $5.3 / 度（05月舊費率 $4.0）</div>
         <div class="rpt-kpis">
-          <div class="rpt-kpi"><div class="rpt-kpi-lbl">三期合計</div><div class="rpt-kpi-val" style="color:var(--red)">$514,078</div></div>
-          <div class="rpt-kpi"><div class="rpt-kpi-lbl">最高單月</div><div class="rpt-kpi-val" style="color:var(--gold)">$195,189</div></div>
-          <div class="rpt-kpi"><div class="rpt-kpi-lbl">最低單月</div><div class="rpt-kpi-val" style="color:var(--green)">$159,068</div></div>
-          <div class="rpt-kpi"><div class="rpt-kpi-lbl">水產街平均佔比</div><div class="rpt-kpi-val" style="color:var(--blue)">38%</div></div>
+          <div class="rpt-kpi"><div class="rpt-kpi-lbl">八期合計</div><div class="rpt-kpi-val" style="color:var(--red)">$1,757,153</div></div>
+          <div class="rpt-kpi"><div class="rpt-kpi-lbl">全期最高月</div><div class="rpt-kpi-val" style="color:var(--gold)">$312,566</div></div>
+          <div class="rpt-kpi"><div class="rpt-kpi-lbl">全期最低月</div><div class="rpt-kpi-val" style="color:var(--green)">$159,068</div></div>
+          <div class="rpt-kpi"><div class="rpt-kpi-lbl">空調ACMP1峰值</div><div class="rpt-kpi-val" style="color:var(--blue)">$94,688</div></div>
         </div>
       </div>
 
       <!-- 01 趨勢 -->
       <div class="section">
         <div class="sec-hdr"><span class="sec-tag" style="background:var(--blue)">01</span><span class="sec-title">整體電費趨勢</span></div>
-        <p style="font-size:13px;color:var(--t2);line-height:1.85;margin-bottom:14px">本季三期帳單全程適用非夏季電價（每度 <strong style="color:var(--t1)">$5.3</strong>）。整體走勢呈現「<strong style="color:var(--gold)">11月高峰 → 12月顯著下降 → 1月持平</strong>」格局，主要降幅來自空調系統的季節性收斂。</p>
+        <p style="font-size:13px;color:var(--t2);line-height:1.85;margin-bottom:14px">八期帳單橫跨非夏季（舊費率 $4.0）→ 夏季（$5.5）→ 非夏季（$5.3）三個費率區間。整體走勢呈現「<strong style="color:var(--gold)">夏季持續攀升 → 09月全期高峰 → 費率切換後迅速收斂</strong>」格局，空調系統與費率雙重驅動為主要變數。</p>
         <div class="tbl-wrap tbl-sec">
           <div class="tbl-sec-hdr" style="grid-template-columns:2fr 1fr 1fr 2fr">
             <span style="font-size:11px;color:var(--t4)">計費期間</span><span style="font-size:11px;color:var(--t4)">電費合計</span><span style="font-size:11px;color:var(--t4)">環比</span><span style="font-size:11px;color:var(--t4)">主要原因</span>
           </div>
-          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 2fr;background:rgba(240,168,48,.04)">
-            <span style="font-size:13px;color:var(--t2)">10/26–11/25（基期）</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$195,189</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">—</span><span style="font-size:12px;color:var(--t3)">入秋仍有空調需求，三期最高</span>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 2fr">
+            <span style="font-size:13px;color:var(--t2)">04/26–05/25</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$189,938</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">—</span><span style="font-size:12px;color:var(--t3)">非夏季舊費率 $4.0/度，空調 11,872度</span>
+          </div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 2fr">
+            <span style="font-size:13px;color:var(--t2)">05/26–06/25</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$213,358</span><span style="font-size:13px;font-family:var(--mono);color:var(--red)">↑ 12.3%</span><span style="font-size:12px;color:var(--t3)">進入夏季費率 $5.5/度，空調快速上升</span>
+          </div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 2fr">
+            <span style="font-size:13px;color:var(--t2)">06/26–07/25</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$253,013</span><span style="font-size:13px;font-family:var(--mono);color:var(--red)">↑ 18.6%</span><span style="font-size:12px;color:var(--t3)">高溫全力運轉，空調 13,760度</span>
+          </div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 2fr;background:rgba(240,168,48,.03)">
+            <span style="font-size:13px;color:var(--t2)">07/26–08/25</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$274,200</span><span style="font-size:13px;font-family:var(--mono);color:var(--red)">↑ 8.4%</span><span style="font-size:12px;color:var(--t3)">空調尖峰 17,216度，全期最高用電量</span>
+          </div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 2fr;background:rgba(232,82,42,.05)">
+            <span style="font-size:13px;color:#fca5a5;font-weight:600">08/26–09/25 ★全期最高</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$312,566</span><span style="font-size:13px;font-family:var(--mono);color:var(--red)">↑ 13.9%</span><span style="font-size:12px;color:var(--t3)">水產街電錶首次獨立計費 $68,354</span>
+          </div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 2fr">
+            <span style="font-size:13px;color:var(--t2)">10/26–11/25</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$195,189</span><span style="font-size:13px;font-family:var(--mono);color:var(--green)">↓ 37.6%</span><span style="font-size:12px;color:var(--t3)">費率轉非夏季 $5.3/度，空調大幅收斂</span>
           </div>
           <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 2fr">
             <span style="font-size:13px;color:var(--t2)">11/26–12/25</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$159,068</span><span style="font-size:13px;font-family:var(--mono);color:var(--green)">↓ 18.5%</span><span style="font-size:12px;color:var(--t3)">空調 & 警衛室用電大幅收斂</span>
           </div>
           <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 2fr">
-            <span style="font-size:13px;color:var(--t2)">12/26–01/25</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$159,821</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">↑ 0.5%</span><span style="font-size:12px;color:var(--t3)">水產街 & 外展微增，整體持平</span>
+            <span style="font-size:13px;color:var(--t2)">12/26–01/25</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$159,821</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">↑ 0.5%</span><span style="font-size:12px;color:var(--t3)">水產街微增，整體持平</span>
           </div>
         </div>
       </div>
@@ -265,20 +280,20 @@ td:not(.highlight-row td){border-left:3px solid transparent}
       <div class="section">
         <div class="sec-hdr"><span class="sec-tag" style="background:var(--gold)">02</span><span class="sec-title">關鍵用電節點解析</span></div>
         <div class="insight" style="border-left:3px solid var(--blue)">
-          <div class="insight-hdr"><span class="insight-icon">❄️</span><span class="insight-title">空調 ACMP1 — 季節性降幅最顯著</span></div>
-          <div class="insight-body">用電量由 11 月的 <span class="pill" style="background:rgba(240,168,48,.15);color:var(--gold)">3,936 度 ($20,861)</span> 驟降至 1 月的 <span class="pill" style="background:rgba(34,197,94,.12);color:var(--green)">592 度 ($3,138)</span>，單項費用三個月內下降逾 <strong style="color:var(--green)">85%</strong>，是本季電費整體下滑的第一主因。<br><br>⚠️ <strong style="color:var(--gold)">前瞻提醒：</strong>6 月起切換夏季費率（$5.5/度），空調重啟後預估月電費將重返 $25 萬以上。建議第二季前完成空調保養與濾網清潔，並評估智慧溫控的可行性。</div>
+          <div class="insight-hdr"><span class="insight-icon">❄️</span><span class="insight-title">空調 ACMP1 — 夏季尖峰 / 冬季驟降，年度落差最大</span></div>
+          <div class="insight-body">用電量由 05月的 <span class="pill" style="background:rgba(240,168,48,.15);color:var(--gold)">11,872度 ($47,488)</span> 持續攀升至 08月尖峰 <span class="pill" style="background:rgba(232,82,42,.15);color:var(--red)">17,216度 ($94,688)</span>，隨後在費率切換後驟降至 01月的 <span class="pill" style="background:rgba(34,197,94,.12);color:var(--green)">592度 ($3,138)</span>。從尖峰到最低點降幅達 <strong style="color:var(--green)">97%</strong>，是全期電費波動的第一主因。<br><br>⚠️ <strong style="color:var(--gold)">前瞻提醒：</strong>對照去年數據，6月起夏季費率重啟，空調月費預估將再度攀升至 $60,000–$95,000，建議在夏季前完成保養與濾網清潔，並評估智慧溫控方案。</div>
         </div>
         <div class="insight" style="border-left:3px solid var(--red)">
-          <div class="insight-hdr"><span class="insight-icon">🏪</span><span class="insight-title">水產街電錶★ — 冬季逆勢成長，為重點監控項目</span></div>
-          <div class="insight-body">水產街為全場最大單一耗電節點，三期費用佔總電費比例穩定落在 <strong style="color:var(--t1)">36–40%</strong>，且呈逆勢成長：<span class="pill" style="background:rgba(148,163,184,.1);color:var(--t2)">11月：$58,433</span><span class="pill" style="background:rgba(148,163,184,.1);color:var(--t2)">12月：$57,373</span><span class="pill" style="background:rgba(232,82,42,.15);color:var(--red)">01月：$63,245 ↑</span><br>冬季用電不降反升，建議釐清現行電費是否按比例向攤商分攤，避免管理方長期承擔隱性成本。</div>
+          <div class="insight-hdr"><span class="insight-icon">🏪</span><span class="insight-title">水產街電錶★ — 09月首次獨立計費，成本結構大幅改變</span></div>
+          <div class="insight-body">09月帳單首次出現水產街電錶★獨立項目（12,428度 / $68,354），佔當月電費 <strong style="color:var(--t1)">21.9%</strong>。此後持續作為全場最大單一耗電節點，冬季佔比更逆勢攀升至 <strong style="color:var(--red)">39.6%</strong>（01月）：<span class="pill" style="background:rgba(148,163,184,.1);color:var(--t2)">09月：$68,354</span><span class="pill" style="background:rgba(148,163,184,.1);color:var(--t2)">11月：$58,433</span><span class="pill" style="background:rgba(148,163,184,.1);color:var(--t2)">12月：$57,373</span><span class="pill" style="background:rgba(232,82,42,.15);color:var(--red)">01月：$63,245 ↑</span><br>冬季用電不降反升，建議釐清現行電費是否按比例向攤商分攤，避免管理方長期承擔隱性成本。</div>
         </div>
         <div class="insight" style="border-left:3px solid var(--green)">
-          <div class="insight-hdr"><span class="insight-icon">🏠</span><span class="insight-title">漁人町手抄（警衛室）— 持續遞減，幅度超出預期</span></div>
-          <div class="insight-body">用電量連續三期下降：<span class="pill" style="background:rgba(34,197,94,.1);color:var(--green)">4,718度</span> → <span class="pill" style="background:rgba(34,197,94,.1);color:var(--green)">3,893度</span> → <span class="pill" style="background:rgba(34,197,94,.1);color:var(--green)">2,800度</span>，三期降幅達 41%，略超出氣溫影響的合理預期，建議現場確認是否有設備調整或量表異常。</div>
+          <div class="insight-hdr"><span class="insight-icon">🏠</span><span class="insight-title">漁人町手抄（警衛室）— 冬季持續遞減，幅度超出預期</span></div>
+          <div class="insight-body">夏季用電維持 5,000–5,400度高檔，進入秋冬後連續下降：<span class="pill" style="background:rgba(34,197,94,.1);color:var(--green)">11月：4,718度</span> → <span class="pill" style="background:rgba(34,197,94,.1);color:var(--green)">12月：3,893度</span> → <span class="pill" style="background:rgba(34,197,94,.1);color:var(--green)">01月：2,800度</span>，冬季三期降幅達 41%，略超出氣溫影響的合理預期，建議現場確認是否有設備調整或量表異常。</div>
         </div>
         <div class="insight" style="border-left:3px solid var(--purple)">
-          <div class="insight-hdr"><span class="insight-icon">💡</span><span class="insight-title">哈魚碼頭 & 照明 — 基礎剛性支出，表現穩定</span></div>
-          <div class="insight-body">哈魚碼頭用電維持 <strong style="color:var(--t1)">10,000–12,600 度</strong>，照明 1L1 穩定維持在 <strong style="color:var(--t1)">1,200 度上下</strong>，顯示照明管理執行一致，可作為後續各期比對的穩定基準線。</div>
+          <div class="insight-hdr"><span class="insight-icon">💡</span><span class="insight-title">哈魚碼頭(B廠區) — 09月後度數結構性下降（水產街拆表）</span></div>
+          <div class="insight-body">05–08月哈魚碼頭度數維持 21,000–23,600度，09月起降至 19,572度，此後冬季進一步收斂至 10,000–12,600度。需注意：09月起水產街電錶獨立計費前，水產街用電包含於哈魚碼頭總表內，<strong style="color:var(--t1)">跨期比較時需留意口徑差異</strong>。照明1L1 全期穩定維持 1,100–1,500度，為基準對照線。</div>
         </div>
       </div>
 
@@ -303,25 +318,25 @@ td:not(.highlight-row td){border-left:3px solid transparent}
         <div class="sec-hdr"><span class="sec-tag" style="background:var(--green)">04</span><span class="sec-title">後續營運建議</span></div>
         <div class="rec-item" style="border-left:3px solid var(--red)">
           <div class="rec-num" style="background:rgba(232,82,42,.2);color:var(--red)">1</div>
-          <div><div class="rec-title">水產街成本結構釐清（優先處理）</div><div class="rec-body">水產街電錶佔總電費近 40% 且呈成長趨勢，是最值得優先釐清的成本區塊。建議確認現行租約對電費的分攤依據，中長期可考慮引入子電錶進行精細化管理。</div></div>
+          <div><div class="rec-title">水產街成本結構釐清（優先處理）</div><div class="rec-body">水產街電錶自 09 月獨立計費後，冬季佔比持續攀升至近 40%，且呈逆勢成長趨勢。建議確認現行租約對電費的分攤依據，中長期可引入子電錶進行精細化管理，避免管理方長期承擔隱性成本。</div></div>
         </div>
         <div class="rec-item" style="border-left:3px solid var(--gold)">
           <div class="rec-num" style="background:rgba(240,168,48,.2);color:var(--gold)">2</div>
-          <div><div class="rec-title">備戰夏季電費：第二季前啟動節能評估</div><div class="rec-body">6 月起進入夏季電價（$5.5/度），若依本季 11 月基準推估，夏季月電費可能突破 $25 萬。建議：①空調設備保養；②大型設備排程最佳化；③與台電確認契約容量。</div></div>
+          <div><div class="rec-title">備戰夏季空調費用：對照去年數據超前規劃</div><div class="rec-body">去年 06–09 月空調費用由 $59,904 飆升至 $94,688。今年夏季應提前完成：①空調設備保養與濾網清潔；②大型設備排程最佳化；③評估智慧溫控或分時段節能方案，目標將夏季空調費控制在去年峰值以下。</div></div>
         </div>
         <div class="rec-item" style="border-left:3px solid var(--blue)">
           <div class="rec-num" style="background:rgba(58,123,213,.2);color:var(--blue)">3</div>
-          <div><div class="rec-title">警衛室用電異常確認</div><div class="rec-body">警衛室三期降幅達 41%，建議現場確認監視器主機、照明系統及其他常駐設備是否有異動，確保計費數字的準確性。</div></div>
+          <div><div class="rec-title">警衛室用電異常確認</div><div class="rec-body">警衛室冬季三期降幅達 41%，遠超氣溫影響的合理範圍。建議現場確認監視器主機、照明系統及其他常駐設備是否有異動，確保計費數字的準確性，並釐清是否有設備關閉或量表異常。</div></div>
         </div>
         <div class="rec-item" style="border-left:3px solid var(--green)">
           <div class="rec-num" style="background:rgba(34,197,94,.2);color:var(--green)">4</div>
-          <div><div class="rec-title">建立月度電費基準線與預警機制</div><div class="rec-body">建議以本三期數據作為非夏季基準（月電費 $159k–$195k），並為各主要節點設定正常波動區間。若任一項目單月超出基準 ±15%，啟動現場查核。</div></div>
+          <div><div class="rec-title">建立年度電費基準線與預警機制</div><div class="rec-body">現已有完整一年週期數據：非夏季基準 $159k–$195k，夏季峰值區間 $213k–$313k。建議為各主要節點設定月度正常波動區間，若任一項目單月超出歷史同期 ±15%，啟動現場查核。</div></div>
         </div>
       </div>
 
       <div class="rpt-closing">
         <div class="rpt-closing-lbl">結語</div>
-        <div class="rpt-closing-body">本季電費管理整體平穩，季節性降幅如期發生。核心挑戰在於水產街電錶的持續成長，以及即將到來的夏季電費壓力。建議管理階層在第二季初啟動節能評估與水產街分攤機制審查，確保營運成本結構的合理性與長期可持續性。</div>
+        <div class="rpt-closing-body">本年度八期數據首次呈現完整的夏季→冬季電費週期。核心挑戰在於：空調夏季費用驟增（峰值 $94,688）、水產街電錶冬季逆勢成長，以及費率結構的季節性切換對總費用的雙重影響。建議管理階層以本年度數據為基準，在第二季前完成空調節能評估與水產街分攤機制審查，將年度總電費從去年約 <strong style="color:var(--teal)">$175 萬</strong> 逐步壓縮。</div>
       </div>
       <div class="rpt-credit">本報告資料來源：台中市魚市場股份有限公司公共費用帳單　｜　分析製作：漁人町管理部</div>
     </div>
@@ -333,6 +348,67 @@ td:not(.highlight-row td){border-left:3px solid transparent}
 <script>
 /* ── DATA ── */
 const RAW = [
+  { period:"04/26–05/25", label:"05月", total:189938,
+    items:[
+      {name:"哈魚碼頭(B廠區)",usage:23604,amt:94416},
+      {name:"水舞舞台110V",usage:407,amt:1628},
+      {name:"水舞舞台220V",usage:1201,amt:4804},
+      {name:"漁人町手抄(警衛室)",usage:5293,amt:21172},
+      {name:"廣告燈(環中路圍牆)",usage:318,amt:1272},
+      {name:"照明1L1",usage:1464,amt:5854},
+      {name:"空調ACMP1",usage:11872,amt:47488},
+      {name:"公設電費1R1",usage:null,amt:264},
+      {name:"外展B",usage:3260,amt:13040},
+    ]},
+  { period:"05/26–06/25", label:"06月", total:213358,
+    items:[
+      {name:"哈魚碼頭(B廠區)",usage:23460,amt:105570},
+      {name:"水舞舞台110V",usage:330,amt:1485},
+      {name:"水舞舞台220V",usage:1060,amt:4770},
+      {name:"漁人町手抄(警衛室)",usage:4850,amt:21825},
+      {name:"廣告燈(環中路圍牆)",usage:298,amt:1341},
+      {name:"照明1L1",usage:1193,amt:5366},
+      {name:"空調ACMP1",usage:13312,amt:59904},
+      {name:"公設電費1R1",usage:null,amt:303},
+      {name:"外展B",usage:2843,amt:12794},
+    ]},
+  { period:"06/26–07/25", label:"07月", total:253013,
+    items:[
+      {name:"哈魚碼頭(B廠區)",usage:21696,amt:119328},
+      {name:"水舞舞台110V",usage:293,amt:1612},
+      {name:"水舞舞台220V",usage:963,amt:5297},
+      {name:"漁人町手抄(警衛室)",usage:5289,amt:29090},
+      {name:"廣告燈(環中路圍牆)",usage:310,amt:1705},
+      {name:"照明1L1",usage:1147,amt:6306},
+      {name:"空調ACMP1",usage:13760,amt:75680},
+      {name:"公設電費1R1",usage:null,amt:355},
+      {name:"外展B",usage:2480,amt:13640},
+    ]},
+  { period:"07/26–08/25", label:"08月", total:274200,
+    items:[
+      {name:"哈魚碼頭(B廠區)",usage:21690,amt:119295},
+      {name:"水舞舞台110V",usage:336,amt:1848},
+      {name:"水舞舞台220V",usage:1234,amt:6787},
+      {name:"漁人町手抄(警衛室)",usage:5423,amt:29827},
+      {name:"廣告燈(環中路圍牆)",usage:157,amt:864},
+      {name:"照明1L1",usage:1171,amt:6438},
+      {name:"空調ACMP1",usage:17216,amt:94688},
+      {name:"公設電費1R1",usage:null,amt:362},
+      {name:"外展B",usage:2562,amt:14091},
+    ]},
+  { period:"08/26–09/25", label:"09月", total:312566,
+    items:[
+      {name:"哈魚碼頭(B廠區)",usage:19572,amt:107646},
+      {name:"水舞舞台110V",usage:301,amt:1656},
+      {name:"水舞舞台220V",usage:927,amt:5099},
+      {name:"漁人町手抄(警衛室)",usage:5028,amt:27654},
+      {name:"廣告燈(環中路圍牆)",usage:281,amt:1546},
+      {name:"照明1L1",usage:1127,amt:6199},
+      {name:"空調ACMP1",usage:14656,amt:80608},
+      {name:"公設電費1R1",usage:null,amt:373},
+      {name:"外展B",usage:2442,amt:13431},
+      {name:"水產街電錶★",usage:12428,amt:68354},
+    ]},
   { period:"10/26–11/25", label:"11月", total:195189,
     items:[
       {name:"哈魚碼頭(B廠區)",usage:12612,amt:66844},
@@ -447,10 +523,10 @@ function buildPBars(){
 /* ── SPOTS ── */
 function buildSpots(){
   const spots=[
-    {lbl:'最高單月電費',val:'11月 $195,189',sub:'空調高峰期',c:'#e8522a'},
-    {lbl:'水產街電錶佔比',val:'平均 38%',sub:'最大耗電節點，冬季逆增',c:'#f0a830'},
-    {lbl:'空調ACMP1',val:'降幅 -85%',sub:'3,936→592度，季節性收斂',c:'#3a7bd5'},
-    {lbl:'警衛室電錶',val:'降幅 -41%',sub:'4,718→2,800度，建議確認',c:'#22c55e'},
+    {lbl:'全期最高月電費',val:'09月 $312,566',sub:'水產街首次獨立＋夏季費率',c:'#e8522a'},
+    {lbl:'空調ACMP1峰值',val:'08月 17,216度',sub:'費用 $94,688，冬季降幅達97%',c:'#f0a830'},
+    {lbl:'水產街電錶★',val:'09月起獨立計費',sub:'單月 $68,354，佔比 21.9%',c:'#3a7bd5'},
+    {lbl:'費率轉換影響',val:'$4.0→$5.5/度',sub:'夏季費用較05月增幅達64.6%',c:'#22c55e'},
   ];
   document.getElementById('spot-list').innerHTML=spots.map(s=>`<div class="spot">
     <div class="spot-dot" style="background:${s.c}"></div>
