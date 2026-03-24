@@ -400,11 +400,11 @@ body { background:var(--bg); font-family:'Noto Sans TC', sans-serif; color:var(-
     <!-- Issuer Info -->
     <div>
       <div class="section-label">發票方資訊</div>
-      <div class="field"><label>公司名稱</label><input id="s_company" value="漁人町股份有限公司" oninput="render()"></div>
-      <div class="field"><label>統一編號</label><input id="s_taxid" value="12345678" oninput="render()"></div>
-      <div class="field"><label>地址</label><input id="s_addr" value="台中市西區漁人路88號" oninput="render()"></div>
+      <div class="field"><label>公司名稱</label><input id="s_company" value="漁人町創意國際有限公司" oninput="render()"></div>
+      <div class="field"><label>統一編號</label><input id="s_taxid" value="90348489" oninput="render()"></div>
+      <div class="field"><label>地址</label><input id="s_addr" value="台中市南屯區環中路四段2號" oninput="render()"></div>
       <div class="row2">
-        <div class="field"><label>電話</label><input id="s_tel" value="04-2345-6789" oninput="render()"></div>
+        <div class="field"><label>電話</label><input id="s_tel" value="04-23156666" oninput="render()"></div>
         <div class="field"><label>Email</label><input id="s_email" value="info@fishermantown.tw" oninput="render()"></div>
       </div>
     </div>
@@ -546,16 +546,14 @@ body { background:var(--bg); font-family:'Noto Sans TC', sans-serif; color:var(-
 <script>
 // ── Data ──
 let items = [
-  { type:'cat', label:'辦公室租用' },
-  { type:'item', desc:'共享座位（月租）', qty:2, unit:'座/月', price:3500, disc:0 },
-  { type:'item', desc:'固定座位（月租）', qty:1, unit:'座/月', price:5800, disc:5 },
-  { type:'cat', label:'設備與服務' },
-  { type:'item', desc:'印表機用量（估計）', qty:200, unit:'頁', price:2, disc:0 },
-  { type:'item', desc:'網路費（按戶）', qty:1, unit:'戶/月', price:413, disc:0 },
-  { type:'item', desc:'飲水機（按戶）', qty:1, unit:'戶/月', price:303, disc:0 },
-  { type:'cat', label:'其他費用' },
-  { type:'item', desc:'辦公室耗材費（按戶分攤）', qty:1, unit:'戶/月', price:358, disc:0 },
-  { type:'item', desc:'設置費（一次性）', qty:1, unit:'式', price:2000, disc:10 },
+  { type:'cat', label:'座位租金' },
+  { type:'item', desc:'座位租金（含電腦設施）', qty:4, unit:'座/月', price:2500, disc:0 },
+  { type:'cat', label:'共享設施分攤（四方均分）' },
+  { type:'item', desc:'印表機（含保養、碳粉、紙材）', qty:1, unit:'月', price:1500, disc:0 },
+  { type:'item', desc:'咖啡茶水（基本數量）', qty:1, unit:'月', price:600, disc:0 },
+  { type:'item', desc:'水電費', qty:1, unit:'月', price:1500, disc:0 },
+  { type:'item', desc:'網路費', qty:1, unit:'月', price:275, disc:0 },
+  { type:'item', desc:'飲水機（年度保養含濾心，按月攤列）', qty:1, unit:'月', price:105, disc:0 },
 ];
 
 function fmt(n, cur) {
