@@ -41,7 +41,8 @@ body{min-height:100vh;background:var(--bg);color:var(--t1);font-family:'Noto San
 /* KPI ROW */
 .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
 .kpi{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 16px}
-.kpi-period{color:var(--t3);font-size:11px;letter-spacing:.05em;margin-bottom:6px}
+.kpi-period{color:var(--t3);font-size:11px;letter-spacing:.05em;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.kpi-yr-tag{font-family:var(--mono);font-size:9px;font-weight:700;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:3px;padding:1px 5px;color:var(--t5);letter-spacing:.03em}
 .kpi-val{font-family:var(--mono);font-size:17px;font-weight:700;color:var(--t1)}
 .kpi-footer{display:flex;justify-content:space-between;margin-top:8px}
 .kpi-usage{color:var(--t4);font-size:12px}
@@ -62,10 +63,13 @@ body{min-height:100vh;background:var(--bg);color:var(--t1);font-family:'Noto San
 .chart-wrap{position:relative;width:100%;margin-bottom:4px}
 
 /* MONTH PICKER */
-.month-pick{display:flex;gap:8px;margin-bottom:14px}
-.m-btn{padding:5px 16px;border-radius:6px;cursor:pointer;font-size:13px;border:1px solid var(--border);background:transparent;color:var(--t3);font-family:'Noto Sans TC',sans-serif;transition:all .2s}
+.month-pick{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.m-btn{padding:5px 12px;border-radius:6px;cursor:pointer;font-size:13px;border:1px solid var(--border);background:transparent;color:var(--t3);font-family:'Noto Sans TC',sans-serif;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:1px;line-height:1.2}
 .m-btn.sel{background:#1e3a5f;border-color:var(--blue);color:#93c5fd}
 .m-btn:not(.sel):hover{border-color:var(--t5);color:var(--t2)}
+.m-yr{font-size:9px;font-family:var(--mono);opacity:.55;letter-spacing:.03em}
+.m-btn.sel .m-yr{opacity:.75}
+.m-year-div{width:1px;height:32px;background:var(--border);margin:0 4px;flex-shrink:0}
 
 /* GRID 2COL */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -168,7 +172,7 @@ td:not(.highlight-row td){border-left:3px solid transparent}
         <span class="accent-bar"></span>
         <span class="h1">漁人町 電力分析表</span>
       </div>
-      <div class="h-sub">2025/04/26 ～ 2026/01/25　共八期帳單</div>
+      <div class="h-sub">2025/04/26 ～ 2026/04/25　共九期帳單（02–03月帳單缺漏）</div>
     </div>
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('overview',this)">總覽</button>
@@ -196,7 +200,7 @@ td:not(.highlight-row td){border-left:3px solid transparent}
     </div>
     <div class="g2">
       <div class="card">
-        <div class="card-title">費用佔比（最新期 01月）</div>
+        <div class="card-title" id="pbar-title">費用佔比（最新期）</div>
         <div id="pbar-list"></div>
       </div>
       <div class="card">
@@ -232,12 +236,12 @@ td:not(.highlight-row td){border-left:3px solid transparent}
       <div class="rpt-cover">
         <div class="rpt-eyebrow">ANNUAL ELECTRICITY REPORT · 漁人町</div>
         <div class="rpt-h">電力費用年度分析書</div>
-        <div class="rpt-meta">計費區間：2025 / 04 / 26 ～ 2026 / 01 / 25　｜　共八期帳單　｜　夏季 $5.5 / 度・非夏季 $5.3 / 度（05月舊費率 $4.0）</div>
+        <div class="rpt-meta">計費區間：2025 / 04 / 26 ～ 2026 / 04 / 25　｜　共九期帳單（02–03月缺漏）　｜　夏季 $5.5 / 度・非夏季 $5.3 / 度（05月舊費率 $4.0）</div>
         <div class="rpt-kpis">
-          <div class="rpt-kpi"><div class="rpt-kpi-lbl">八期合計</div><div class="rpt-kpi-val" style="color:var(--red)">$1,757,153</div></div>
-          <div class="rpt-kpi"><div class="rpt-kpi-lbl">全期最高月</div><div class="rpt-kpi-val" style="color:var(--gold)">$312,566</div></div>
+          <div class="rpt-kpi"><div class="rpt-kpi-lbl">九期合計</div><div class="rpt-kpi-val" style="color:var(--red)">$2,140,311</div></div>
+          <div class="rpt-kpi"><div class="rpt-kpi-lbl">全期最高月</div><div class="rpt-kpi-val" style="color:var(--gold)">$383,158</div></div>
           <div class="rpt-kpi"><div class="rpt-kpi-lbl">全期最低月</div><div class="rpt-kpi-val" style="color:var(--green)">$159,068</div></div>
-          <div class="rpt-kpi"><div class="rpt-kpi-lbl">空調ACMP1峰值</div><div class="rpt-kpi-val" style="color:var(--blue)">$94,688</div></div>
+          <div class="rpt-kpi"><div class="rpt-kpi-lbl">空調ACMP1峰值</div><div class="rpt-kpi-val" style="color:var(--red)">$151,622</div></div>
         </div>
       </div>
 
@@ -272,6 +276,9 @@ td:not(.highlight-row td){border-left:3px solid transparent}
           </div>
           <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 2fr">
             <span style="font-size:13px;color:var(--t2)">12/26–01/25</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$159,821</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">↑ 0.5%</span><span style="font-size:12px;color:var(--t3)">水產街微增，整體持平</span>
+          </div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 2fr;background:rgba(239,68,68,.06)">
+            <span style="font-size:13px;color:#fca5a5;font-weight:600">03/26–04/25 ★新高 🚨</span><span style="font-size:13px;font-family:var(--mono);color:var(--red);font-weight:700">$383,158</span><span style="font-size:13px;font-family:var(--mono);color:var(--red)">↑ 139.7%</span><span style="font-size:12px;color:var(--t3)">空調ACMP1爆增至28,608度，非夏季仍創全期最高</span>
           </div>
         </div>
       </div>
@@ -316,6 +323,10 @@ td:not(.highlight-row td){border-left:3px solid transparent}
       <!-- 04 建議 -->
       <div class="section">
         <div class="sec-hdr"><span class="sec-tag" style="background:var(--green)">04</span><span class="sec-title">後續營運建議</span></div>
+        <div class="rec-item" style="border-left:3px solid #ef4444;background:rgba(239,68,68,.04)">
+          <div class="rec-num" style="background:rgba(239,68,68,.25);color:#ef4444">!</div>
+          <div><div class="rec-title" style="color:#fca5a5">🚨 空調ACMP1 異常查核（緊急優先）</div><div class="rec-body">04月（非夏季）空調用電達 <strong style="color:#fca5a5">28,608度 / $151,622</strong>，為去年夏季峰值 17,216度的 1.66倍，且仍在非夏季費率 $5.3/度下發生。可能原因：①設備故障導致持續運轉無法停止；②電錶讀數異常或記錄錯誤；③有新增設備未申報。<br><br>建議立即：核對量表原始讀值（88727→4243408 差值是否正確）、現場確認空調主機運作狀態、對照去年同期 3–4月度數（應在 600度以下）。若確認異常，應向台中市魚市場申請重新複查。</div></div>
+        </div>
         <div class="rec-item" style="border-left:3px solid var(--red)">
           <div class="rec-num" style="background:rgba(232,82,42,.2);color:var(--red)">1</div>
           <div><div class="rec-title">水產街成本結構釐清（優先處理）</div><div class="rec-body">水產街電錶自 09 月獨立計費後，冬季佔比持續攀升至近 40%，且呈逆勢成長趨勢。建議確認現行租約對電費的分攤依據，中長期可引入子電錶進行精細化管理，避免管理方長期承擔隱性成本。</div></div>
@@ -336,7 +347,7 @@ td:not(.highlight-row td){border-left:3px solid transparent}
 
       <div class="rpt-closing">
         <div class="rpt-closing-lbl">結語</div>
-        <div class="rpt-closing-body">本年度八期數據首次呈現完整的夏季→冬季電費週期。核心挑戰在於：空調夏季費用驟增（峰值 $94,688）、水產街電錶冬季逆勢成長，以及費率結構的季節性切換對總費用的雙重影響。建議管理階層以本年度數據為基準，在第二季前完成空調節能評估與水產街分攤機制審查，將年度總電費從去年約 <strong style="color:var(--teal)">$175 萬</strong> 逐步壓縮。</div>
+        <div class="rpt-closing-body">本年度九期數據（含缺漏）顯示整體電費結構正面臨新的挑戰：<strong style="color:#fca5a5">04月空調費用異常暴增至 $151,622</strong>，在非夏季費率下已創全期最高紀錄，且6月起即將進入夏季費率 $5.5/度，若問題未能排查，夏季月電費極有可能突破 $400,000。建議管理階層以空調異常查核為第一優先，同步推進水產街分攤機制審查，在正式進入夏季用電高峰前完成兩項風險管控動作，避免年度電費超支。</div>
       </div>
       <div class="rpt-credit">本報告資料來源：台中市魚市場股份有限公司公共費用帳單　｜　分析製作：漁人町管理部</div>
     </div>
@@ -348,7 +359,7 @@ td:not(.highlight-row td){border-left:3px solid transparent}
 <script>
 /* ── DATA ── */
 const RAW = [
-  { period:"04/26–05/25", label:"05月", total:189938,
+  { period:"04/26–05/25", label:"05月", year:2025, total:189938,
     items:[
       {name:"哈魚碼頭(B廠區)",usage:23604,amt:94416},
       {name:"水舞舞台110V",usage:407,amt:1628},
@@ -360,7 +371,7 @@ const RAW = [
       {name:"公設電費1R1",usage:null,amt:264},
       {name:"外展B",usage:3260,amt:13040},
     ]},
-  { period:"05/26–06/25", label:"06月", total:213358,
+  { period:"05/26–06/25", label:"06月", year:2025, total:213358,
     items:[
       {name:"哈魚碼頭(B廠區)",usage:23460,amt:105570},
       {name:"水舞舞台110V",usage:330,amt:1485},
@@ -372,7 +383,7 @@ const RAW = [
       {name:"公設電費1R1",usage:null,amt:303},
       {name:"外展B",usage:2843,amt:12794},
     ]},
-  { period:"06/26–07/25", label:"07月", total:253013,
+  { period:"06/26–07/25", label:"07月", year:2025, total:253013,
     items:[
       {name:"哈魚碼頭(B廠區)",usage:21696,amt:119328},
       {name:"水舞舞台110V",usage:293,amt:1612},
@@ -384,7 +395,7 @@ const RAW = [
       {name:"公設電費1R1",usage:null,amt:355},
       {name:"外展B",usage:2480,amt:13640},
     ]},
-  { period:"07/26–08/25", label:"08月", total:274200,
+  { period:"07/26–08/25", label:"08月", year:2025, total:274200,
     items:[
       {name:"哈魚碼頭(B廠區)",usage:21690,amt:119295},
       {name:"水舞舞台110V",usage:336,amt:1848},
@@ -396,7 +407,7 @@ const RAW = [
       {name:"公設電費1R1",usage:null,amt:362},
       {name:"外展B",usage:2562,amt:14091},
     ]},
-  { period:"08/26–09/25", label:"09月", total:312566,
+  { period:"08/26–09/25", label:"09月", year:2025, total:312566,
     items:[
       {name:"哈魚碼頭(B廠區)",usage:19572,amt:107646},
       {name:"水舞舞台110V",usage:301,amt:1656},
@@ -409,7 +420,7 @@ const RAW = [
       {name:"外展B",usage:2442,amt:13431},
       {name:"水產街電錶★",usage:12428,amt:68354},
     ]},
-  { period:"10/26–11/25", label:"11月", total:195189,
+  { period:"10/26–11/25", label:"11月", year:2025, total:195189,
     items:[
       {name:"哈魚碼頭(B廠區)",usage:12612,amt:66844},
       {name:"水舞舞台110V",usage:298,amt:1579},
@@ -422,7 +433,7 @@ const RAW = [
       {name:"外展B",usage:1634,amt:8660},
       {name:"水產街電錶★",usage:11025,amt:58433},
     ]},
-  { period:"11/26–12/25", label:"12月", total:159068,
+  { period:"11/26–12/25", label:"12月", year:2025, total:159068,
     items:[
       {name:"哈魚碼頭(B廠區)",usage:10266,amt:54410},
       {name:"水舞舞台110V",usage:370,amt:1961},
@@ -435,7 +446,7 @@ const RAW = [
       {name:"外展B",usage:1693,amt:8973},
       {name:"水產街電錶★",usage:10825,amt:57373},
     ]},
-  { period:"12/26–01/25", label:"01月", total:159821,
+  { period:"12/26–01/25", label:"01月", year:2026, total:159821,
     items:[
       {name:"哈魚碼頭(B廠區)",usage:10998,amt:58289},
       {name:"水舞舞台110V",usage:359,amt:1903},
@@ -448,9 +459,23 @@ const RAW = [
       {name:"外展B",usage:1827,amt:9683},
       {name:"水產街電錶★",usage:11933,amt:63245},
     ]},
+  { period:"03/26–04/25", label:"04月", year:2026, total:383158,
+    items:[
+      {name:"哈魚碼頭(B廠區)",usage:16704,amt:88531},
+      {name:"水舞舞台110V",usage:363,amt:1924},
+      {name:"水舞舞台220V",usage:170,amt:901},
+      {name:"漁人町手抄(警衛室)",usage:5618,amt:29775},
+      {name:"廣告燈(環中路圍牆)",usage:162,amt:859},
+      {name:"照明1L1",usage:1223,amt:6479},
+      {name:"空調ACMP1",usage:28608,amt:151622,alert:true},
+      {name:"公設電費1R1",usage:null,amt:300},
+      {name:"外展B",usage:1681,amt:8909},
+      {name:"水產街電錶★",usage:17709,amt:93858},
+    ]},
 ];
 const COLORS=["#e8522a","#f0a830","#3a7bd5","#22c55e","#a855f7","#ec4899","#14b8a6","#f97316","#64748b","#ef4444"];
 const MONTH_LABELS=RAW.map(d=>d.label);
+const CHART_LABELS=RAW.map(d=>`'${String(d.year).slice(2)} ${d.label}`);
 const fmt=n=>n!=null?Number(n).toLocaleString('zh-TW'):'—';
 
 /* ── TABS ── */
@@ -469,7 +494,7 @@ function buildKPI(){
     const prev=i>0?RAW[i-1].total:null;
     const diff=prev!==null?d.total-prev:null;
     return`<div class="kpi">
-      <div class="kpi-period">${d.period}</div>
+      <div class="kpi-period"><span class="kpi-yr-tag">${d.year}</span>${d.period}</div>
       <div class="kpi-val">$${fmt(d.total)}</div>
       <div class="kpi-footer">
         <span class="kpi-usage">用電 ${fmt(tu[i])} 度</span>
@@ -482,9 +507,16 @@ function buildKPI(){
 /* ── BAR CHART ── */
 let barChart=null, selMonth=0;
 function buildMonthPick(){
-  document.getElementById('month-pick').innerHTML=MONTH_LABELS.map((m,i)=>
-    `<button class="m-btn ${i===selMonth?'sel':''}" onclick="selectMonth(${i})">${m}</button>`
-  ).join('');
+  let html='';
+  let lastYear=null;
+  RAW.forEach((d,i)=>{
+    if(d.year!==lastYear){
+      if(lastYear!==null) html+=`<div class="m-year-div"></div>`;
+      lastYear=d.year;
+    }
+    html+=`<button class="m-btn ${i===selMonth?'sel':''}" onclick="selectMonth(${i})"><span class="m-yr">${d.year}</span>${d.label}</button>`;
+  });
+  document.getElementById('month-pick').innerHTML=html;
 }
 function selectMonth(i){selMonth=i;buildMonthPick();updateBarChart();}
 function updateBarChart(){
@@ -509,7 +541,8 @@ function updateBarChart(){
 
 /* ── PROGRESS BARS ── */
 function buildPBars(){
-  const latest=RAW[2];
+  const latest=RAW[RAW.length-1];
+  document.getElementById('pbar-title').textContent=`費用佔比（最新期 ${latest.year} ${latest.label}）`;
   const sorted=[...latest.items].filter(i=>i.usage).sort((a,b)=>b.amt-a.amt).slice(0,5);
   document.getElementById('pbar-list').innerHTML=sorted.map((item,i)=>{
     const pct=((item.amt/latest.total)*100).toFixed(1);
@@ -523,10 +556,10 @@ function buildPBars(){
 /* ── SPOTS ── */
 function buildSpots(){
   const spots=[
-    {lbl:'全期最高月電費',val:'09月 $312,566',sub:'水產街首次獨立＋夏季費率',c:'#e8522a'},
-    {lbl:'空調ACMP1峰值',val:'08月 17,216度',sub:'費用 $94,688，冬季降幅達97%',c:'#f0a830'},
-    {lbl:'水產街電錶★',val:'09月起獨立計費',sub:'單月 $68,354，佔比 21.9%',c:'#3a7bd5'},
-    {lbl:'費率轉換影響',val:'$4.0→$5.5/度',sub:'夏季費用較05月增幅達64.6%',c:'#22c55e'},
+    {lbl:'全期最高月電費 🚨',val:'2026/04月 $383,158',sub:'非夏季仍創歷史新高（空調暴增）',c:'#e8522a'},
+    {lbl:'空調ACMP1 史上最高',val:'2026/04月 28,608度 $151,622',sub:'超越去年夏季峰值 66%，需立即查核',c:'#f0a830'},
+    {lbl:'水產街電錶★',val:'2026/04月 $93,858（17,709度）',sub:'持續成長，已為第二大費用項目',c:'#3a7bd5'},
+    {lbl:'夏季費率即將切換',val:'2026/06月起 $5.5/度',sub:'若空調未排查，夏季費用恐破 $200k',c:'#a855f7'},
   ];
   document.getElementById('spot-list').innerHTML=spots.map(s=>`<div class="spot">
     <div class="spot-dot" style="background:${s.c}"></div>
@@ -546,18 +579,18 @@ const chartOpts=(yFmt)=>({
 function buildTrends(){
   // Total
   new Chart(document.getElementById('trendTotal'),{type:'line',data:{
-    labels:MONTH_LABELS,
+    labels:CHART_LABELS,
     datasets:[{label:'電費總計',data:RAW.map(d=>d.total),borderColor:'#e8522a',backgroundColor:'rgba(232,82,42,.1)',fill:true,tension:.3,pointRadius:5,pointBackgroundColor:'#e8522a'}]
   },options:chartOpts(v=>`${(v/1000).toFixed(0)}k`)});
   // Items amt
   const keys=[{k:'哈魚碼頭(B廠區)',c:'#3a7bd5'},{k:'水產街電錶★',c:'#e8522a'},{k:'空調ACMP1',c:'#f0a830'},{k:'漁人町手抄(警衛室)',c:'#22c55e'}];
   new Chart(document.getElementById('trendItems'),{type:'line',data:{
-    labels:MONTH_LABELS,
+    labels:CHART_LABELS,
     datasets:keys.map(k=>({label:k.k.replace('(B廠區)','').replace('(警衛室)',''),data:RAW.map(d=>d.items.find(i=>i.name===k.k)?.amt||0),borderColor:k.c,backgroundColor:'transparent',tension:.3,pointRadius:4,pointBackgroundColor:k.c}))
   },options:chartOpts(v=>`${(v/1000).toFixed(0)}k`)});
   // Items usage
   new Chart(document.getElementById('trendUsage'),{type:'bar',data:{
-    labels:MONTH_LABELS,
+    labels:CHART_LABELS,
     datasets:keys.map(k=>({label:k.k.replace('(B廠區)','').replace('(警衛室)',''),data:RAW.map(d=>d.items.find(i=>i.name===k.k)?.usage||0),backgroundColor:k.c+'bb',borderRadius:3}))
   },options:{...chartOpts(v=>v),plugins:{...chartOpts(v=>v).plugins,legend:{labels:{color:'#64748b',font:{size:11}}}}}});
 }
@@ -573,9 +606,9 @@ function buildDetail(){
     <div class="tbl-wrap"><table>
       <thead><tr><th>項目</th><th class="tr">使用度數</th><th class="tr">應收金額</th><th class="tr">佔比</th></tr></thead>
       <tbody>${sorted.map(item=>`<tr class="${item.name.includes('水產街')?'highlight-row':''}">
-        <td>${item.name}</td>
+        <td>${item.name}${item.alert?` <span style="background:#7f1d1d;color:#fca5a5;font-size:10px;padding:1px 6px;border-radius:4px;font-weight:700;margin-left:4px">⚠ 異常</span>`:''}</td>
         <td class="mono tr" style="color:var(--t3)">${fmt(item.usage)}</td>
-        <td class="mono tr">$${fmt(item.amt)}</td>
+        <td class="mono tr" style="${item.alert?'color:#ef4444;font-weight:700':''}">$${fmt(item.amt)}</td>
         <td class="tr"><span class="pct-badge">${((item.amt/d.total)*100).toFixed(1)}%</span></td>
       </tr>`).join('')}</tbody>
     </table></div></div>`;
