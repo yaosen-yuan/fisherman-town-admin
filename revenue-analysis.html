@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>宝夾町 · 營收分析表</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7f4ef;        /* 米白和紙 */
+  --surface:#ffffff;
+  --surface2:#fbf9f4;
+  --ink:#1c1814;       /* 墨黑 */
+  --t2:#5c5147;
+  --muted:#7a6e64;
+  --faint:#9c9186;
+  --border:#e2d9cc;
+  --border2:#efe9df;
+  --accent:#2d6a4f;    /* 深綠（主色）*/
+  --accent-dk:#22513c;
+  --accent-soft:#e8f1ec;
+  --gold:#b8962e;      /* 金 */
+  --gold-soft:#f6efdc;
+  --red:#c0392b;       /* 紅 */
+  --red-soft:#f8e8e6;
+  --warn:#c4763a;      /* 橙土 */
+  --warn-soft:#f9ecdf;
+  --blue:#5f7e8c;      /* 藍鼠（輔助）*/
+  --mono:'JetBrains Mono',monospace;
+  --serif:'Noto Serif TC',serif;
+}
+html{font-size:16px}
+body{min-height:100vh;background:var(--bg);color:var(--ink);font-family:'Noto Sans TC',sans-serif;padding-bottom:48px;-webkit-font-smoothing:antialiased}
+
+/* BACK BAR */
+.back-bar{position:sticky;top:0;z-index:100;background:rgba(247,244,239,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:12px}
+.back-btn{color:var(--muted);font-size:13px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:6px 14px;cursor:pointer;font-family:inherit;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.back-btn:hover{color:var(--ink);border-color:var(--accent);color:var(--accent)}
+.bar-title{font-size:14px;font-weight:700;color:var(--accent);letter-spacing:.5px}
+.bar-sub{font-size:12px;color:var(--faint)}
+
+/* HEADER */
+.header{padding:28px 24px 0;max-width:1060px;margin:0 auto}
+.header-inner{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:22px}
+.brand-mark{display:flex;align-items:center;gap:13px;margin-bottom:6px}
+.seal{width:46px;height:46px;border-radius:11px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:900;font-size:21px;letter-spacing:-2px;box-shadow:0 3px 0 var(--accent-dk);flex-shrink:0}
+.h1{font-family:var(--serif);font-size:25px;font-weight:900;letter-spacing:.04em;line-height:1.1}
+.h-sub{color:var(--muted);font-size:13px;margin-top:5px}
+.h-sub b{color:var(--accent);font-weight:700}
+.tabs{display:flex;gap:7px;flex-wrap:wrap}
+.tab-btn{padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;border:1px solid var(--border);background:var(--surface);color:var(--muted);transition:all .2s;font-family:inherit}
+.tab-btn:hover{border-color:var(--accent);color:var(--accent)}
+.tab-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 2px 0 var(--accent-dk)}
+.tab-btn.report-active{background:var(--gold-soft);color:var(--gold);border-color:var(--gold)}
+
+/* KPI ROW */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:6px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:15px 17px;position:relative;overflow:hidden}
+.kpi::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent)}
+.kpi.k-gold::after{background:var(--gold)}
+.kpi.k-warn::after{background:var(--warn)}
+.kpi.k-blue::after{background:var(--blue)}
+.kpi-lbl{color:var(--muted);font-size:12px;letter-spacing:.03em;margin-bottom:9px;display:flex;align-items:center;gap:7px}
+.kpi-tag{font-family:var(--mono);font-size:9px;font-weight:700;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:1px 5px;color:var(--faint)}
+.kpi-val{font-family:var(--mono);font-size:21px;font-weight:700;color:var(--ink);line-height:1}
+.kpi-val .u{font-size:12px;color:var(--muted);font-weight:500;margin-right:2px}
+.kpi-foot{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.kpi-note{color:var(--faint);font-size:12px}
+.kpi-diff{font-size:12px;font-weight:700;font-family:var(--mono)}
+.kpi-diff.up{color:var(--accent)}
+.kpi-diff.dn{color:var(--red)}
+
+/* CONTENT */
+.content{max-width:1060px;margin:0 auto;padding:18px 24px 0}
+.panel{display:none}
+.panel.active{display:block;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:20px;margin-bottom:15px}
+.card-title{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.card-title .dot{width:8px;height:8px;border-radius:2px;background:var(--accent);flex-shrink:0}
+.card-sub{font-size:12px;color:var(--muted);margin-bottom:16px}
+.chart-wrap{position:relative;width:100%}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+
+/* PROGRESS / RANK BARS */
+.rank{margin-bottom:11px}
+.rank-lbl{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px}
+.rank-name{color:var(--t2);font-weight:500}
+.rank-val{font-family:var(--mono);color:var(--ink);font-weight:700}
+.rank-bg{background:var(--border2);border-radius:5px;height:8px;overflow:hidden}
+.rank-fill{height:100%;border-radius:5px;transition:width .6s ease}
+
+/* SPOTS */
+.spot-list{display:grid;gap:13px}
+.spot{display:flex;gap:11px;align-items:flex-start}
+.spot-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.spot-lbl{font-size:13px;color:var(--ink);font-weight:600;margin-bottom:2px}
+.spot-sub{font-size:12px;color:var(--muted);line-height:1.6}
+.spot-sub b{font-family:var(--mono);color:var(--ink)}
+
+/* MONTH PICK */
+.mpick{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap}
+.m-btn{padding:6px 14px;border-radius:7px;cursor:pointer;font-size:13px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-family:inherit;transition:all .2s}
+.m-btn.sel{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-dk);font-weight:700}
+.m-btn:not(.sel):hover{border-color:var(--accent);color:var(--accent)}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:560px}
+thead th{position:sticky;top:0;background:var(--surface2);text-align:right;color:var(--muted);font-size:11px;letter-spacing:.04em;padding:10px 13px;border-bottom:1px solid var(--border);font-weight:700;white-space:nowrap}
+thead th:first-child{text-align:left}
+tbody td{padding:9px 13px;border-bottom:1px solid var(--border2);text-align:right;font-family:var(--mono)}
+tbody td:first-child{text-align:left;font-family:'Noto Sans TC',sans-serif;color:var(--t2);font-weight:500}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--surface2)}
+tr.sum-row td{background:var(--accent-soft);font-weight:700;color:var(--accent-dk);border-top:2px solid var(--accent)}
+tr.sum-row td:first-child{color:var(--accent-dk)}
+.chg{font-size:11px;font-weight:700}
+.chg.up{color:var(--accent)}
+.chg.dn{color:var(--red)}
+.chg.flat{color:var(--faint)}
+
+/* ─── REPORT ─── */
+.rpt{max-width:820px;margin:0 auto}
+.rpt-cover{background:linear-gradient(150deg,var(--surface),var(--surface2));border:1px solid var(--border);border-radius:14px;padding:30px;margin-bottom:26px;position:relative;overflow:hidden}
+.rpt-cover::before{content:'宝';position:absolute;right:-10px;bottom:-30px;font-family:var(--serif);font-weight:900;font-size:170px;color:var(--accent);opacity:.05;pointer-events:none;line-height:1}
+.rpt-eyebrow{font-size:11px;color:var(--gold);letter-spacing:.18em;margin-bottom:10px;font-weight:700;font-family:var(--mono)}
+.rpt-h{font-family:var(--serif);font-size:27px;font-weight:900;color:var(--ink);margin-bottom:6px;letter-spacing:.03em}
+.rpt-meta{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.7}
+.rpt-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;position:relative;z-index:1}
+.rpt-kpi{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px 14px}
+.rpt-kpi-lbl{font-size:11px;color:var(--muted);margin-bottom:5px}
+.rpt-kpi-val{font-size:17px;font-weight:700;font-family:var(--mono)}
+
+.section{margin-bottom:30px}
+.sec-hdr{display:flex;align-items:center;gap:11px;margin-bottom:15px}
+.sec-tag{color:#fff;font-family:var(--mono);font-size:11px;font-weight:700;width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sec-title{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--ink)}
+.sec-p{font-size:13.5px;color:var(--t2);line-height:1.9;margin-bottom:15px}
+.sec-p strong{color:var(--ink)}
+
+.insight{background:var(--surface);border:1px solid var(--border);border-left-width:3px;border-radius:9px;padding:15px 17px;margin-bottom:12px}
+.insight-hdr{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.insight-icon{font-size:16px}
+.insight-title{font-size:13.5px;font-weight:700;color:var(--ink)}
+.insight-body{font-size:13px;color:var(--t2);line-height:1.85}
+.insight-body b{color:var(--ink)}
+.pill{display:inline-block;padding:1px 8px;border-radius:5px;font-size:11px;font-weight:700;font-family:var(--mono);margin:1px 3px 1px 0}
+
+.flag{background:var(--warn-soft);border:1px dashed var(--warn);border-radius:9px;padding:13px 16px;margin:6px 0 12px;font-size:13px;color:var(--ink);line-height:1.8}
+.flag b{color:var(--warn)}
+
+.rec-item{display:flex;gap:13px;margin-bottom:12px;background:var(--surface);border:1px solid var(--border);border-left-width:3px;border-radius:9px;padding:14px 16px}
+.rec-num{width:25px;height:25px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px;font-family:var(--mono)}
+.rec-title{font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.rec-body{font-size:13px;color:var(--t2);line-height:1.8}
+
+.rpt-closing{background:var(--accent-soft);border:1px solid #cfe3d8;border-radius:11px;padding:17px 20px}
+.rpt-closing-lbl{font-size:11px;color:var(--accent);letter-spacing:.1em;margin-bottom:7px;font-weight:700;font-family:var(--mono)}
+.rpt-closing-body{font-size:13px;color:var(--t2);line-height:1.9}
+.rpt-credit{text-align:center;font-size:11px;color:var(--faint);margin-top:16px}
+.footer-note{text-align:center;font-size:11px;color:var(--faint);margin-top:24px;font-family:var(--mono)}
+
+/* RWD */
+@media(max-width:760px){
+  .content,.header{padding-left:15px;padding-right:15px}
+  .kpi-row{grid-template-columns:1fr 1fr}
+  .g2{grid-template-columns:1fr}
+  .rpt-kpis{grid-template-columns:1fr 1fr}
+  .h1{font-size:22px}
+  .rpt-h{font-size:22px}
+}
+@media(max-width:440px){
+  .kpi-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="back-bar">
+  <button class="back-btn" onclick="location.href='index.html'">← 返回</button>
+  <span class="bar-title">宝夾町 營收分析</span>
+  <span class="bar-sub">漁人町業務系統</span>
+</div>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-left">
+      <div class="brand-mark">
+        <div class="seal">宝</div>
+        <div>
+          <div class="h1">宝夾町 營收分析表</div>
+          <div class="h-sub" id="h-sub"></div>
+        </div>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('overview',this)">總覽</button>
+      <button class="tab-btn" onclick="switchTab('trend',this)">趨勢</button>
+      <button class="tab-btn" onclick="switchTab('detail',this)">機台明細</button>
+      <button class="tab-btn" onclick="switchTab('share',this)">分潤</button>
+      <button class="tab-btn" onclick="switchTab('report',this)" id="tab-report">分析書</button>
+    </div>
+  </div>
+  <div class="kpi-row" id="kpi-row"></div>
+</div>
+
+<div class="content">
+  <!-- OVERVIEW -->
+  <div class="panel active" id="panel-overview">
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>月營收與獲利</div>
+      <div class="card-sub">115年 1–5月，營收（綠）／獲利（金）對照</div>
+      <div class="chart-wrap" style="height:300px"><canvas id="barMain"></canvas></div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>機台營收佔比</div>
+        <div class="card-sub" id="pick-sub"></div>
+        <div class="mpick" id="mpick"></div>
+        <div id="rank-list"></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>重點觀察</div>
+        <div class="card-sub">115年 1–5月整體判讀</div>
+        <div class="spot-list" id="spot-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TREND -->
+  <div class="panel" id="panel-trend">
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>營收 / 支出 / 獲利趨勢</div>
+      <div class="card-sub">三線對照，看獲利與營收的缺口變化</div>
+      <div class="chart-wrap" style="height:240px"><canvas id="trendPL"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>支出結構（堆疊）</div>
+      <div class="card-sub">人事與出貨成本是兩大變動項</div>
+      <div class="chart-wrap" style="height:240px"><canvas id="trendExp"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>主要機台月營收趨勢</div>
+      <div class="card-sub">營收前 6 名機台逐月走勢</div>
+      <div class="chart-wrap" style="height:260px"><canvas id="trendMachine"></canvas></div>
+    </div>
+  </div>
+
+  <!-- DETAIL -->
+  <div class="panel" id="panel-detail">
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>機台 × 月 營收矩陣</div>
+      <div class="card-sub">33 項機台逐月營收、5月合計與 1月→5月變化</div>
+      <div class="tbl-wrap"><table id="detailTbl"></table></div>
+    </div>
+  </div>
+
+  <!-- SHARE -->
+  <div class="panel" id="panel-share">
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>分潤比例</div>
+      <div class="card-sub">獲利分配：Bonnie 40% ／ 高董 40% ／ 營運 20%</div>
+      <div class="chart-wrap" style="height:230px"><canvas id="shareBar"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>各月分潤明細</div>
+      <div class="card-sub">「分潤」為依當月獲利之分配；「總應收」含代墊／出貨／雜支等調整後金額（依報表分潤分配表）</div>
+      <div class="tbl-wrap"><table id="shareTbl"></table></div>
+    </div>
+  </div>
+
+  <!-- REPORT -->
+  <div class="panel" id="panel-report">
+    <div class="rpt" id="rpt"></div>
+  </div>
+</div>
+
+<script>
+/* ===========================================================
+   宝夾町 營收資料｜更新方式：每月把新報表的數字補進下列陣列即可
+   （月份順序固定 1→N；machines 各陣列長度需與 months 一致）
+   =========================================================== */
+const DATA = {
+  meta:{ unit:"NT$", year:"民國115年（2026）", store:"宝夾町 · 漁人町星光市集" },
+  months:["1月","2月","3月","4月","5月"],
+  totals:{
+    rev:[642408,498214,508365,448986,494395],
+    exp:[406850,296500,258452,254607,350456],
+    prof:[235558,201714,249913,194379,143939]
+  },
+  expense:{
+    "人事費用":[190854,151544,134206,118481,158186],
+    "出貨總成本":[182644,130978,101571,110475,163286],
+    "稅金&電費":[12000,12000,12000,12000,12000],
+    "雜支":[21352,1978,10675,13651,16984]
+  },
+  notes:{
+    "1月":["寒假"],"2月":["過年未加開","228連假"],"3月":["兒童節","清明節","連假"],
+    "4月":["雨季","充氣城堡撤收"],"5月":["雨季","充氣城堡撤收"]
+  },
+  machines:[
+    {name:"娃娃機",rev:[300530,226260,238450,216000,273420]},
+    {name:"幸運星",rev:[5590,4110,5060,3810,1970]},
+    {name:"Mini機",rev:[70090,45840,53580,45680,16860]},
+    {name:"鋼鐵小舖",rev:[15780,15500,10350,12660,7530]},
+    {name:"蛋大俠",rev:[76950,57350,51480,37680,46630]},
+    {name:"丸太郎+小熊彈珠",rev:[29380,24206,23921,31031,27175]},
+    {name:"排排小將2",rev:[6410,9520,6450,9100,6950]},
+    {name:"釣魚機",rev:[7660,5470,3450,6720,8295]},
+    {name:"飛鏢機",rev:[8700,7160,10100,5760,4490]},
+    {name:"賓果滾球",rev:[13100,13550,12540,12450,13400]},
+    {name:"射的場",rev:[7900,10200,7200,4960,7800]},
+    {name:"忍者喵太郎",rev:[1900,1600,800,900,1300]},
+    {name:"麻將館",rev:[9500,9600,5000,4900,6600]},
+    {name:"神廟推幣",rev:[100,1700,110,0,0]},
+    {name:"大榔頭II",rev:[320,120,130,1060,1200]},
+    {name:"太鼓達人13",rev:[5020,3580,4160,4660,4600]},
+    {name:"兒童跳舞機",rev:[2440,2740,3300,2820,4260]},
+    {name:"香菇曲棍球",rev:[5420,4940,3800,4400,7710]},
+    {name:"直道車",rev:[1220,1600,1920,1160,2320]},
+    {name:"水晶城堡",rev:[2980,1940,1120,3620,2430]},
+    {name:"搖搖馬",rev:[10280,6420,5200,6400,8220]},
+    {name:"急速狂飆",rev:[5440,5620,4280,5610,7060]},
+    {name:"萌娃家族",rev:[3820,4520,3220,3300,1580]},
+    {name:"格鬥天王",rev:[5240,4400,3300,3460,6860]},
+    {name:"水槍機+打鴨子",rev:[3560,3300,2480,3000,2370]},
+    {name:"機車",rev:[7860,6980,7020,5500,7660]},
+    {name:"射擊機",rev:[3280,1760,960,740,180]},
+    {name:"手舞機",rev:[1180,1380,3100,1740,1800]},
+    {name:"鋼琴機",rev:[1220,1660,800,1070,2180]},
+    {name:"籃球機",rev:[8400,7340,7100,7640,11220]},
+    {name:"一番賞/玩具攤",rev:[0,0,10812,0,0]},
+    {name:"充氣城堡",rev:[17700,4410,16650,550,0]},
+    {name:"調/售貨收入",rev:[3438,3438,522,605,325]}
+  ],
+  share:{
+    pct:{Bonnie:0.4,"高董":0.4,"營運":0.2},
+    Bonnie:[94223,80686,99965,77752,57576],
+    "高董":[94223,80686,99965,77752,57576],
+    "營運":[47112,40343,49983,38876,28788],
+    receivable:{ Bonnie:[303935,217522,216091,204918,243636], "高董":[111479,96566,115845,92792,69716], "營運":[49740,42283,51923,40396,28858] }
+  }
+};
+
+/* ===== helpers ===== */
+const C={accent:'#2d6a4f',accentDk:'#22513c',gold:'#b8962e',red:'#c0392b',warn:'#c4763a',blue:'#5f7e8c',ink:'#1c1814',muted:'#7a6e64',border:'#e2d9cc',grid:'rgba(124,110,100,.13)'};
+const SERIES=[C.accent,C.gold,C.warn,C.red,C.blue,'#8a6d3b','#4a7c59'];
+const N=DATA.months.length;
+const nf=n=>'$'+Math.round(n).toLocaleString('en-US');
+const nfk=n=>'$'+Math.round(n).toLocaleString('en-US');
+const pf=n=>(n*100).toFixed(1)+'%';
+const sum=a=>a.reduce((x,y)=>x+y,0);
+const chips={font:{family:"'Noto Sans TC',sans-serif",size:11},color:C.muted};
+Chart.defaults.font.family="'JetBrains Mono','Noto Sans TC',sans-serif";
+Chart.defaults.color=C.muted;
+
+/* derived */
+const lastIdx=N-1;
+const margin=DATA.totals.prof.map((p,i)=>p/DATA.totals.rev[i]);
+const machTotal=DATA.machines.map(m=>({name:m.name,total:sum(m.rev),rev:m.rev}));
+const topMachines=[...machTotal].sort((a,b)=>b.total-a.total);
+
+/* ===== KPI ===== */
+function renderKPI(){
+  const rev=DATA.totals.rev[lastIdx], prof=DATA.totals.prof[lastIdx];
+  const revPrev=DATA.totals.rev[lastIdx-1], profPrev=DATA.totals.prof[lastIdx-1];
+  const dRev=(rev-revPrev)/revPrev, dProf=(prof-profPrev)/profPrev;
+  const lastMonth=DATA.months[lastIdx];
+  const top=topMachines[0];
+  const html=[
+    {cls:'',lbl:lastMonth+' 營收',tag:'MTD',val:rev,note:'前月比',diff:dRev},
+    {cls:'k-gold',lbl:lastMonth+' 獲利',tag:'MTD',val:prof,note:'前月比',diff:dProf},
+    {cls:'k-warn',lbl:lastMonth+' 獲利率',tag:'%',valTxt:pf(margin[lastIdx]),note:'全期均值 '+pf(sum(DATA.totals.prof)/sum(DATA.totals.rev)),diff:null},
+    {cls:'k-blue',lbl:'最強機台',tag:'TOP',valTxt:top.name,note:'累計 '+nf(top.total),diff:null}
+  ].map(k=>`
+    <div class="kpi ${k.cls}">
+      <div class="kpi-lbl">${k.lbl}<span class="kpi-tag">${k.tag}</span></div>
+      <div class="kpi-val">${k.valTxt?k.valTxt:'<span class="u">NT$</span>'+Math.round(k.val).toLocaleString('en-US')}</div>
+      <div class="kpi-foot"><span class="kpi-note">${k.note}</span>${k.diff===null?'':`<span class="kpi-diff ${k.diff>=0?'up':'dn'}">${k.diff>=0?'▲':'▼'} ${Math.abs(k.diff*100).toFixed(1)}%</span>`}</div>
+    </div>`).join('');
+  document.getElementById('kpi-row').innerHTML=html;
+}
+
+/* ===== OVERVIEW bar ===== */
+function barMain(){
+  new Chart(document.getElementById('barMain'),{
+    type:'bar',
+    data:{labels:DATA.months,datasets:[
+      {label:'營收',data:DATA.totals.rev,backgroundColor:C.accent,borderRadius:5,maxBarThickness:34},
+      {label:'獲利',data:DATA.totals.prof,backgroundColor:C.gold,borderRadius:5,maxBarThickness:34}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{...chips,boxWidth:12,boxHeight:12,padding:16}},tooltip:{callbacks:{label:c=>c.dataset.label+'：'+nf(c.raw)}}},
+      scales:{x:{grid:{display:false},ticks:chips},y:{grid:{color:C.grid},ticks:{...chips,callback:v=>'$'+(v/1000)+'k'}}}}
+  });
+}
+
+/* ===== month picker rank ===== */
+let selM=lastIdx;
+function renderMpick(){
+  document.getElementById('mpick').innerHTML=DATA.months.map((m,i)=>`<button class="m-btn ${i===selM?'sel':''}" onclick="selM=${i};renderMpick();renderRank()">${m}</button>`).join('');
+}
+function renderRank(){
+  document.getElementById('pick-sub').textContent=DATA.months[selM]+'　各機台營收佔比（前 8 名）';
+  const list=DATA.machines.map(m=>({name:m.name,v:m.rev[selM]})).filter(m=>m.v>0).sort((a,b)=>b.v-a.v);
+  const tot=sum(list.map(m=>m.v));
+  const top8=list.slice(0,8);
+  document.getElementById('rank-list').innerHTML=top8.map((m,i)=>{
+    const pct=m.v/tot;
+    return `<div class="rank">
+      <div class="rank-lbl"><span class="rank-name">${m.name}</span><span class="rank-val">${nf(m.v)}　${pf(pct)}</span></div>
+      <div class="rank-bg"><div class="rank-fill" style="width:${(pct*100).toFixed(1)}%;background:${SERIES[i%SERIES.length]}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+/* ===== spots ===== */
+function renderSpots(){
+  const mini=DATA.machines.find(m=>m.name==='Mini機').rev;
+  const spots=[
+    {c:C.accent,t:'娃娃機是絕對主力',s:`占 5月營收 <b>${pf(DATA.machines[0].rev[lastIdx]/DATA.totals.rev[lastIdx])}</b>，月營收波動幾乎由它決定。`},
+    {c:C.warn,t:'5月獲利全期最低',s:`獲利 <b>${nf(DATA.totals.prof[lastIdx])}</b>、獲利率 <b>${pf(margin[lastIdx])}</b>，主因出貨成本與人事同步偏高（性質待確認，詳分析書）。`},
+    {c:C.red,t:'Mini機顯著下滑',s:`由 1月 <b>${nf(mini[0])}</b> 降至 5月 <b>${nf(mini[lastIdx])}</b>，跌幅約 <b>${pf((mini[0]-mini[lastIdx])/mini[0])}</b>，需現場確認原因。`},
+    {c:C.blue,t:'季節性明顯',s:'寒假／過年帶動 1月高峰，4–5月雨季＋充氣城堡撤收使營收與品項收斂。'}
+  ];
+  document.getElementById('spot-list').innerHTML=spots.map(s=>`
+    <div class="spot"><span class="spot-dot" style="background:${s.c}"></span>
+    <div><div class="spot-lbl">${s.t}</div><div class="spot-sub">${s.s}</div></div></div>`).join('');
+}
+
+/* ===== TREND ===== */
+function trendPL(){
+  new Chart(document.getElementById('trendPL'),{type:'line',
+    data:{labels:DATA.months,datasets:[
+      {label:'營收',data:DATA.totals.rev,borderColor:C.accent,backgroundColor:'rgba(45,106,79,.08)',fill:true,tension:.3,borderWidth:2.5,pointRadius:3,pointBackgroundColor:C.accent},
+      {label:'支出',data:DATA.totals.exp,borderColor:C.red,tension:.3,borderWidth:2,pointRadius:3,pointBackgroundColor:C.red,borderDash:[5,3]},
+      {label:'獲利',data:DATA.totals.prof,borderColor:C.gold,tension:.3,borderWidth:2.5,pointRadius:3,pointBackgroundColor:C.gold}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{...chips,boxWidth:12,padding:16}},tooltip:{callbacks:{label:c=>c.dataset.label+'：'+nf(c.raw)}}},
+      scales:{x:{grid:{display:false},ticks:chips},y:{grid:{color:C.grid},ticks:{...chips,callback:v=>'$'+(v/1000)+'k'}}}}
+  });
+}
+function trendExp(){
+  const e=DATA.expense;
+  const cols={"人事費用":C.accent,"出貨總成本":C.gold,"稅金&電費":C.blue,"雜支":C.warn};
+  new Chart(document.getElementById('trendExp'),{type:'bar',
+    data:{labels:DATA.months,datasets:Object.keys(e).map(k=>({label:k,data:e[k],backgroundColor:cols[k],borderRadius:3,maxBarThickness:40}))},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{...chips,boxWidth:12,padding:14}},tooltip:{callbacks:{label:c=>c.dataset.label+'：'+nf(c.raw)}}},
+      scales:{x:{stacked:true,grid:{display:false},ticks:chips},y:{stacked:true,grid:{color:C.grid},ticks:{...chips,callback:v=>'$'+(v/1000)+'k'}}}}
+  });
+}
+function trendMachine(){
+  const top6=topMachines.slice(0,6);
+  new Chart(document.getElementById('trendMachine'),{type:'line',
+    data:{labels:DATA.months,datasets:top6.map((m,i)=>({label:m.name,data:m.rev,borderColor:SERIES[i],backgroundColor:SERIES[i],tension:.3,borderWidth:2,pointRadius:2.5}))},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{...chips,boxWidth:12,padding:12}},tooltip:{callbacks:{label:c=>c.dataset.label+'：'+nf(c.raw)}}},
+      scales:{x:{grid:{display:false},ticks:chips},y:{grid:{color:C.grid},ticks:{...chips,callback:v=>'$'+(v/1000)+'k'}}}}
+  });
+}
+
+/* ===== DETAIL table ===== */
+function detailTbl(){
+  const head=`<thead><tr><th>機台</th>${DATA.months.map(m=>`<th>${m}</th>`).join('')}<th>累計</th><th>1→5月</th></tr></thead>`;
+  const rows=[...machTotal].sort((a,b)=>b.total-a.total).map(m=>{
+    const first=m.rev[0],last=m.rev[lastIdx];
+    let chg,cls;
+    if(first===0&&last===0){chg='—';cls='flat'}
+    else if(first===0){chg='新增';cls='up'}
+    else{const d=(last-first)/first;chg=(d>=0?'▲':'▼')+Math.abs(d*100).toFixed(0)+'%';cls=Math.abs(d)<0.03?'flat':(d>0?'up':'dn')}
+    return `<tr><td>${m.name}</td>${m.rev.map(v=>`<td>${v?v.toLocaleString('en-US'):'<span style="color:#bbb">0</span>'}</td>`).join('')}<td><b>${m.total.toLocaleString('en-US')}</b></td><td><span class="chg ${cls}">${chg}</span></td></tr>`;
+  }).join('');
+  const t=DATA.totals;
+  const totRow=`<tr class="sum-row"><td>營收合計</td>${t.rev.map(v=>`<td>${v.toLocaleString('en-US')}</td>`).join('')}<td>${sum(t.rev).toLocaleString('en-US')}</td><td></td></tr>`;
+  document.getElementById('detailTbl').innerHTML=head+'<tbody>'+rows+totRow+'</tbody>';
+}
+
+/* ===== SHARE ===== */
+function shareBar(){
+  const s=DATA.share;
+  new Chart(document.getElementById('shareBar'),{type:'bar',
+    data:{labels:DATA.months,datasets:[
+      {label:'Bonnie 40%',data:s.Bonnie,backgroundColor:C.accent,borderRadius:4,maxBarThickness:30},
+      {label:'高董 40%',data:s["高董"],backgroundColor:C.gold,borderRadius:4,maxBarThickness:30},
+      {label:'營運 20%',data:s["營運"],backgroundColor:C.warn,borderRadius:4,maxBarThickness:30}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{...chips,boxWidth:12,padding:14}},tooltip:{callbacks:{label:c=>c.dataset.label+'：'+nf(c.raw)}}},
+      scales:{x:{grid:{display:false},ticks:chips},y:{grid:{color:C.grid},ticks:{...chips,callback:v=>'$'+(v/1000)+'k'}}}}
+  });
+}
+function shareTbl(){
+  const s=DATA.share;
+  const head=`<thead><tr><th>項目</th>${DATA.months.map(m=>`<th>${m}</th>`).join('')}<th>累計</th></tr></thead>`;
+  const mk=(label,arr,bold)=>`<tr${bold?' class="sum-row"':''}><td>${label}</td>${arr.map(v=>`<td>${Math.round(v).toLocaleString('en-US')}</td>`).join('')}<td>${Math.round(sum(arr)).toLocaleString('en-US')}</td></tr>`;
+  const body=[
+    `<tr class="sum-row"><td>當月獲利</td>${DATA.totals.prof.map(v=>`<td>${v.toLocaleString('en-US')}</td>`).join('')}<td>${sum(DATA.totals.prof).toLocaleString('en-US')}</td></tr>`,
+    mk('Bonnie 40%（分潤）',s.Bonnie),
+    mk('高董 40%（分潤）',s["高董"]),
+    mk('營運 20%（分潤）',s["營運"]),
+    `<tr><td colspan="${N+2}" style="background:var(--surface2);color:var(--muted);font-size:11px;text-align:left">── 調整後總應收（含代墊／出貨／雜支）──</td></tr>`,
+    mk('Bonnie 總應收',s.receivable.Bonnie),
+    mk('高董 總應收',s.receivable["高董"]),
+    mk('營運 總應收',s.receivable["營運"])
+  ].join('');
+  document.getElementById('shareTbl').innerHTML=head+'<tbody>'+body+'</tbody>';
+}
+
+/* ===== REPORT ===== */
+function renderReport(){
+  const t=DATA.totals;
+  const totRev=sum(t.rev),totProf=sum(t.prof),avgMargin=totProf/totRev;
+  const maxRevI=t.rev.indexOf(Math.max(...t.rev)), minProfI=t.prof.indexOf(Math.min(...t.prof));
+  const dollMonth=DATA.machines[0].rev;
+  // 趨勢表
+  const trendRows=DATA.months.map((m,i)=>{
+    const chg=i===0?'—':((t.rev[i]-t.rev[i-1])/t.rev[i-1]);
+    const chgTxt=i===0?'—':`<span class="chg ${chg>=0?'up':'dn'}">${chg>=0?'▲':'▼'}${Math.abs(chg*100).toFixed(1)}%</span>`;
+    const note=(DATA.notes[m]||[]).join('・')||'—';
+    const hi=i===maxRevI?'background:var(--accent-soft)':(i===minProfI?'background:var(--warn-soft)':'');
+    return `<tr style="${hi}"><td>${m}${i===maxRevI?' ★高':''}${i===minProfI?' ▼獲利低':''}</td><td>${nf(t.rev[i])}</td><td>${chgTxt}</td><td>${nf(t.prof[i])}</td><td>${pf(margin[i])}</td><td style="text-align:left;font-family:'Noto Sans TC';color:var(--muted);font-size:12px">${note}</td></tr>`;
+  }).join('');
+  // 機台 top/bottom
+  const top5=topMachines.slice(0,5);
+  const declines=DATA.machines.map(m=>({name:m.name,first:m.rev[0],last:m.rev[lastIdx],d:m.rev[0]?(m.rev[lastIdx]-m.rev[0])/m.rev[0]:null}))
+    .filter(m=>m.first>=3000&&m.d!==null).sort((a,b)=>a.d-b.d).slice(0,5);
+  const grows=DATA.machines.map(m=>({name:m.name,first:m.rev[0],last:m.rev[lastIdx],d:m.rev[0]?(m.rev[lastIdx]-m.rev[0])/m.rev[0]:null}))
+    .filter(m=>m.first>=2000&&m.d!==null).sort((a,b)=>b.d-a.d).slice(0,4);
+
+  document.getElementById('rpt').innerHTML=`
+  <div class="rpt-cover">
+    <div class="rpt-eyebrow">REVENUE ANALYSIS · 宝夾町</div>
+    <div class="rpt-h">營收與機台績效分析書</div>
+    <div class="rpt-meta">期間：${DATA.meta.year} 1–5月　｜　${DATA.meta.store}　｜　幣別：${DATA.meta.unit}</div>
+    <div class="rpt-kpis">
+      <div class="rpt-kpi"><div class="rpt-kpi-lbl">5期營收合計</div><div class="rpt-kpi-val" style="color:var(--accent)">${nf(totRev)}</div></div>
+      <div class="rpt-kpi"><div class="rpt-kpi-lbl">5期獲利合計</div><div class="rpt-kpi-val" style="color:var(--gold)">${nf(totProf)}</div></div>
+      <div class="rpt-kpi"><div class="rpt-kpi-lbl">平均獲利率</div><div class="rpt-kpi-val" style="color:var(--warn)">${pf(avgMargin)}</div></div>
+      <div class="rpt-kpi"><div class="rpt-kpi-lbl">最強機台</div><div class="rpt-kpi-val" style="color:var(--accent);font-size:14px">${top5[0].name}</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-hdr"><span class="sec-tag" style="background:var(--accent)">01</span><span class="sec-title">整體營收與獲利趨勢</span></div>
+    <p class="sec-p">1–5月營收呈「<strong>1月寒假高峰 → 2–4月回落 → 5月小幅回升</strong>」走勢，最高為 ${DATA.months[maxRevI]} ${nf(t.rev[maxRevI])}。但獲利並未跟著營收回升：<strong>${DATA.months[minProfI]}營收回到 ${nf(t.rev[lastIdx])}，獲利卻降到全期最低 ${nf(t.prof[minProfI])}</strong>，獲利率由 1月的 ${pf(margin[0])} 收斂至 ${pf(margin[lastIdx])}，反映成本端是 5月的關鍵變數而非營收端。</p>
+    <div class="tbl-wrap"><table><thead><tr><th>月份</th><th>營收</th><th>環比</th><th>獲利</th><th>獲利率</th><th style="text-align:left">備註</th></tr></thead><tbody>${trendRows}</tbody></table></div>
+  </div>
+
+  <div class="section">
+    <div class="sec-hdr"><span class="sec-tag" style="background:var(--gold)">02</span><span class="sec-title">機台績效解析</span></div>
+    <div class="insight" style="border-left-color:var(--accent)">
+      <div class="insight-hdr"><span class="insight-icon">🎯</span><span class="insight-title">娃娃機 — 絕對主力，單機決定全店表現</span></div>
+      <div class="insight-body">娃娃機 5期累計 <b>${nf(top5[0].total)}</b>，占全店約 <b>${pf(top5[0].total/totRev)}</b>，5月單月即占當月營收 <b>${pf(dollMonth[lastIdx]/t.rev[lastIdx])}</b>。它的月波動幾乎等同全店營收波動，是經營的第一槓桿，維護妥善度（出獎率、補貨、機況）直接決定每月成績。</div>
+    </div>
+    <div class="insight" style="border-left-color:var(--gold)">
+      <div class="insight-hdr"><span class="insight-icon">🏅</span><span class="insight-title">營收前 5 名（5期累計）</span></div>
+      <div class="insight-body">${top5.map((m,i)=>`<span class="pill" style="background:var(--accent-soft);color:var(--accent-dk)">${i+1}. ${m.name} ${nf(m.total)}</span>`).join('')}<br>前 5 名合計約占全店 <b>${pf(sum(top5.map(m=>m.total))/totRev)}</b>，集中度高；娃娃機以外的主力為大型電玩與蛋大俠、Mini機。</div>
+    </div>
+    <div class="insight" style="border-left-color:var(--red)">
+      <div class="insight-hdr"><span class="insight-icon">📉</span><span class="insight-title">明顯衰退（1月→5月，基期≥$3,000）</span></div>
+      <div class="insight-body">${declines.map(m=>`<span class="pill" style="background:var(--red-soft);color:var(--red)">${m.name} ${nf(m.first)}→${nf(m.last)}（▼${Math.abs(m.d*100).toFixed(0)}%）</span>`).join('')}<br>其中 <b>Mini機</b>、<b>蛋大俠</b> 為高基期機台，下滑對總額影響大，建議優先現場檢視；<b>射擊機</b>、<b>幸運星</b> 近乎停滯，可評估汰換或調整位置。</div>
+    </div>
+    <div class="insight" style="border-left-color:var(--accent)">
+      <div class="insight-hdr"><span class="insight-icon">📈</span><span class="insight-title">逆勢成長</span></div>
+      <div class="insight-body">${grows.map(m=>`<span class="pill" style="background:var(--accent-soft);color:var(--accent-dk)">${m.name} ${nf(m.first)}→${nf(m.last)}（▲${(m.d*100).toFixed(0)}%）</span>`).join('')}<br>籃球機、香菇曲棍球等體感／親子機台 5月走強，與雨季室內客群偏好一致，可作為陰雨檔期的促客重點。</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-hdr"><span class="sec-tag" style="background:var(--warn)">03</span><span class="sec-title">成本結構與 5月獲利異常</span></div>
+    <p class="sec-p">支出以 <strong>人事費用</strong> 與 <strong>出貨總成本</strong> 兩項為主，合計常占總支出 8 成以上。5月兩者同步走高：人事 <strong>${nf(DATA.expense["人事費用"][lastIdx])}</strong>、出貨成本 <strong>${nf(DATA.expense["出貨總成本"][lastIdx])}</strong>（全期次高），是獲利被壓縮的直接來源。</p>
+    <div class="flag">⚠️ <b>待確認（不做定論）：</b>5月出貨成本 ${nf(DATA.expense["出貨總成本"][lastIdx])} 與分潤分配表所註「5月備用金支出 16.5萬」高度相關，無法從報表判斷此為<b>一次性備貨／進貨</b>或<b>常態出貨成本</b>。兩種情形對獲利的解讀完全不同：若為一次性備貨，5月真實營運獲利應高於帳面；若為常態，則需檢討出獎成本率。<b>請 Angeli 確認此筆性質後，本段可改寫為定論。</b></div>
+    <div class="tbl-wrap"><table><thead><tr><th>支出項目</th>${DATA.months.map(m=>`<th>${m}</th>`).join('')}<th>累計</th></tr></thead><tbody>
+      ${Object.keys(DATA.expense).map(k=>`<tr><td>${k}</td>${DATA.expense[k].map(v=>`<td>${v.toLocaleString('en-US')}</td>`).join('')}<td><b>${sum(DATA.expense[k]).toLocaleString('en-US')}</b></td></tr>`).join('')}
+      <tr class="sum-row"><td>支出合計</td>${t.exp.map(v=>`<td>${v.toLocaleString('en-US')}</td>`).join('')}<td>${sum(t.exp).toLocaleString('en-US')}</td></tr>
+    </tbody></table></div>
+  </div>
+
+  <div class="section">
+    <div class="sec-hdr"><span class="sec-tag" style="background:var(--blue)">04</span><span class="sec-title">後續營運建議</span></div>
+    <div class="rec-item" style="border-left-color:var(--accent)"><div class="rec-num" style="background:var(--accent-soft);color:var(--accent)">1</div><div><div class="rec-title">釐清 5月成本性質，還原真實獲利</div><div class="rec-body">優先確認出貨成本與備用金 16.5萬的歸屬（一次性備貨 vs 常態）。這一步未定，分潤與獲利率比較都會失真。</div></div></div>
+    <div class="rec-item" style="border-left-color:var(--gold)"><div class="rec-num" style="background:var(--gold-soft);color:var(--gold)">2</div><div><div class="rec-title">娃娃機列為第一級維護對象</div><div class="rec-body">單機占全店逾半，建議建立補貨、出獎率與機況的固定巡檢節奏，把波動風險控制在最大營收來源上。</div></div></div>
+    <div class="rec-item" style="border-left-color:var(--red)"><div class="rec-num" style="background:var(--red-soft);color:var(--red)">3</div><div><div class="rec-title">衰退機台檢討 / 汰換</div><div class="rec-body">Mini機、蛋大俠先查原因（機況／位置／競品）；射擊機、幸運星營收長期低迷，評估更換機種或挪移黃金動線。</div></div></div>
+    <div class="rec-item" style="border-left-color:var(--blue)"><div class="rec-num" style="background:#eef2f3;color:var(--blue)">4</div><div><div class="rec-title">依季節調整備貨與檔期</div><div class="rec-body">寒暑假／連假為高峰、雨季為低點；雨季主推室內體感機台（籃球機、曲棍球），並把出貨備貨節奏對齊高峰月，避免淡季囤貨壓獲利。</div></div></div>
+  </div>
+
+  <div class="rpt-closing">
+    <div class="rpt-closing-lbl">小結</div>
+    <div class="rpt-closing-body">1–5月營收穩定、結構健康，娃娃機為核心引擎；真正待解的是 <strong>5月成本拉高的性質</strong>——它決定了獲利下滑是「投資前置」還是「成本失控」。建議以此為下一步行動的起點，其餘機台優化屬常態調校。</div>
+  </div>
+  <div class="rpt-credit">曜森原行銷 · 漁人町業務系統　｜　資料來源：11501–11505 營收報表</div>`;
+}
+
+/* ===== tabs ===== */
+let built={overview:false,trend:false,detail:false,share:false,report:false};
+function switchTab(name,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b=>{b.classList.remove('active');b.classList.remove('report-active')});
+  if(name==='report'){btn.classList.add('report-active')}else{btn.classList.add('active')}
+  if(name==='trend'&&!built.trend){trendPL();trendExp();trendMachine();built.trend=true}
+  if(name==='detail'&&!built.detail){detailTbl();built.detail=true}
+  if(name==='share'&&!built.share){shareBar();shareTbl();built.share=true}
+  if(name==='report'&&!built.report){renderReport();built.report=true}
+}
+
+/* init */
+document.getElementById('h-sub').innerHTML=`${DATA.meta.year} <b>1–5月</b>　｜　${DATA.meta.store}　｜　幣別 ${DATA.meta.unit}`;
+renderKPI();barMain();renderMpick();renderRank();renderSpots();built.overview=true;
+</script>
+</body>
+</html>
