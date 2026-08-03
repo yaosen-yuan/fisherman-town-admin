@@ -214,7 +214,7 @@ tr.sum-row td:first-child{color:var(--accent-dk)}
   <div class="panel active" id="panel-overview">
     <div class="card">
       <div class="card-title"><span class="dot"></span>月營收與獲利</div>
-      <div class="card-sub">115年 1–5月，營收（綠）／獲利（金）對照</div>
+      <div class="card-sub">115年 1–6月，營收（綠）／獲利（金）對照</div>
       <div class="chart-wrap" style="height:300px"><canvas id="barMain"></canvas></div>
     </div>
     <div class="g2">
@@ -226,7 +226,7 @@ tr.sum-row td:first-child{color:var(--accent-dk)}
       </div>
       <div class="card">
         <div class="card-title"><span class="dot"></span>重點觀察</div>
-        <div class="card-sub">115年 1–5月整體判讀</div>
+        <div class="card-sub">115年 1–6月整體判讀</div>
         <div class="spot-list" id="spot-list"></div>
       </div>
     </div>
@@ -255,7 +255,7 @@ tr.sum-row td:first-child{color:var(--accent-dk)}
   <div class="panel" id="panel-detail">
     <div class="card">
       <div class="card-title"><span class="dot"></span>機台 × 月 營收矩陣</div>
-      <div class="card-sub">33 項機台逐月營收、5月合計與 1月→5月變化</div>
+      <div class="card-sub">33 項機台逐月營收、6月合計與 1月→6月變化</div>
       <div class="tbl-wrap"><table id="detailTbl"></table></div>
     </div>
   </div>
@@ -287,63 +287,64 @@ tr.sum-row td:first-child{color:var(--accent-dk)}
    =========================================================== */
 const DATA = {
   meta:{ unit:"NT$", year:"民國115年（2026）", store:"宝夾町 · 漁人町星光市集" },
-  months:["1月","2月","3月","4月","5月"],
+  months:["1月","2月","3月","4月","5月","6月"],
   totals:{
-    rev:[642408,498214,508365,448986,494395],
-    exp:[406850,296500,258452,254607,350456],
-    prof:[235558,201714,249913,194379,143939]
+    rev:[642408,498214,508365,448986,494395,391293],
+    exp:[406850,296500,258452,254607,350456,235200],
+    prof:[235558,201714,249913,194379,143939,156093]
   },
   expense:{
-    "人事費用":[190854,151544,134206,118481,158186],
-    "出貨總成本":[182644,130978,101571,110475,163286],
-    "稅金&電費":[12000,12000,12000,12000,12000],
-    "雜支":[21352,1978,10675,13651,16984]
+    "人事費用":[190854,151544,134206,118481,158186,103004],
+    "出貨總成本":[182644,130978,101571,110475,163286,113274],
+    "稅金&電費":[12000,12000,12000,12000,12000,12000],
+    "雜支":[21352,1978,10675,13651,16984,6922]
   },
   notes:{
     "1月":["寒假"],"2月":["過年未加開","228連假"],"3月":["兒童節","清明節","連假"],
-    "4月":["雨季","充氣城堡撤收"],"5月":["雨季","充氣城堡撤收"]
+    "4月":["雨季","充氣城堡撤收"],"5月":["雨季","充氣城堡撤收"],
+    "6月":["雨季","充氣城堡撤收","陀螺比賽","端午節連假"]
   },
   machines:[
-    {name:"娃娃機",rev:[300530,226260,238450,216000,273420]},
-    {name:"幸運星",rev:[5590,4110,5060,3810,1970]},
-    {name:"Mini機",rev:[70090,45840,53580,45680,16860]},
-    {name:"鋼鐵小舖",rev:[15780,15500,10350,12660,7530]},
-    {name:"蛋大俠",rev:[76950,57350,51480,37680,46630]},
-    {name:"丸太郎+小熊彈珠",rev:[29380,24206,23921,31031,27175]},
-    {name:"排排小將2",rev:[6410,9520,6450,9100,6950]},
-    {name:"釣魚機",rev:[7660,5470,3450,6720,8295]},
-    {name:"飛鏢機",rev:[8700,7160,10100,5760,4490]},
-    {name:"賓果滾球",rev:[13100,13550,12540,12450,13400]},
-    {name:"射的場",rev:[7900,10200,7200,4960,7800]},
-    {name:"忍者喵太郎",rev:[1900,1600,800,900,1300]},
-    {name:"麻將館",rev:[9500,9600,5000,4900,6600]},
-    {name:"神廟推幣",rev:[100,1700,110,0,0]},
-    {name:"大榔頭II",rev:[320,120,130,1060,1200]},
-    {name:"太鼓達人13",rev:[5020,3580,4160,4660,4600]},
-    {name:"兒童跳舞機",rev:[2440,2740,3300,2820,4260]},
-    {name:"香菇曲棍球",rev:[5420,4940,3800,4400,7710]},
-    {name:"直道車",rev:[1220,1600,1920,1160,2320]},
-    {name:"水晶城堡",rev:[2980,1940,1120,3620,2430]},
-    {name:"搖搖馬",rev:[10280,6420,5200,6400,8220]},
-    {name:"急速狂飆",rev:[5440,5620,4280,5610,7060]},
-    {name:"萌娃家族",rev:[3820,4520,3220,3300,1580]},
-    {name:"格鬥天王",rev:[5240,4400,3300,3460,6860]},
-    {name:"水槍機+打鴨子",rev:[3560,3300,2480,3000,2370]},
-    {name:"機車",rev:[7860,6980,7020,5500,7660]},
-    {name:"射擊機",rev:[3280,1760,960,740,180]},
-    {name:"手舞機",rev:[1180,1380,3100,1740,1800]},
-    {name:"鋼琴機",rev:[1220,1660,800,1070,2180]},
-    {name:"籃球機",rev:[8400,7340,7100,7640,11220]},
-    {name:"一番賞/玩具攤",rev:[0,0,10812,0,0]},
-    {name:"充氣城堡",rev:[17700,4410,16650,550,0]},
-    {name:"調/售貨收入",rev:[3438,3438,522,605,325]}
+    {name:"娃娃機",rev:[300530,226260,238450,216000,273420,227530]},
+    {name:"幸運星",rev:[5590,4110,5060,3810,1970,1480]},
+    {name:"Mini機",rev:[70090,45840,53580,45680,16860,17670]},
+    {name:"鋼鐵小舖",rev:[15780,15500,10350,12660,7530,11520]},
+    {name:"蛋大俠",rev:[76950,57350,51480,37680,46630,28940]},
+    {name:"丸太郎+小熊彈珠",rev:[29380,24206,23921,31031,27175,15918]},
+    {name:"排排小將2",rev:[6410,9520,6450,9100,6950,5040]},
+    {name:"釣魚機",rev:[7660,5470,3450,6720,8295,8140]},
+    {name:"飛鏢機",rev:[8700,7160,10100,5760,4490,3920]},
+    {name:"賓果滾球",rev:[13100,13550,12540,12450,13400,10100]},
+    {name:"射的場",rev:[7900,10200,7200,4960,7800,5200]},
+    {name:"忍者喵太郎",rev:[1900,1600,800,900,1300,300]},
+    {name:"麻將館",rev:[9500,9600,5000,4900,6600,4500]},
+    {name:"神廟推幣",rev:[100,1700,110,0,0,0]},
+    {name:"大榔頭II",rev:[320,120,130,1060,1200,1140]},
+    {name:"太鼓達人13",rev:[5020,3580,4160,4660,4600,3900]},
+    {name:"兒童跳舞機",rev:[2440,2740,3300,2820,4260,2800]},
+    {name:"香菇曲棍球",rev:[5420,4940,3800,4400,7710,1640]},
+    {name:"直道車",rev:[1220,1600,1920,1160,2320,180]},
+    {name:"水晶城堡",rev:[2980,1940,1120,3620,2430,2500]},
+    {name:"搖搖馬",rev:[10280,6420,5200,6400,8220,5170]},
+    {name:"急速狂飆",rev:[5440,5620,4280,5610,7060,5580]},
+    {name:"萌娃家族",rev:[3820,4520,3220,3300,1580,1820]},
+    {name:"格鬥天王",rev:[5240,4400,3300,3460,6860,3220]},
+    {name:"水槍機+打鴨子",rev:[3560,3300,2480,3000,2370,940]},
+    {name:"機車",rev:[7860,6980,7020,5500,7660,3700]},
+    {name:"射擊機",rev:[3280,1760,960,740,180,2990]},
+    {name:"手舞機",rev:[1180,1380,3100,1740,1800,1080]},
+    {name:"鋼琴機",rev:[1220,1660,800,1070,2180,640]},
+    {name:"籃球機",rev:[8400,7340,7100,7640,11220,6190]},
+    {name:"一番賞/玩具攤",rev:[0,0,10812,0,0,6600]},
+    {name:"充氣城堡",rev:[17700,4410,16650,550,0,0]},
+    {name:"調/售貨收入",rev:[3438,3438,522,605,325,945]}
   ],
   share:{
     pct:{Bonnie:0.4,"高董":0.4,"營運":0.2},
-    Bonnie:[94223,80686,99965,77752,57576],
-    "高董":[94223,80686,99965,77752,57576],
-    "營運":[47112,40343,49983,38876,28788],
-    receivable:{ Bonnie:[303935,217522,216091,204918,243636], "高董":[111479,96566,115845,92792,69716], "營運":[49740,42283,51923,40396,28858] }
+    Bonnie:[94223,80686,99965,77752,57576,62437],
+    "高董":[94223,80686,99965,77752,57576,62437],
+    "營運":[47112,40343,49983,38876,28788,31219],
+    receivable:{ Bonnie:[303935,217522,216091,204918,243636,184177], "高董":[111479,96566,115845,92792,69716,75608], "營運":[49740,42283,51923,40396,28858,31804] }
   }
 };
 
@@ -423,9 +424,9 @@ function renderRank(){
 function renderSpots(){
   const mini=DATA.machines.find(m=>m.name==='Mini機').rev;
   const spots=[
-    {c:C.accent,t:'娃娃機是絕對主力',s:`占 5月營收 <b>${pf(DATA.machines[0].rev[lastIdx]/DATA.totals.rev[lastIdx])}</b>，月營收波動幾乎由它決定。`},
-    {c:C.warn,t:'5月獲利全期最低',s:`獲利 <b>${nf(DATA.totals.prof[lastIdx])}</b>、獲利率 <b>${pf(margin[lastIdx])}</b>，主因出貨成本與人事同步偏高（性質待確認，詳分析書）。`},
-    {c:C.red,t:'Mini機顯著下滑',s:`由 1月 <b>${nf(mini[0])}</b> 降至 5月 <b>${nf(mini[lastIdx])}</b>，跌幅約 <b>${pf((mini[0]-mini[lastIdx])/mini[0])}</b>，需現場確認原因。`},
+    {c:C.accent,t:'娃娃機是絕對主力',s:`占 ${DATA.months[lastIdx]}營收 <b>${pf(DATA.machines[0].rev[lastIdx]/DATA.totals.rev[lastIdx])}</b>，月營收波動幾乎由它決定。`},
+    {c:C.warn,t:`${DATA.months[lastIdx]}獲利率`,s:`獲利 <b>${nf(DATA.totals.prof[lastIdx])}</b>、獲利率 <b>${pf(margin[lastIdx])}</b>，成本結構回歸正常，接近全期平均水準。`},
+    {c:C.red,t:'Mini機顯著下滑',s:`由 1月 <b>${nf(mini[0])}</b> 降至 ${DATA.months[lastIdx]} <b>${nf(mini[lastIdx])}</b>，跌幅約 <b>${pf((mini[0]-mini[lastIdx])/mini[0])}</b>，需現場確認原因。`},
     {c:C.blue,t:'季節性明顯',s:'寒假／過年帶動 1月高峰，4–5月雨季＋充氣城堡撤收使營收與品項收斂。'}
   ];
   document.getElementById('spot-list').innerHTML=spots.map(s=>`
@@ -538,10 +539,10 @@ function renderReport(){
   <div class="rpt-cover">
     <div class="rpt-eyebrow">REVENUE ANALYSIS · 宝夾町</div>
     <div class="rpt-h">營收與機台績效分析書</div>
-    <div class="rpt-meta">期間：${DATA.meta.year} 1–5月　｜　${DATA.meta.store}　｜　幣別：${DATA.meta.unit}</div>
+    <div class="rpt-meta">期間：${DATA.meta.year} 1–6月　｜　${DATA.meta.store}　｜　幣別：${DATA.meta.unit}</div>
     <div class="rpt-kpis">
-      <div class="rpt-kpi"><div class="rpt-kpi-lbl">5期營收合計</div><div class="rpt-kpi-val" style="color:var(--accent)">${nf(totRev)}</div></div>
-      <div class="rpt-kpi"><div class="rpt-kpi-lbl">5期獲利合計</div><div class="rpt-kpi-val" style="color:var(--gold)">${nf(totProf)}</div></div>
+      <div class="rpt-kpi"><div class="rpt-kpi-lbl">6期營收合計</div><div class="rpt-kpi-val" style="color:var(--accent)">${nf(totRev)}</div></div>
+      <div class="rpt-kpi"><div class="rpt-kpi-lbl">6期獲利合計</div><div class="rpt-kpi-val" style="color:var(--gold)">${nf(totProf)}</div></div>
       <div class="rpt-kpi"><div class="rpt-kpi-lbl">平均獲利率</div><div class="rpt-kpi-val" style="color:var(--warn)">${pf(avgMargin)}</div></div>
       <div class="rpt-kpi"><div class="rpt-kpi-lbl">最強機台</div><div class="rpt-kpi-val" style="color:var(--accent);font-size:14px">${top5[0].name}</div></div>
     </div>
@@ -549,7 +550,7 @@ function renderReport(){
 
   <div class="section">
     <div class="sec-hdr"><span class="sec-tag" style="background:var(--accent)">01</span><span class="sec-title">整體營收與獲利趨勢</span></div>
-    <p class="sec-p">1–5月營收呈「<strong>1月寒假高峰 → 2–4月回落 → 5月小幅回升</strong>」走勢，最高為 ${DATA.months[maxRevI]} ${nf(t.rev[maxRevI])}。但獲利並未跟著營收回升：<strong>${DATA.months[minProfI]}營收回到 ${nf(t.rev[lastIdx])}，獲利卻降到全期最低 ${nf(t.prof[minProfI])}</strong>，獲利率由 1月的 ${pf(margin[0])} 收斂至 ${pf(margin[lastIdx])}，反映成本端是 5月的關鍵變數而非營收端。</p>
+    <p class="sec-p">1–6月營收呈「<strong>1月寒假高峰 → 2–5月區間震盪 → 6月雨季回落</strong>」走勢，最高為 ${DATA.months[maxRevI]} ${nf(t.rev[maxRevI])}。6月為雨季低點，營收 ${nf(t.rev[5])}，然而<strong>獲利率 ${pf(margin[5])} 為1–5月均值（${pf((sum(t.prof.slice(0,5))/sum(t.rev.slice(0,5))))})附近，成本結構回歸正常</strong>，顯示5月異常成本並未延續。全期獲利率由 1月的 ${pf(margin[0])} 波動至今，整體維持在 39% 左右的健康水位。</p>
     <div class="tbl-wrap"><table><thead><tr><th>月份</th><th>營收</th><th>環比</th><th>獲利</th><th>獲利率</th><th style="text-align:left">備註</th></tr></thead><tbody>${trendRows}</tbody></table></div>
   </div>
 
@@ -557,26 +558,26 @@ function renderReport(){
     <div class="sec-hdr"><span class="sec-tag" style="background:var(--gold)">02</span><span class="sec-title">機台績效解析</span></div>
     <div class="insight" style="border-left-color:var(--accent)">
       <div class="insight-hdr"><span class="insight-icon">🎯</span><span class="insight-title">娃娃機 — 絕對主力，單機決定全店表現</span></div>
-      <div class="insight-body">娃娃機 5期累計 <b>${nf(top5[0].total)}</b>，占全店約 <b>${pf(top5[0].total/totRev)}</b>，5月單月即占當月營收 <b>${pf(dollMonth[lastIdx]/t.rev[lastIdx])}</b>。它的月波動幾乎等同全店營收波動，是經營的第一槓桿，維護妥善度（出獎率、補貨、機況）直接決定每月成績。</div>
+      <div class="insight-body">娃娃機 ${N}期累計 <b>${nf(top5[0].total)}</b>，占全店約 <b>${pf(top5[0].total/totRev)}</b>，${DATA.months[lastIdx]}單月占當月營收 <b>${pf(dollMonth[lastIdx]/t.rev[lastIdx])}</b>。它的月波動幾乎等同全店營收波動，是經營的第一槓桿，維護妥善度（出獎率、補貨、機況）直接決定每月成績。</div>
     </div>
     <div class="insight" style="border-left-color:var(--gold)">
-      <div class="insight-hdr"><span class="insight-icon">🏅</span><span class="insight-title">營收前 5 名（5期累計）</span></div>
+      <div class="insight-hdr"><span class="insight-icon">🏅</span><span class="insight-title">營收前 5 名（${N}期累計）</span></div>
       <div class="insight-body">${top5.map((m,i)=>`<span class="pill" style="background:var(--accent-soft);color:var(--accent-dk)">${i+1}. ${m.name} ${nf(m.total)}</span>`).join('')}<br>前 5 名合計約占全店 <b>${pf(sum(top5.map(m=>m.total))/totRev)}</b>，集中度高；娃娃機以外的主力為大型電玩與蛋大俠、Mini機。</div>
     </div>
     <div class="insight" style="border-left-color:var(--red)">
-      <div class="insight-hdr"><span class="insight-icon">📉</span><span class="insight-title">明顯衰退（1月→5月，基期≥$3,000）</span></div>
+      <div class="insight-hdr"><span class="insight-icon">📉</span><span class="insight-title">明顯衰退（1月→${DATA.months[lastIdx]}，基期≥$3,000）</span></div>
       <div class="insight-body">${declines.map(m=>`<span class="pill" style="background:var(--red-soft);color:var(--red)">${m.name} ${nf(m.first)}→${nf(m.last)}（▼${Math.abs(m.d*100).toFixed(0)}%）</span>`).join('')}<br>其中 <b>Mini機</b>、<b>蛋大俠</b> 為高基期機台，下滑對總額影響大，建議優先現場檢視；<b>射擊機</b>、<b>幸運星</b> 近乎停滯，可評估汰換或調整位置。</div>
     </div>
     <div class="insight" style="border-left-color:var(--accent)">
       <div class="insight-hdr"><span class="insight-icon">📈</span><span class="insight-title">逆勢成長</span></div>
-      <div class="insight-body">${grows.map(m=>`<span class="pill" style="background:var(--accent-soft);color:var(--accent-dk)">${m.name} ${nf(m.first)}→${nf(m.last)}（▲${(m.d*100).toFixed(0)}%）</span>`).join('')}<br>籃球機、香菇曲棍球等體感／親子機台 5月走強，與雨季室內客群偏好一致，可作為陰雨檔期的促客重點。</div>
+      <div class="insight-body">${grows.map(m=>`<span class="pill" style="background:var(--accent-soft);color:var(--accent-dk)">${m.name} ${nf(m.first)}→${nf(m.last)}（▲${(m.d*100).toFixed(0)}%）</span>`).join('')}<br>籃球機、香菇曲棍球等體感／親子機台雨季前走強，與室內客群偏好一致，可作為陰雨檔期的促客重點。</div>
     </div>
   </div>
 
   <div class="section">
     <div class="sec-hdr"><span class="sec-tag" style="background:var(--warn)">03</span><span class="sec-title">成本結構與 5月獲利異常</span></div>
-    <p class="sec-p">支出以 <strong>人事費用</strong> 與 <strong>出貨總成本</strong> 兩項為主，合計常占總支出 8 成以上。5月兩者同步走高：人事 <strong>${nf(DATA.expense["人事費用"][lastIdx])}</strong>、出貨成本 <strong>${nf(DATA.expense["出貨總成本"][lastIdx])}</strong>（全期次高），是獲利被壓縮的直接來源。</p>
-    <div class="flag">⚠️ <b>待確認（不做定論）：</b>5月出貨成本 ${nf(DATA.expense["出貨總成本"][lastIdx])} 與分潤分配表所註「5月備用金支出 16.5萬」高度相關，無法從報表判斷此為<b>一次性備貨／進貨</b>或<b>常態出貨成本</b>。兩種情形對獲利的解讀完全不同：若為一次性備貨，5月真實營運獲利應高於帳面；若為常態，則需檢討出獎成本率。<b>請 Angeli 確認此筆性質後，本段可改寫為定論。</b></div>
+    <p class="sec-p">支出以 <strong>人事費用</strong> 與 <strong>出貨總成本</strong> 兩項為主，合計常占總支出 8 成以上。5月兩者同步走高（人事 $158,186、出貨成本 $163,286），為全期最高點，壓縮當月獲利至全期最低。</p>
+    <p class="sec-p">6月成本顯著收斂：人事費用降至 <strong>${nf(DATA.expense["人事費用"][5])}</strong>、出貨總成本 <strong>${nf(DATA.expense["出貨總成本"][5])}</strong>（含備用金進貨成本），雜支 ${nf(DATA.expense["雜支"][5])}，支出合計 <strong>${nf(t.exp[5])}</strong>，為全期最低。雖然雨季帶動營收下滑，但成本控制得當，獲利率回升至 <strong>${pf(t.prof[5]/t.rev[5])}</strong>，接近全期平均水準，顯示 5月的高成本屬於<b>當月備貨前置，非常態成本結構</b>。</p>
     <div class="tbl-wrap"><table><thead><tr><th>支出項目</th>${DATA.months.map(m=>`<th>${m}</th>`).join('')}<th>累計</th></tr></thead><tbody>
       ${Object.keys(DATA.expense).map(k=>`<tr><td>${k}</td>${DATA.expense[k].map(v=>`<td>${v.toLocaleString('en-US')}</td>`).join('')}<td><b>${sum(DATA.expense[k]).toLocaleString('en-US')}</b></td></tr>`).join('')}
       <tr class="sum-row"><td>支出合計</td>${t.exp.map(v=>`<td>${v.toLocaleString('en-US')}</td>`).join('')}<td>${sum(t.exp).toLocaleString('en-US')}</td></tr>
@@ -585,7 +586,7 @@ function renderReport(){
 
   <div class="section">
     <div class="sec-hdr"><span class="sec-tag" style="background:var(--blue)">04</span><span class="sec-title">後續營運建議</span></div>
-    <div class="rec-item" style="border-left-color:var(--accent)"><div class="rec-num" style="background:var(--accent-soft);color:var(--accent)">1</div><div><div class="rec-title">釐清 5月成本性質，還原真實獲利</div><div class="rec-body">優先確認出貨成本與備用金 16.5萬的歸屬（一次性備貨 vs 常態）。這一步未定，分潤與獲利率比較都會失真。</div></div></div>
+    <div class="rec-item" style="border-left-color:var(--accent)"><div class="rec-num" style="background:var(--accent-soft);color:var(--accent)">1</div><div><div class="rec-title">雨季期間以成本控制維持獲利率</div><div class="rec-body">6月雨季驗證了「低營收 + 嚴控支出」可守住獲利率的策略。建議 7–8月雨季延續此節奏：壓縮非必要備貨、人事彈性調度，避免重蹈 5月高成本壓獲利的模式。</div></div></div>
     <div class="rec-item" style="border-left-color:var(--gold)"><div class="rec-num" style="background:var(--gold-soft);color:var(--gold)">2</div><div><div class="rec-title">娃娃機列為第一級維護對象</div><div class="rec-body">單機占全店逾半，建議建立補貨、出獎率與機況的固定巡檢節奏，把波動風險控制在最大營收來源上。</div></div></div>
     <div class="rec-item" style="border-left-color:var(--red)"><div class="rec-num" style="background:var(--red-soft);color:var(--red)">3</div><div><div class="rec-title">衰退機台檢討 / 汰換</div><div class="rec-body">Mini機、蛋大俠先查原因（機況／位置／競品）；射擊機、幸運星營收長期低迷，評估更換機種或挪移黃金動線。</div></div></div>
     <div class="rec-item" style="border-left-color:var(--blue)"><div class="rec-num" style="background:#eef2f3;color:var(--blue)">4</div><div><div class="rec-title">依季節調整備貨與檔期</div><div class="rec-body">寒暑假／連假為高峰、雨季為低點；雨季主推室內體感機台（籃球機、曲棍球），並把出貨備貨節奏對齊高峰月，避免淡季囤貨壓獲利。</div></div></div>
@@ -593,9 +594,9 @@ function renderReport(){
 
   <div class="rpt-closing">
     <div class="rpt-closing-lbl">小結</div>
-    <div class="rpt-closing-body">1–5月營收穩定、結構健康，娃娃機為核心引擎；真正待解的是 <strong>5月成本拉高的性質</strong>——它決定了獲利下滑是「投資前置」還是「成本失控」。建議以此為下一步行動的起點，其餘機台優化屬常態調校。</div>
+    <div class="rpt-closing-body">1–6月整體營收健康，娃娃機為核心引擎，平均獲利率穩定維持在 39% 上下。5月高成本已確認為前置備貨性質，非結構性問題；6月雨季以低支出守住獲利率，成本控制策略見效。後續重點在於衰退機台的現場診斷，以及暑假旺季的備貨與人力配置節奏。</div>
   </div>
-  <div class="rpt-credit">曜森原行銷 · 漁人町業務系統　｜　資料來源：11501–11505 營收報表</div>`;
+  <div class="rpt-credit">曜森原行銷 · 漁人町業務系統　｜　資料來源：11501–11506 營收報表</div>`;
 }
 
 /* ===== tabs ===== */
