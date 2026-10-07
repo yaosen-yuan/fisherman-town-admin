@@ -40,6 +40,9 @@ body{min-height:100vh;background:var(--bg);color:var(--t1);font-family:'Noto San
 
 /* KPI ROW */
 .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+
+/* TENANT SUMMARY GRID (dedicated class for proper RWD) */
+.tenant-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px}
 .kpi{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 16px}
 .kpi-period{color:var(--t3);font-size:11px;letter-spacing:.05em;margin-bottom:6px;display:flex;align-items:center;gap:6px}
 .kpi-yr-tag{font-family:var(--mono);font-size:9px;font-weight:700;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:3px;padding:1px 5px;color:var(--t5);letter-spacing:.03em}
@@ -50,6 +53,8 @@ body{min-height:100vh;background:var(--bg);color:var(--t1);font-family:'Noto San
 .tenant-tag{font-family:'Noto Sans TC',sans-serif;font-size:10px;font-weight:700;padding:1px 7px;border-radius:4px;margin-left:6px;letter-spacing:.03em;display:inline-block}
 .tenant-tag[data-tenant="酷樂邦"]{background:rgba(20,184,166,.22);color:#5eead4;border:1px solid rgba(20,184,166,.5)}
 .tenant-tag[data-tenant="水產街"]{background:rgba(14,165,233,.22);color:#7dd3fc;border:1px solid rgba(14,165,233,.5)}
+.tenant-tag[data-tenant="匹克王"]{background:rgba(240,168,48,.22);color:var(--gold);border:1px solid rgba(240,168,48,.5)}
+tr.tenant-row-匹克王{background:rgba(240,168,48,.05)}
 tr.tenant-row-酷樂邦{background:rgba(20,184,166,.05)}
 tr.tenant-row-水產街{background:rgba(14,165,233,.05)}
 .kpi-val{font-family:var(--mono);font-size:17px;font-weight:700;color:var(--t1)}
@@ -156,13 +161,27 @@ td:not(.highlight-row td){border-left:3px solid transparent}
 .footer-note{text-align:center;font-size:11px;color:var(--t5);margin-top:20px}
 
 /* RWD */
+/* RWD: tablet (kpi 4→2 cols) */
+@media(max-width:900px){
+  .kpi-row{grid-template-columns:repeat(2,1fr)}
+  .rpt-kpis{grid-template-columns:repeat(2,1fr)}
+  .tenant-summary{grid-template-columns:1fr}
+}
+/* RWD: mobile (everything 1 col, tighter spacing) */
 @media(max-width:640px){
   .content,.header{padding-left:14px;padding-right:14px}
   .kpi-row{grid-template-columns:1fr}
   .g2{grid-template-columns:1fr}
   .rpt-kpis{grid-template-columns:1fr 1fr}
+  .tenant-summary{grid-template-columns:1fr}
   .tabs{gap:6px}
-  .tab-btn{padding:6px 12px;font-size:12px}
+  .tab-btn{padding:6px 10px;font-size:11.5px}
+  .card{padding:16px}
+  .h-title{font-size:20px}
+  .rpt-h{font-size:20px}
+  .kpi-val{font-size:15px}
+  .month-pick{gap:6px}
+  .m-btn{padding:4px 9px}
 }
 </style>
 </head>
@@ -183,13 +202,14 @@ td:not(.highlight-row td){border-left:3px solid transparent}
         <span class="accent-bar"></span>
         <span class="h1">漁人町 電力分析表</span>
       </div>
-      <div class="h-sub">2025/04/26 ～ 2026/07/25　共十二期帳單（02–03月帳單缺漏）</div>
+      <div class="h-sub" id="h-sub">2025/04/26 ～ 2026/09/25　共十四期帳單（02–03月帳單缺漏）</div>
     </div>
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('overview',this)">總覽</button>
       <button class="tab-btn" onclick="switchTab('trend',this)">趨勢</button>
       <button class="tab-btn" onclick="switchTab('detail',this)">明細</button>
-      <button class="tab-btn" onclick="switchTab('tenant',this)">承租戶應收電費</button>
+      <button class="tab-btn" onclick="switchTab('tenant',this)">承租戶-酷樂邦</button>
+      <button class="tab-btn" onclick="switchTab('tenant-pk',this)">承租戶-匹克王</button>
       <button class="tab-btn" onclick="switchTab('report',this)" id="tab-report">📋 季度分析書</button>
     </div>
   </div>
@@ -251,12 +271,31 @@ td:not(.highlight-row td){border-left:3px solid transparent}
         </div>
         <div><span class="tenant-tag" data-tenant="酷樂邦" style="font-size:12px;padding:3px 10px">酷樂邦</span></div>
       </div>
-      <div id="tenant-summary" class="kpi-row" style="grid-template-columns:repeat(3,1fr)"></div>
+      <div id="tenant-summary" class="tenant-summary"></div>
     </div>
 
     <div class="card">
-      <div class="card-title">月度應收明細</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div class="card-title" style="margin:0">月度應收明細</div>
+        <span title="外展A：100% 由酷樂邦負擔｜船池機房：由酷樂邦與漁人町各負擔 50%｜金額均為含稅（台電單價已含稅），未稅銷售額＝含稅總計÷1.05" style="cursor:help;font-size:12px;color:var(--t3);border:1px solid var(--border);border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;background:var(--bg1)">ⓘ</span>
+      </div>
       <div id="tenant-table" class="tbl-wrap"></div>
+      <div id="tenant-table-note" style="margin-top:10px;padding:8px 12px;background:var(--bg1);border-radius:6px;font-size:11.5px;color:var(--t3);font-family:var(--mono);line-height:1.7"></div>
+    </div>
+
+    <div class="card" style="border-left:3px solid var(--blue)">
+      <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap">
+        <div style="background:rgba(58,123,213,.15);color:#93c5fd;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700;flex-shrink:0">分攤依據</div>
+        <div style="flex:1;min-width:250px;font-size:13px;color:var(--t2);line-height:1.8">
+          <strong style="color:#93c5fd">2026/08/07</strong> 台中魚市場（湯科長）於 LINE 群組「漁人町 營業部交接」11:52 確認：
+          <ul style="margin:8px 0 4px;padding-left:20px">
+            <li><strong style="color:#5eead4">外展A</strong>：全額由酷樂邦負擔（100%）</li>
+            <li><strong style="color:#5eead4">船池機房</strong>：由酷樂邦與漁人町創意國際各負擔 50%（漁人町方為管理成本吸收）</li>
+          </ul>
+          <div style="margin-top:10px;font-size:12px;color:var(--t4)">發票開立方式：分月開立含稅發票，共 <span id="invoice-count" style="color:var(--t2);font-family:var(--mono);font-weight:700">—</span> 張。</div>
+          <div style="margin-top:6px;font-size:12px;color:var(--t4)">稅務計算：台電電費單價已含營業稅，分攤金額即為含稅總計；未稅銷售額＝含稅總計÷1.05（四捨五入），營業稅額＝含稅總計－未稅銷售額（依 2026/08/07 通知單備註4）。</div>
+        </div>
+      </div>
     </div>
 
     <div class="g2">
@@ -271,6 +310,50 @@ td:not(.highlight-row td){border-left:3px solid transparent}
     </div>
   </div>
 
+  <!-- TENANT RECEIVABLE - 匹克王 -->
+  <div class="panel" id="panel-tenant-pk">
+    <div class="card" style="border-left:3px solid #f0a830">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;flex-wrap:wrap;gap:12px">
+        <div>
+          <div class="card-title" style="margin:0 0 4px 0;color:var(--gold);font-size:16px">匹克王運動行銷餐飲有限公司</div>
+          <div style="font-size:12px;color:var(--t3)">分租電費追蹤　｜　依台中魚市場通知單金額計算（僅電費部分）</div>
+        </div>
+        <div><span class="tenant-tag" data-tenant="匹克王" style="font-size:12px;padding:3px 10px">匹克王</span></div>
+      </div>
+      <div id="pk-summary" class="tenant-summary"></div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div class="card-title" style="margin:0">月度應收明細</div>
+        <span title="空調ACMP1：100% 由匹克王負擔｜照明1L1：由宝夾町、匹克王、漁人町各負擔 1/3" style="cursor:help;font-size:12px;color:var(--t3);border:1px solid var(--border);border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;background:var(--bg1)">ⓘ</span>
+      </div>
+      <div id="pk-table" class="tbl-wrap"></div>
+      <div id="pk-table-note" style="margin-top:10px;padding:8px 12px;background:var(--bg1);border-radius:6px;font-size:11.5px;color:var(--t3);font-family:var(--mono);line-height:1.7"></div>
+    </div>
+
+    <div class="card" style="border-left:3px solid var(--gold)">
+      <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap">
+        <div style="background:rgba(240,168,48,.15);color:var(--gold);padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700;flex-shrink:0">計算依據</div>
+        <div style="flex:1;min-width:250px;font-size:13px;color:var(--t2);line-height:1.8">
+          依台中魚市場提供之匹克王電費通知單逐月計算，項目包含：
+          <ul style="margin:8px 0 4px;padding-left:20px">
+            <li><strong style="color:var(--gold)">空調ACMP1</strong>：全額由匹克王負擔（100%）</li>
+            <li><strong style="color:var(--gold)">照明1L1</strong>：由宝夾町、匹克王、漁人町創意國際各負擔 1/3（宝夾町、漁人町部分屬內帳，不對外請款）</li>
+            <li><strong style="color:var(--gold)">場內分表電費</strong>：匹克王場內獨立子錶，不在漁人町台電帳單範圍內，依通知單全額列入</li>
+          </ul>
+          <div style="margin-top:10px;font-size:12px;color:var(--t4)">僅列電費部分（不含通知單上的水費）；每月依實際通知單金額輸入，無通知單月份不推算。</div>
+          <div style="margin-top:6px;font-size:12px;color:var(--t4)">稅務計算：台電電費單價已含營業稅，三項金額加總即為含稅總計；未稅銷售額＝含稅總計÷1.05（四捨五入），營業稅額＝含稅總計－未稅銷售額。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">匹克王 · 月度應收趨勢</div>
+      <div class="chart-wrap" style="height:240px"><canvas id="trendPK"></canvas></div>
+    </div>
+  </div>
+
   <!-- REPORT -->
   <div class="panel" id="panel-report">
     <div class="rpt">
@@ -278,10 +361,10 @@ td:not(.highlight-row td){border-left:3px solid transparent}
       <div class="rpt-cover">
         <div class="rpt-eyebrow">ANNUAL ELECTRICITY REPORT · 漁人町</div>
         <div class="rpt-h">電力費用年度分析書</div>
-        <div class="rpt-meta">計費區間：2025 / 04 / 26 ～ 2026 / 07 / 25　｜　共十二期帳單（02–03月缺漏）　｜　夏季 $5.5 / 度・非夏季 $5.3 / 度（05月舊費率 $4.0）</div>
+        <div class="rpt-meta">計費區間：2025 / 04 / 26 ～ 2026 / 09 / 25　｜　共十四期帳單（02–03月缺漏）　｜　夏季 $5.5 / 度・非夏季 $5.3 / 度（05月舊費率 $4.0）</div>
         <div class="rpt-kpis">
-          <div class="rpt-kpi"><div class="rpt-kpi-lbl">十二期合計</div><div class="rpt-kpi-val" style="color:var(--red)">$3,591,446</div></div>
-          <div class="rpt-kpi"><div class="rpt-kpi-lbl">全期最高月</div><div class="rpt-kpi-val" style="color:var(--red)">$513,667</div></div>
+          <div class="rpt-kpi"><div class="rpt-kpi-lbl">十四期合計</div><div class="rpt-kpi-val" style="color:var(--red)">$4,612,219</div></div>
+          <div class="rpt-kpi"><div class="rpt-kpi-lbl">全期最高月</div><div class="rpt-kpi-val" style="color:var(--red)">$524,437</div></div>
           <div class="rpt-kpi"><div class="rpt-kpi-lbl">全期最低月</div><div class="rpt-kpi-val" style="color:var(--green)">$159,068</div></div>
           <div class="rpt-kpi"><div class="rpt-kpi-lbl">空調ACMP1峰值</div><div class="rpt-kpi-val" style="color:var(--gold)">$220,264</div></div>
         </div>
@@ -603,6 +686,34 @@ const RAW = [
       {name:"外展B",usage:1763,amt:9697},
       {name:"水產街電錶★",usage:22740,amt:125070},
     ]},
+  { period:"07/26–08/25", label:"08月", year:2026, total:524437,
+    items:[
+      {name:"哈魚碼頭(B廠區)",usage:20736,amt:114048},
+      {name:"船池機房",usage:669,amt:3680},
+      {name:"水舞舞台220V",usage:107,amt:589},
+      {name:"漁人町手抄(警衛室)",usage:5867,amt:32269},
+      {name:"廣告燈(環中路圍牆)",usage:152,amt:836},
+      {name:"照明1L1",usage:1103,amt:6067},
+      {name:"空調ACMP1",usage:39760,amt:218680},
+      {name:"公設電費1R1",usage:null,amt:312},
+      {name:"外展A",usage:1167,amt:6419},
+      {name:"外展B",usage:2078,amt:11429},
+      {name:"水產街電錶★",usage:23656,amt:130108},
+    ]},
+  { period:"08/26–09/25", label:"09月", year:2026, total:496336,
+    items:[
+      {name:"哈魚碼頭(B廠區)",usage:19974,amt:109857},
+      {name:"船池機房",usage:551,amt:3031},
+      {name:"水舞舞台220V",usage:49,amt:270},
+      {name:"漁人町手抄(警衛室)",usage:5867,amt:32269},
+      {name:"廣告燈(環中路圍牆)",usage:0,amt:0},
+      {name:"照明1L1",usage:1089,amt:5990},
+      {name:"空調ACMP1",usage:36928,amt:203104},
+      {name:"公設電費1R1",usage:null,amt:315},
+      {name:"外展A",usage:1203,amt:6617},
+      {name:"外展B",usage:2077,amt:11424},
+      {name:"水產街電錶★",usage:22447,amt:123459},
+    ]},
 ];
 const COLORS=["#e8522a","#f0a830","#3a7bd5","#22c55e","#a855f7","#ec4899","#14b8a6","#f97316","#64748b","#ef4444"];
 const MONTH_LABELS=RAW.map(d=>d.label);
@@ -610,6 +721,18 @@ const CHART_LABELS=RAW.map(d=>`'${String(d.year).slice(2)} ${d.label}`);
 const fmt=n=>n!=null?Number(n).toLocaleString('zh-TW'):'—';
 
 /* ── TABS ── */
+/* ── DYNAMIC SUBTITLES (副標依分頁切換) ── */
+const ZH_NUMS=['零','一','二','三','四','五','六','七','八','九','十','十一','十二','十三','十四','十五','十六','十七','十八','十九','二十'];
+const N_ZH=ZH_NUMS[RAW.length]||RAW.length;
+const SUBTITLES={
+  overview:`2025/04/26 ～ 2026/09/25　共${N_ZH}期帳單（02–03月帳單缺漏）`,
+  trend:`月度趨勢分析　共${N_ZH}期資料`,
+  detail:`各期用電項目明細　共${N_ZH}期`,
+  tenant:`酷樂邦農漁冷鏈實業　分租電錶月度應收追蹤<br><span style="font-size:12px;color:var(--t4)">※ 船池機房由酷樂邦與漁人町各負擔 50%</span>`,
+  'tenant-pk':`匹克王運動行銷餐飲　分租電費追蹤<br><span style="font-size:12px;color:var(--t4)">※ 依台中魚市場通知單金額逐月計算，僅列電費</span>`,
+  report:`年度電力費用分析　2025/04 ～ 2026/09　共${N_ZH}期`
+};
+
 /* ── OWNER LOOKUP (sub-tenants) ── */
 function getOwner(itemName){
   if(itemName.startsWith('外展A')) return '酷樂邦';
@@ -618,12 +741,30 @@ function getOwner(itemName){
   return null;
 }
 
+/* ── SHARE RATES (承租戶負擔比例) ─────────────────────
+   依 2026/08/07 台中魚市場（湯科長）確認，LINE 群組
+  「漁人町 營業部交接」11:52。
+   外展A → 100% 由酷樂邦負擔
+   船池機房 → 50% 酷樂邦 / 50% 漁人町吸收
+──────────────────────────────────────────────── */
+const SHARE_RATES={'船池機房':0.5,'外展A':1.0,'水產街電錶★':1.0};
+function getShareRate(name){
+  for(const key in SHARE_RATES){
+    if(name.startsWith(key)) return SHARE_RATES[key];
+  }
+  return 1.0;
+}
+
 function switchTab(id,btn){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>{b.classList.remove('active');b.classList.remove('report-active');});
   document.getElementById('panel-'+id).classList.add('active');
   if(id==='report') btn.classList.add('report-active');
   else btn.classList.add('active');
+  // Hide top KPI row when in any tenant view (承租戶頁專屬佈局)
+  document.getElementById('kpi-row').style.display = (id==='tenant'||id==='tenant-pk') ? 'none' : '';
+  // Dynamic subtitle
+  if(SUBTITLES[id]) document.getElementById('h-sub').innerHTML=SUBTITLES[id];
 }
 
 /* ── KPI ROW ── */
@@ -778,24 +919,42 @@ function buildDetail(){
   }).join('');
 }
 
-/* ── TENANT (酷樂邦) RECEIVABLE ── */
+/* ── TENANT (酷樂邦) RECEIVABLE ─────────────────────────
+   應收金額 = 台中魚市場通知單「總計」原始金額，逐月填死，不用公式。
+   key = "year|period"。只有列在此表的月份才顯示金額。
+──────────────────────────────────────────────────────── */
+const KL_TOTALS={
+  "2026|06/26–07/25":8658,   // 酷樂邦 07月通知單 總計
+  "2026|07/26–08/25":8259,   // 酷樂邦 08月通知單 總計
+};
 function buildTenantReport(){
-  // Extract per-period 外展A & 船池機房 data, keeping RAW order (old→new)
+  const zhanA_rate=getShareRate('外展A');
+  const chuan_rate=getShareRate('船池機房');
   const rows=RAW.map(d=>{
     const zhanA=d.items.find(it=>it.name.startsWith('外展A'));
     const chuan=d.items.find(it=>it.name.startsWith('船池機房'));
+    const zhanA_usage=zhanA?.usage??0;
+    const zhanA_amt=zhanA?.amt??0;
+    const chuan_usage=chuan?.usage??0;
+    const chuan_amt=chuan?.amt??0;
+    const zhanA_share=zhanA_amt*zhanA_rate;
+    const chuan_share=chuan_amt*chuan_rate;
+    const total=KL_TOTALS[`${d.year}|${d.period}`]??null;  // 只認通知單，沒通知單=null
     return{
       period:d.period, label:d.label, year:d.year,
-      zhanA_usage: zhanA?.usage ?? 0, zhanA_amt: zhanA?.amt ?? 0,
-      chuan_usage: chuan?.usage ?? 0, chuan_amt: chuan?.amt ?? 0,
-      subtotal: (zhanA?.amt ?? 0)+(chuan?.amt ?? 0),
+      zhanA_usage, zhanA_amt, zhanA_share,
+      chuan_usage, chuan_amt, chuan_share, total
     };
   });
-  const totalReceivable=rows.reduce((s,r)=>s+r.subtotal,0);
-  const latest=rows[rows.length-1];
-  const activeMonths=rows.filter(r=>r.subtotal>0).length;
+  const active=rows.filter(r=>r.total!=null);
+  const totalReceivable=active.reduce((s,r)=>s+r.total,0);
+  const totalZhanAUsage=active.reduce((s,r)=>s+r.zhanA_usage,0);
+  const totalChuanUsage=active.reduce((s,r)=>s+r.chuan_usage,0);
+  const totalZhanAShare=active.reduce((s,r)=>s+r.zhanA_share,0);
+  const totalChuanShare=active.reduce((s,r)=>s+r.chuan_share,0);
+  const latest=[...rows].reverse().find(r=>r.total!=null)||rows[rows.length-1];
+  const activeMonths=active.length;
 
-  // Summary strip
   document.getElementById('tenant-summary').innerHTML=`
     <div class="kpi" style="border-left:3px solid #14b8a6">
       <div class="kpi-period">累計應收</div>
@@ -804,68 +963,176 @@ function buildTenantReport(){
     </div>
     <div class="kpi" style="border-left:3px solid #14b8a6">
       <div class="kpi-period"><span class="kpi-yr-tag" data-year="${latest.year}">${latest.year}</span>${latest.label}·最新月</div>
-      <div class="kpi-val" style="color:#5eead4">$${fmt(latest.subtotal)}</div>
-      <div class="kpi-footer"><span class="kpi-usage">外展A $${fmt(latest.zhanA_amt)} · 船池 $${fmt(latest.chuan_amt)}</span></div>
+      <div class="kpi-val" style="color:#5eead4">$${fmt(latest.total)}</div>
+      <div class="kpi-footer"><span class="kpi-usage">外展A $${fmt(Math.round(latest.zhanA_share))}・船池50% $${fmt(Math.round(latest.chuan_share))}</span></div>
     </div>
     <div class="kpi" style="border-left:3px solid #14b8a6">
       <div class="kpi-period">酷樂邦錶號</div>
       <div class="kpi-val" style="color:#5eead4;font-size:14px">外展A · 船池機房</div>
-      <div class="kpi-footer"><span class="kpi-usage">帳單原價 · 無加成</span></div>
+      <div class="kpi-footer"><span class="kpi-usage">外展A 100%・船池機房 50%</span></div>
     </div>`;
 
-  // Detail table — render newest-first
-  const rowsDesc=[...rows].reverse();
+  const rows2026=rows.filter(r=>r.year===2026);
+  const rowsDesc=[...rows2026].reverse();
+  const fmtAmt=n=>'$'+fmt(Math.round(n));
   document.getElementById('tenant-table').innerHTML=`<table>
     <thead><tr>
       <th>期間</th>
-      <th class="tr">外展A 度數</th><th class="tr">外展A 金額</th>
-      <th class="tr">船池機房 度數</th><th class="tr">船池機房 金額</th>
-      <th class="tr">當月應收</th>
+      <th class="tr">外展A 度數</th>
+      <th class="tr">外展A 金額<br><span style="font-size:10px;color:var(--t4);font-weight:400">(100%)</span></th>
+      <th class="tr">船池 度數</th>
+      <th class="tr">船池 金額<br><span style="font-size:10px;color:var(--t4);font-weight:400">(50%)</span></th>
+      <th class="tr">應收金額</th>
     </tr></thead>
     <tbody>${rowsDesc.map(r=>{
-      const isEmpty=r.subtotal===0;
-      const opacity=isEmpty?'opacity:.35':'';
+      const isEmpty=r.total==null;
+      const opacity=isEmpty?'opacity:.4':'';
+      const chuanTitle=r.chuan_amt>0?`原價 $${fmt(r.chuan_amt)} × 50%`:'';
       return`<tr class="tenant-row-酷樂邦" style="${opacity}">
         <td><span class="kpi-yr-tag" data-year="${r.year}">${r.year}</span> ${r.period}</td>
         <td class="mono tr" style="color:var(--t3)">${r.zhanA_usage>0?fmt(r.zhanA_usage):'—'}</td>
-        <td class="mono tr">${r.zhanA_amt>0?'$'+fmt(r.zhanA_amt):'—'}</td>
+        <td class="mono tr">${r.zhanA_share>0?fmtAmt(r.zhanA_share):'—'}</td>
         <td class="mono tr" style="color:var(--t3)">${r.chuan_usage>0?fmt(r.chuan_usage):'—'}</td>
-        <td class="mono tr">${r.chuan_amt>0?'$'+fmt(r.chuan_amt):'—'}</td>
-        <td class="mono tr" style="color:#5eead4;font-weight:700">${r.subtotal>0?'$'+fmt(r.subtotal):'—'}</td>
+        <td class="mono tr" title="${chuanTitle}" style="${r.chuan_amt>0?'cursor:help;text-decoration:underline dotted rgba(148,163,184,.4);text-underline-offset:3px;':''}">${r.chuan_share>0?fmtAmt(r.chuan_share):'—'}</td>
+        <td class="mono tr" style="color:#5eead4;font-weight:700">${r.total!=null?fmtAmt(r.total):"—"}</td>
       </tr>`;
     }).join('')}
     <tr style="border-top:2px solid #14b8a6;background:rgba(20,184,166,.08)">
       <td style="font-weight:700;color:#5eead4">累計合計</td>
-      <td class="mono tr" style="color:var(--t3)">${fmt(rows.reduce((s,r)=>s+r.zhanA_usage,0))}</td>
-      <td class="mono tr">$${fmt(rows.reduce((s,r)=>s+r.zhanA_amt,0))}</td>
-      <td class="mono tr" style="color:var(--t3)">${fmt(rows.reduce((s,r)=>s+r.chuan_usage,0))}</td>
-      <td class="mono tr">$${fmt(rows.reduce((s,r)=>s+r.chuan_amt,0))}</td>
+      <td class="mono tr" style="color:var(--t3)">${fmt(totalZhanAUsage)}</td>
+      <td class="mono tr">$${fmt(Math.round(totalZhanAShare))}</td>
+      <td class="mono tr" style="color:var(--t3)">${fmt(totalChuanUsage)}</td>
+      <td class="mono tr">$${fmt(Math.round(totalChuanShare))}</td>
       <td class="mono tr" style="color:#5eead4;font-weight:800">$${fmt(totalReceivable)}</td>
     </tr>
     </tbody></table>`;
 
-  // Charts (labels use CHART_LABELS defined earlier)
-  const chOpts=(ttl)=>({
+  const chuanBreakdown=rows.filter(r=>r.chuan_amt>0)
+    .map(r=>`${r.year}/${r.label} $${fmt(r.chuan_amt)}`)
+    .join(' · ');
+  document.getElementById('tenant-table-note').textContent=
+    chuanBreakdown?`↳ 船池機房原價：${chuanBreakdown}　各以 50% 計算`:'';
+
+  document.getElementById('invoice-count').textContent=activeMonths;
+
+  const chOpts=(showLegend=false)=>({
     responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{display:false},title:{display:false}},
+    plugins:{legend:{display:showLegend, labels:{color:'#64748b',font:{size:10},boxWidth:12}},title:{display:false}},
     scales:{
       x:{ticks:{color:'#64748b',font:{size:10}},grid:{display:false}},
-      y:{ticks:{color:'#64748b',callback:v=>`${(v/1000).toFixed(0)}k`},grid:{color:'#1e293b'},beginAtZero:true}
+      y:{ticks:{color:'#64748b',callback:v=>`${(v/1000).toFixed(1)}k`},grid:{color:'#1e293b'},beginAtZero:true}
     }
   });
   new Chart(document.getElementById('trendZhanA'),{type:'line',data:{
     labels:CHART_LABELS,
-    datasets:[{label:'外展A',data:rows.map(r=>r.zhanA_amt),borderColor:'#14b8a6',backgroundColor:'rgba(20,184,166,.12)',fill:true,tension:.3,pointRadius:4,pointBackgroundColor:'#14b8a6',spanGaps:false}]
-  },options:chOpts()});
+    datasets:[{label:'外展A 應收',data:rows.map(r=>r.zhanA_share),borderColor:'#14b8a6',backgroundColor:'rgba(20,184,166,.12)',fill:true,tension:.3,pointRadius:4,pointBackgroundColor:'#14b8a6',spanGaps:false}]
+  },options:chOpts(false)});
   new Chart(document.getElementById('trendChuanChi'),{type:'line',data:{
     labels:CHART_LABELS,
-    datasets:[{label:'船池機房',data:rows.map(r=>r.chuan_amt),borderColor:'#14b8a6',backgroundColor:'rgba(20,184,166,.12)',fill:true,tension:.3,pointRadius:4,pointBackgroundColor:'#14b8a6',spanGaps:false}]
-  },options:chOpts()});
+    datasets:[
+      {label:'原價（帳單金額）',data:rows.map(r=>r.chuan_amt||null),borderColor:'#94a3b8',borderDash:[5,5],backgroundColor:'transparent',tension:.3,pointRadius:3,pointBackgroundColor:'#94a3b8',spanGaps:false},
+      {label:'50% 分攤（酷樂邦應收）',data:rows.map(r=>r.chuan_share||null),borderColor:'#14b8a6',backgroundColor:'rgba(20,184,166,.15)',fill:true,tension:.3,pointRadius:4,pointBackgroundColor:'#14b8a6',spanGaps:false}
+    ]
+  },options:chOpts(true)});
+}
+
+/* ── 匹克王 (PICKLE KING) RECEIVABLE ──────────────────────
+   依台中魚市場提供之匹克王電費通知單逐月輸入。
+   無通知單月份不推算、不回溯 — 大原則：內帳僅依對應通知單計算。
+   來源：Image「匹克王」2026/08 電費通知單
+──────────────────────────────────────────────────────── */
+const PK_RAW=[
+  { period:"07/26–08/25", label:"08月", year:2026,
+    acmp1_usage:39760, acmp1_amt:218680,
+    light_usage:1103,  light_amt_full:6067,
+    light_share:2022,
+    submeter_usage:5975, submeter_amt:32863,
+    water_amt:2407,                 // 自來水(冷氣)
+    total:255972,                    // 通知單「總計」原始金額，不自行加稅
+  },
+];
+
+function buildPKReport(){
+  const rows=PK_RAW.map(d=>({...d}));
+  const totalReceivable=rows.reduce((s,r)=>s+r.total,0);
+  const latest=rows[rows.length-1];
+
+  // Summary strip
+  document.getElementById('pk-summary').innerHTML=`
+    <div class="kpi" style="border-left:3px solid var(--gold)">
+      <div class="kpi-period">累計應收</div>
+      <div class="kpi-val" style="color:var(--gold)">$${fmt(totalReceivable)}</div>
+      <div class="kpi-footer"><span class="kpi-usage">${rows.length} 個計費月</span></div>
+    </div>
+    <div class="kpi" style="border-left:3px solid var(--gold)">
+      <div class="kpi-period"><span class="kpi-yr-tag" data-year="${latest.year}">${latest.year}</span>${latest.label}·最新月</div>
+      <div class="kpi-val" style="color:var(--gold)">$${fmt(latest.total)}</div>
+      <div class="kpi-footer"><span class="kpi-usage">空調 $${fmt(latest.acmp1_amt)}・照明1/3 $${fmt(latest.light_share)}・分表 $${fmt(latest.submeter_amt)}</span></div>
+    </div>
+    <div class="kpi" style="border-left:3px solid var(--gold)">
+      <div class="kpi-period">計費項目</div>
+      <div class="kpi-val" style="color:var(--gold);font-size:13px">空調・照明1/3・場內分表</div>
+      <div class="kpi-footer"><span class="kpi-usage">依通知單逐月輸入</span></div>
+    </div>`;
+
+  // Detail table
+  const rowsDesc=[...rows].reverse();
+  const fmtAmt=n=>'$'+fmt(Math.round(n));
+  document.getElementById('pk-table').innerHTML=`<table>
+    <thead><tr>
+      <th>期間</th>
+      <th class="tr">空調ACMP1<br><span style="font-size:10px;color:var(--t4);font-weight:400">(100%)</span></th>
+      <th class="tr">照明1L1<br><span style="font-size:10px;color:var(--t4);font-weight:400">(1/3)</span></th>
+      <th class="tr">場內分表電費</th>
+      <th class="tr">自來水(冷氣)</th>
+      <th class="tr">應收金額</th>
+    </tr></thead>
+    <tbody>${rowsDesc.map(r=>{
+      const lightTitle=`原值 $${fmt(r.light_amt_full)} ÷ 3`;
+      return`<tr class="tenant-row-匹克王">
+        <td><span class="kpi-yr-tag" data-year="${r.year}">${r.year}</span> ${r.period}</td>
+        <td class="mono tr">${fmtAmt(r.acmp1_amt)}</td>
+        <td class="mono tr" title="${lightTitle}" style="cursor:help;text-decoration:underline dotted rgba(148,163,184,.4);text-underline-offset:3px">${fmtAmt(r.light_share)}</td>
+        <td class="mono tr">${fmtAmt(r.submeter_amt)}</td>
+        <td class="mono tr" style="color:var(--t3)">${fmtAmt(r.water_amt)}</td>
+        <td class="mono tr" style="color:var(--gold);font-weight:700">${fmtAmt(r.total)}</td>
+      </tr>`;
+    }).join('')}
+    <tr style="border-top:2px solid var(--gold);background:rgba(240,168,48,.08)">
+      <td style="font-weight:700;color:var(--gold)">累計合計</td>
+      <td class="mono tr">$${fmt(rows.reduce((s,r)=>s+r.acmp1_amt,0))}</td>
+      <td class="mono tr">$${fmt(rows.reduce((s,r)=>s+r.light_share,0))}</td>
+      <td class="mono tr">$${fmt(rows.reduce((s,r)=>s+r.submeter_amt,0))}</td>
+      <td class="mono tr">$${fmt(rows.reduce((s,r)=>s+r.water_amt,0))}</td>
+      <td class="mono tr" style="color:var(--gold);font-weight:800">$${fmt(totalReceivable)}</td>
+    </tr>
+    </tbody></table>`;
+
+  document.getElementById('pk-table-note').textContent=
+    `↳ 金額依台中魚市場通知單原樣輸入（含自來水），應收金額即通知單總額`;
+
+  // Chart — 依可用期間繪製（目前僅 08月，未來累加）
+  const chOpts={
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:true,labels:{color:'#64748b',font:{size:10},boxWidth:12}},title:{display:false}},
+    scales:{
+      x:{ticks:{color:'#64748b',font:{size:10}},grid:{display:false}},
+      y:{ticks:{color:'#64748b',callback:v=>`${(v/1000).toFixed(0)}k`},grid:{color:'#1e293b'},beginAtZero:true}
+    }
+  };
+  new Chart(document.getElementById('trendPK'),{type:'bar',data:{
+    labels:rows.map(r=>`${r.year} ${r.label}`),
+    datasets:[
+      {label:'空調ACMP1',data:rows.map(r=>r.acmp1_amt),backgroundColor:'#f0a830cc',borderRadius:3},
+      {label:'照明1/3',data:rows.map(r=>r.light_share),backgroundColor:'#fbbf24cc',borderRadius:3},
+      {label:'場內分表',data:rows.map(r=>r.submeter_amt),backgroundColor:'#fde68acc',borderRadius:3}
+    ]
+  },options:{...chOpts,scales:{...chOpts.scales,x:{...chOpts.scales.x,stacked:true},y:{...chOpts.scales.y,stacked:true}}}});
 }
 
 /* ── INIT ── */
 buildKPI();buildMonthPick();buildPBars();buildSpots();buildDetail();
-requestAnimationFrame(()=>{updateBarChart();buildTrends();buildTenantReport();});
+requestAnimationFrame(()=>{updateBarChart();buildTrends();buildTenantReport();buildPKReport();});
 
 // Chart.js global defaults
 Chart.defaults.color='#64748b';
