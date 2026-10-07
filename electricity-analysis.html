@@ -61,7 +61,7 @@ tr.tenant-row-水產街{background:rgba(14,165,233,.05)}
 .kpi-footer{display:flex;justify-content:space-between;margin-top:8px}
 .kpi-usage{color:var(--t4);font-size:12px}
 .kpi-diff{font-size:12px;font-weight:600}
-.kpi-diff.up{color:#ef4444}
+.kpi-diff.up{color:var(--red)}
 .kpi-diff.dn{color:var(--green)}
 
 /* CONTENT */
@@ -202,7 +202,7 @@ td:not(.highlight-row td){border-left:3px solid transparent}
         <span class="accent-bar"></span>
         <span class="h1">漁人町 電力分析表</span>
       </div>
-      <div class="h-sub" id="h-sub">2025/04/26 ～ 2026/09/25　共十四期帳單（02–03月帳單缺漏）</div>
+      <div class="h-sub" id="h-sub">2025/04/26 ～ 2026/09/25　共十六期帳單（2025/10月帳單缺漏）</div>
     </div>
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('overview',this)">總覽</button>
@@ -361,11 +361,11 @@ td:not(.highlight-row td){border-left:3px solid transparent}
       <div class="rpt-cover">
         <div class="rpt-eyebrow">ANNUAL ELECTRICITY REPORT · 漁人町</div>
         <div class="rpt-h">電力費用年度分析書</div>
-        <div class="rpt-meta">計費區間：2025 / 04 / 26 ～ 2026 / 09 / 25　｜　共十四期帳單（02–03月缺漏）　｜　夏季 $5.5 / 度・非夏季 $5.3 / 度（05月舊費率 $4.0）</div>
+        <div class="rpt-meta">計費區間：2025 / 04 / 26 ～ 2026 / 09 / 25　｜　共十六期帳單（2025/10月缺漏）　｜　夏季 $5.5 / 度・非夏季 $5.3 / 度（05月舊費率 $4.0）</div>
         <div class="rpt-kpis">
-          <div class="rpt-kpi"><div class="rpt-kpi-lbl">十四期合計</div><div class="rpt-kpi-val" style="color:var(--red)">$4,612,219</div></div>
+          <div class="rpt-kpi"><div class="rpt-kpi-lbl">十六期合計</div><div class="rpt-kpi-val" style="color:var(--red)">$4,951,811</div></div>
           <div class="rpt-kpi"><div class="rpt-kpi-lbl">全期最高月</div><div class="rpt-kpi-val" style="color:var(--red)">$524,437</div></div>
-          <div class="rpt-kpi"><div class="rpt-kpi-lbl">全期最低月</div><div class="rpt-kpi-val" style="color:var(--green)">$159,068</div></div>
+          <div class="rpt-kpi"><div class="rpt-kpi-lbl">全期最低月</div><div class="rpt-kpi-val" style="color:var(--green)">$158,708</div></div>
           <div class="rpt-kpi"><div class="rpt-kpi-lbl">空調ACMP1峰值</div><div class="rpt-kpi-val" style="color:var(--gold)">$220,264</div></div>
         </div>
       </div>
@@ -373,22 +373,34 @@ td:not(.highlight-row td){border-left:3px solid transparent}
       <!-- 01 趨勢 -->
       <div class="section">
         <div class="sec-hdr"><span class="sec-tag" style="background:var(--blue)">01</span><span class="sec-title">整體電費趨勢</span></div>
-        <p style="font-size:13px;color:var(--t2);line-height:1.85;margin-bottom:14px">八期帳單橫跨非夏季（舊費率 $4.0）→ 夏季（$5.5）→ 非夏季（$5.3）三個費率區間。整體走勢呈現「<strong style="color:var(--gold)">夏季持續攀升 → 09月全期高峰 → 費率切換後迅速收斂</strong>」格局，空調系統與費率雙重驅動為主要變數。</p>
+        <p style="font-size:13px;color:var(--t2);line-height:1.85;margin-bottom:14px">十六期帳單橫跨非夏季（舊費率 $4.0）→ 夏季（$5.5）→ 非夏季（$5.3）→ 夏季（$5.5）。整體走勢為「<strong style="color:var(--gold)">2025 夏季攀升至 09月 $312,566 → 費率切換後收斂至 2026/02月低點 $158,708 → 03月起快速回升 → 2026/08月 $524,437 全期高峰 → 09月回落</strong>」，空調系統與費率雙重驅動為主要變數。</p>
         <div class="tbl-wrap tbl-sec">
           <div class="tbl-sec-hdr" style="grid-template-columns:2fr 1fr 1fr 2fr">
             <span style="font-size:11px;color:var(--t4)">計費期間</span><span style="font-size:11px;color:var(--t4)">電費合計</span><span style="font-size:11px;color:var(--t4)">環比</span><span style="font-size:11px;color:var(--t4)">主要原因</span>
           </div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 2fr">
+            <span style="font-size:13px;color:var(--t2)"><span class="kpi-yr-tag" data-year="2026">2026</span>08/26–09/25</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$496,336</span><span style="font-size:13px;font-family:var(--mono);color:var(--green)">↓ 5.4%</span><span style="font-size:12px;color:var(--t3)">夏季用電回落，空調 ACMP1 降至 36,928度，廣告燈 0度</span>
+          </div>
           <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 2fr;background:rgba(232,82,42,.06)">
-            <span style="font-size:13px;color:#fca5a5;font-weight:600"><span class="kpi-yr-tag" data-year="2026">2026</span>06/26–07/25 ★全期最高</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$513,667</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">↑ 0.1%</span><span style="font-size:12px;color:var(--t3)">夏季用電進入平台期，廣告燈異常 +55%</span>
+            <span style="font-size:13px;color:#fca5a5;font-weight:600"><span class="kpi-yr-tag" data-year="2026">2026</span>07/26–08/25 ★全期最高</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$524,437</span><span style="font-size:13px;font-family:var(--mono);color:var(--red)">↑ 2.1%</span><span style="font-size:12px;color:var(--t3)">水產街、哈魚碼頭用電同步上升，空調維持 39,760度</span>
+          </div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 2fr">
+            <span style="font-size:13px;color:var(--t2)"><span class="kpi-yr-tag" data-year="2026">2026</span>06/26–07/25</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$513,667</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">↑ 0.1%</span><span style="font-size:12px;color:var(--t3)">夏季用電進入平台期，廣告燈異常 +55%</span>
           </div>
           <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 2fr">
             <span style="font-size:13px;color:var(--t2)"><span class="kpi-yr-tag" data-year="2026">2026</span>05/26–06/25</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$513,345</span><span style="font-size:13px;font-family:var(--mono);color:var(--red)">↑ 21.0%</span><span style="font-size:12px;color:var(--t3)">夏季費率首月，空調破 40k 度，船池機房 🆕、110V ⋯斷點</span>
           </div>
           <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 2fr">
-            <span style="font-size:13px;color:var(--t2)"><span class="kpi-yr-tag" data-year="2026">2026</span>04/26–05/25</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$424,123</span><span style="font-size:13px;font-family:var(--mono);color:var(--gold)">↑ 10.7%</span><span style="font-size:12px;color:var(--t3)">全廠用電同步上升，外展A首次啟用</span>
+            <span style="font-size:13px;color:var(--t2)"><span class="kpi-yr-tag" data-year="2026">2026</span>04/26–05/25</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$424,123</span><span style="font-size:13px;font-family:var(--mono);color:var(--red)">↑ 10.7%</span><span style="font-size:12px;color:var(--t3)">全廠用電同步上升，外展A首次啟用</span>
           </div>
           <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 2fr">
-            <span style="font-size:13px;color:var(--t2)"><span class="kpi-yr-tag" data-year="2026">2026</span>03/26–04/25</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$383,158</span><span style="font-size:13px;font-family:var(--mono);color:var(--gold)">↑ 139.7%</span><span style="font-size:12px;color:var(--t3)">空調用電結構轉變（28,608度），整體電費跳升</span>
+            <span style="font-size:13px;color:var(--t2)"><span class="kpi-yr-tag" data-year="2026">2026</span>03/26–04/25</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$383,158</span><span style="font-size:13px;font-family:var(--mono);color:var(--red)">↑ 111.8%</span><span style="font-size:12px;color:var(--t3)">空調用電結構轉變（28,608度），整體電費跳升</span>
+          </div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 2fr">
+            <span style="font-size:13px;color:var(--t2)"><span class="kpi-yr-tag" data-year="2026">2026</span>02/26–03/25</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$180,884</span><span style="font-size:13px;font-family:var(--mono);color:var(--red)">↑ 14.0%</span><span style="font-size:12px;color:var(--t3)">空調 ACMP1 回升至 4,560度（上期 592度）</span>
+          </div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 2fr">
+            <span style="font-size:13px;color:var(--t2)"><span class="kpi-yr-tag" data-year="2026">2026</span>01/26–02/25</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$158,708</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">↓ 0.7%</span><span style="font-size:12px;color:var(--t3)">全期最低月，各項目與上期大致持平</span>
           </div>
           <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 2fr">
             <span style="font-size:13px;color:var(--t2)"><span class="kpi-yr-tag" data-year="2026">2026</span>12/26–01/25</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$159,821</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">↑ 0.5%</span><span style="font-size:12px;color:var(--t3)">水產街微增，整體持平</span>
@@ -421,36 +433,38 @@ td:not(.highlight-row td){border-left:3px solid transparent}
       <div class="section">
         <div class="sec-hdr"><span class="sec-tag" style="background:var(--gold)">02</span><span class="sec-title">關鍵用電節點解析</span></div>
         <div class="insight" style="border-left:3px solid var(--blue)">
-          <div class="insight-hdr"><span class="insight-icon">❄️</span><span class="insight-title">空調 ACMP1 — 夏季尖峰 / 冬季驟降，年度落差最大</span></div>
-          <div class="insight-body">用電量由 05月的 <span class="pill" style="background:rgba(240,168,48,.15);color:var(--gold)">11,872度 ($47,488)</span> 持續攀升至 08月尖峰 <span class="pill" style="background:rgba(232,82,42,.15);color:var(--red)">17,216度 ($94,688)</span>，隨後在費率切換後驟降至 01月的 <span class="pill" style="background:rgba(34,197,94,.12);color:var(--green)">592度 ($3,138)</span>。從尖峰到最低點降幅達 <strong style="color:var(--green)">97%</strong>，是全期電費波動的第一主因。<br><br>⚠️ <strong style="color:var(--gold)">前瞻提醒：</strong>對照去年數據，6月起夏季費率重啟，空調月費預估將再度攀升至 $60,000–$95,000，建議在夏季前完成保養與濾網清潔，並評估智慧溫控方案。</div>
+          <div class="insight-hdr"><span class="insight-icon">❄️</span><span class="insight-title">空調 ACMP1 — 2026 夏季用電量級躍升至去年 2.3 倍，09月回落</span></div>
+          <div class="insight-body">2025 年用電由 05月 <span class="pill" style="background:rgba(148,163,184,.1);color:var(--t2)">11,872度 ($47,488)</span> 攀升至 08月尖峰 <span class="pill" style="background:rgba(148,163,184,.1);color:var(--t2)">17,216度 ($94,688)</span>，冬季降至 2026/01、02月 <span class="pill" style="background:rgba(148,163,184,.1);color:var(--t2)">592度 ($3,138)</span>，降幅 97%。2026 年自 03月起回升（4,560度），06月攀至全期尖峰 <span class="pill" style="background:rgba(232,82,42,.15);color:var(--red)">40,048度 ($220,264)</span>，07、08月維持 39,760度，09月回落至 <span class="pill" style="background:rgba(34,197,94,.1);color:var(--green)">36,928度 ($203,104)</span>。今年夏季空調月費為去年峰值 $94,688 的 2.1–2.3 倍，仍是全期電費波動的第一主因。<br><br>⚠️ <strong style="color:var(--gold)">前瞻提醒：</strong>10月起費率轉非夏季（$5.3/度），用電預期回落；冬季前建議檢視空調排程與保養，並向魚市場確認 2026 年起用電量級大幅提高（04月起 28k 度以上）的背景。</div>
         </div>
         <div class="insight" style="border-left:3px solid var(--red)">
-          <div class="insight-hdr"><span class="insight-icon">🏪</span><span class="insight-title">水產街電錶★ — 09月首次獨立計費，成本結構大幅改變</span></div>
-          <div class="insight-body">09月帳單首次出現水產街電錶★獨立項目（12,428度 / $68,354），佔當月電費 <strong style="color:var(--t1)">21.9%</strong>。此後持續作為全場最大單一耗電節點，冬季佔比更逆勢攀升至 <strong style="color:var(--red)">39.6%</strong>（01月）：<span class="pill" style="background:rgba(148,163,184,.1);color:var(--t2)">09月：$68,354</span><span class="pill" style="background:rgba(148,163,184,.1);color:var(--t2)">11月：$58,433</span><span class="pill" style="background:rgba(148,163,184,.1);color:var(--t2)">12月：$57,373</span><span class="pill" style="background:rgba(232,82,42,.15);color:var(--red)">01月：$63,245 ↑</span><br>冬季用電不降反升，建議釐清現行電費是否按比例向攤商分攤，避免管理方長期承擔隱性成本。</div>
+          <div class="insight-hdr"><span class="insight-icon">🏪</span><span class="insight-title">水產街電錶★ — 自 2025/09月獨立計費，夏季佔比約 25%、冬季近 40%</span></div>
+          <div class="insight-body">2025/09月帳單首次出現水產街電錶★獨立項目（12,428度 / $68,354），佔當月電費 <strong style="color:var(--t1)">21.9%</strong>。冬季佔比逆勢攀升（2026/01月 <strong style="color:var(--red)">39.6%</strong>、02月 39.4%）；2026 夏季隨空調用電增加，佔比回到約 25%，金額則創高：<span class="pill" style="background:rgba(148,163,184,.1);color:var(--t2)">2025/09月：$68,354</span><span class="pill" style="background:rgba(148,163,184,.1);color:var(--t2)">2026/01月：$63,245</span><span class="pill" style="background:rgba(232,82,42,.15);color:var(--red)">2026/06月：$121,688</span><span class="pill" style="background:rgba(232,82,42,.15);color:var(--red)">2026/08月：$130,108（最高）</span><span class="pill" style="background:rgba(34,197,94,.1);color:var(--green)">2026/09月：$123,459 ↓</span><br>09月為首次月降。冬季用電不降反升，建議釐清現行電費是否按比例向攤商分攤，避免管理方長期承擔隱性成本。</div>
         </div>
         <div class="insight" style="border-left:3px solid var(--green)">
-          <div class="insight-hdr"><span class="insight-icon">🏠</span><span class="insight-title">漁人町手抄（警衛室）— 冬季持續遞減，幅度超出預期</span></div>
-          <div class="insight-body">夏季用電維持 5,000–5,400度高檔，進入秋冬後連續下降：<span class="pill" style="background:rgba(34,197,94,.1);color:var(--green)">11月：4,718度</span> → <span class="pill" style="background:rgba(34,197,94,.1);color:var(--green)">12月：3,893度</span> → <span class="pill" style="background:rgba(34,197,94,.1);color:var(--green)">01月：2,800度</span>，冬季三期降幅達 41%，略超出氣溫影響的合理預期，建議現場確認是否有設備調整或量表異常。</div>
+          <div class="insight-hdr"><span class="insight-icon">🏠</span><span class="insight-title">漁人町手抄（警衛室）— 07、08、09月三期讀數完全相同，疑未更新</span></div>
+          <div class="insight-body">2025 夏季維持 5,000–5,400度，冬季遞減至 <span class="pill" style="background:rgba(34,197,94,.1);color:var(--green)">2026/01月：2,800度</span>，春夏回升至 <span class="pill" style="background:rgba(148,163,184,.1);color:var(--t2)">06月：5,327度</span>。但 <span class="pill" style="background:rgba(232,82,42,.15);color:var(--red)">07、08、09月：均為 5,867度 / $32,269</span>，三期讀數同為 56257→62124，疑魚市場手抄未更新或沿用上期數字，建議向魚市場確認實際抄表日期與讀數。</div>
         </div>
         <div class="insight" style="border-left:3px solid var(--purple)">
-          <div class="insight-hdr"><span class="insight-icon">💡</span><span class="insight-title">哈魚碼頭(B廠區) — 09月後度數結構性下降（水產街拆表）</span></div>
-          <div class="insight-body">05–08月哈魚碼頭度數維持 21,000–23,600度，09月起降至 19,572度，此後冬季進一步收斂至 10,000–12,600度。需注意：09月起水產街電錶獨立計費前，水產街用電包含於哈魚碼頭總表內，<strong style="color:var(--t1)">跨期比較時需留意口徑差異</strong>。照明1L1 全期穩定維持 1,100–1,500度，為基準對照線。</div>
+          <div class="insight-hdr"><span class="insight-icon">💡</span><span class="insight-title">哈魚碼頭(B廠區) — 2025/09月後度數結構性下降（水產街拆表）</span></div>
+          <div class="insight-body">2025/05–08月度數維持 21,000–23,600度，2025/09月起降至 19,572度，冬季進一步收斂至 10,000–12,600度（11月–03月）；2026 夏季回升至 19,600–20,700度（06–09月）。需注意：2025/09月水產街電錶獨立計費前，水產街用電包含於哈魚碼頭總表內，<strong style="color:var(--t1)">跨期比較時需留意口徑差異</strong>。照明1L1 全期穩定維持 1,089–1,500度，為基準對照線。</div>
         </div>
       </div>
 
       <!-- 03 佔比 -->
       <div class="section">
-        <div class="sec-hdr"><span class="sec-tag" style="background:var(--purple)">03</span><span class="sec-title">各計費節點費用佔比彙整（最新期 12/26–01/25）</span></div>
+        <div class="sec-hdr"><span class="sec-tag" style="background:var(--purple)">03</span><span class="sec-title">各計費節點費用佔比彙整（最新期 08/26–09/25）</span></div>
         <div class="tbl-wrap tbl-sec">
           <div class="tbl-sec-hdr" style="grid-template-columns:2fr 1fr 1fr 1fr">
             <span style="font-size:11px;color:var(--t4)">項目</span><span style="font-size:11px;color:var(--t4)">度數</span><span style="font-size:11px;color:var(--t4)">費用</span><span style="font-size:11px;color:var(--t4)">佔比</span>
           </div>
-          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 1fr;border-left:3px solid var(--red);background:rgba(232,82,42,.06)"><span style="font-size:13px;color:#fca5a5;font-weight:600">水產街電錶★</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">11,933</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$63,245</span><span style="font-size:13px;font-family:var(--mono);color:var(--red);font-weight:700">39.6%</span></div>
-          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 1fr;border-left:3px solid transparent"><span style="font-size:13px;color:var(--t2)">哈魚碼頭(B廠區)</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">10,998</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$58,289</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">36.5%</span></div>
-          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 1fr;border-left:3px solid transparent"><span style="font-size:13px;color:var(--t2)">漁人町手抄(警衛室)</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">2,800</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$14,840</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">9.3%</span></div>
-          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 1fr;border-left:3px solid transparent"><span style="font-size:13px;color:var(--t2)">外展B</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">1,827</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$9,683</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">6.1%</span></div>
-          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 1fr;border-left:3px solid transparent"><span style="font-size:13px;color:var(--t2)">照明1L1</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">1,291</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$6,842</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">4.3%</span></div>
-          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 1fr;border-left:3px solid transparent"><span style="font-size:13px;color:var(--t2)">其他合計</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">—</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$6,922</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">4.3%</span></div>
+                    <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 1fr;border-left:3px solid var(--red);background:rgba(232,82,42,.06)"><span style="font-size:13px;color:#fca5a5;font-weight:600">空調ACMP1</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">36,928</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$203,104</span><span style="font-size:13px;font-family:var(--mono);color:var(--red);font-weight:700">40.9%</span></div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 1fr;border-left:3px solid transparent"><span style="font-size:13px;color:var(--t2)">水產街電錶★</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">22,447</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$123,459</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">24.9%</span></div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 1fr;border-left:3px solid transparent"><span style="font-size:13px;color:var(--t2)">哈魚碼頭(B廠區)</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">19,974</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$109,857</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">22.1%</span></div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 1fr;border-left:3px solid transparent"><span style="font-size:13px;color:var(--t2)">漁人町手抄(警衛室)</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">5,867</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$32,269</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">6.5%</span></div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 1fr;border-left:3px solid transparent"><span style="font-size:13px;color:var(--t2)">外展B</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">2,077</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$11,424</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">2.3%</span></div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 1fr;border-left:3px solid transparent"><span style="font-size:13px;color:var(--t2)">外展A</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">1,203</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$6,617</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">1.3%</span></div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 1fr;border-left:3px solid transparent"><span style="font-size:13px;color:var(--t2)">照明1L1</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">1,089</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$5,990</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">1.2%</span></div>
+          <div class="tbl-sec-row" style="grid-template-columns:2fr 1fr 1fr 1fr;border-left:3px solid transparent"><span style="font-size:13px;color:var(--t2)">其他合計</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">—</span><span style="font-size:13px;font-family:var(--mono);color:var(--t1)">$3,616</span><span style="font-size:13px;font-family:var(--mono);color:var(--t3)">0.7%</span></div>
         </div>
       </div>
 
@@ -459,28 +473,28 @@ td:not(.highlight-row td){border-left:3px solid transparent}
         <div class="sec-hdr"><span class="sec-tag" style="background:var(--green)">04</span><span class="sec-title">後續營運建議</span></div>
         <div class="rec-item" style="border-left:3px solid var(--gold)">
           <div class="rec-num" style="background:rgba(240,168,48,.18);color:var(--gold)">!</div>
-          <div><div class="rec-title">空調 ACMP1 用電進入平台期，仍需監控</div><div class="rec-body">連續五月變化軌跡：04月 28,608度 → 05月 32,640度 → 06月 40,048度 → <strong style="color:var(--gold)">07月 39,760度 $218,680（首次月降 -0.7%）</strong>。06、07月連續兩月維持 40k 度量級但未再創新高，可視為新常態基線。夏季餘下 8–9月為觀察重點，若能維持此水位而非續升，本年度夏季壓力可控。建議延續原策略：① 委請空調維護廠商完成全面性檢查與濾網清潔；② 執行離峰時段預冷、夜間排程；③ 8月起評估是否進一步移除◆注意標記。<br><br><span style="display:inline-block;padding:8px 12px;background:rgba(58,123,213,.08);border-left:2px solid var(--blue);border-radius:4px;font-size:12.5px;color:var(--t3);margin-top:6px"><strong style="color:#93c5fd">📌 旁註：07月全廠用電結構觀察</strong><br>與 06月相比，全廠出現「有升有降」而非齊步上升的訊號：哈魚碼頭 -1.8%、空調 -0.7%、船池機房 -41%（自然回落）；但漁人町手抄 +10.1%、外展B +26.6%、水產街 +2.8%、廣告燈 +55%（異常）。整體平台化，但個別項目仍需觀察。</span></div></div>
+          <div><div class="rec-title">空調 ACMP1 夏季高原期結束，09月回落</div><div class="rec-body">夏季軌跡：04月 28,608度 → 05月 32,640度 → 06月 40,048度 → 07月 39,760度 → 08月 39,760度 → <strong style="color:var(--green)">09月 36,928度 $203,104（較 08月 -7.1%）</strong>。06–08月連續三月維持 40k 度量級，09月首次明顯回落，夏季壓力已過。建議延續原策略：① 委請空調維護廠商完成全面性檢查與濾網清潔；② 執行離峰時段預冷、夜間排程；③ 10月費率轉非夏季後，檢視冬季運轉時段是否需調整。<br><br><span style="display:inline-block;padding:8px 12px;background:rgba(58,123,213,.08);border-left:2px solid var(--blue);border-radius:4px;font-size:12.5px;color:var(--t3);margin-top:6px"><strong style="color:#93c5fd">📌 旁註：09月全廠用電結構觀察</strong><br>與 08月相比，全廠多數項目回落：哈魚碼頭 -3.7%、空調 -7.1%、船池機房 -17.6%、水產街 -5.1%、照明 -1.3%、外展B 持平；外展A +3.1%。警衛室讀數與 08月相同（疑未更新），廣告燈 152度 → 0度（異常）。整體電費 -5.4%。</span></div></div>
         </div>
         <div class="rec-item" style="border-left:3px solid var(--red)">
           <div class="rec-num" style="background:rgba(232,82,42,.2);color:var(--red)">1</div>
-          <div><div class="rec-title">水產街成本結構釐清（優先處理）</div><div class="rec-body">水產街電錶自 09 月獨立計費後，冬季佔比持續攀升至近 40%，且呈逆勢成長趨勢。<strong style="color:#fca5a5">連續三月加速：04月 $93,858 → 05月 $101,495 → 06月 $121,688</strong>，累計已達 $317,041。建議確認現行租約對電費的分攤依據，中長期可引入子電錶進行精細化管理，避免管理方長期承擔隱性成本。</div></div>
+          <div><div class="rec-title">水產街成本結構釐清（優先處理）</div><div class="rec-body">水產街電錶自 2025/09月獨立計費後，2026 夏季量大增：<strong style="color:#fca5a5">04月 $93,858 → 05月 $101,495 → 06月 $121,688 → 07月 $125,070 → 08月 $130,108（最高）→ 09月 $123,459（首次回落）</strong>，12 期累計已達 $1,066,488；佔比夏季約 25%、冬季近 40%。建議確認現行租約對電費的分攤依據，中長期可引入子電錶進行精細化管理，避免管理方長期承擔隱性成本。</div></div>
         </div>
         <div class="rec-item" style="border-left:3px solid #a855f7">
           <div class="rec-num" style="background:rgba(168,85,247,.2);color:#a855f7">2</div>
-          <div><div class="rec-title">📋 船池機房 錶號狀況查核</div><div class="rec-body">06月首次出現的「船池機房」電錶，07月數據回落：<strong style="color:#c084fc">06月 1,975度 / $10,863 → 07月 1,158度 / $6,369（-41%）</strong>。可能為 06月啟用初期滿載測試、07月進入正常運作模式，或設備使用頻率調整。<br><br>此電錶已確認歸屬承租戶「酷樂邦農漁冷鏈實業股份有限公司」，屬<strong style="color:#c084fc">分租錶</strong>。已在「承租戶應收電費」分頁獨立追蹤（截至 07月累計 $17,232）。仍建議向台中市魚市場推廣課發文確認：① 電錶正式啟用日期；② 用電歸屬範圍。</div></div>
+          <div><div class="rec-title">📋 船池機房 錶號狀況查核</div><div class="rec-body">2026/06月首次出現的「船池機房」電錶，之後連續三月遞減：<strong style="color:#c084fc">06月 1,975度 / $10,863 → 07月 1,158度 / $6,369 → 08月 669度 / $3,680 → 09月 551度 / $3,031</strong>。可能為 06月啟用初期滿載測試、之後進入正常運作模式，或設備使用頻率調整。<br><br>此電錶已確認歸屬承租戶「酷樂邦農漁冷鏈實業股份有限公司」，屬<strong style="color:#c084fc">分租錶</strong>。已在「承租戶-酷樂邦」分頁獨立追蹤（帳單原價累計 $23,943，酷樂邦負擔 50%）。仍建議向台中市魚市場推廣課發文確認：① 電錶正式啟用日期；② 用電歸屬範圍。</div></div>
         </div>
         <div class="rec-item" style="border-left:3px solid #a855f7">
           <div class="rec-num" style="background:rgba(168,85,247,.2);color:#a855f7">3</div>
-          <div><div class="rec-title">📋 水舞舞台 110V/220V 錶號體系查核</div><div class="rec-body">水舞舞台 110V 錶自 2026/06月起連續兩月從帳單消失（此前每月穩定 22–363 度）。同時 220V 錶度數在 07月異常暴增：<strong style="color:#c084fc">06月 22度 / $121 → 07月 80度 / $440（+263%）</strong>。<br><br>兩者可能存在錶號整併或負載重分配關係，但實際情況待確認，故獨立列舉便於回溯：<br>
+          <div><div class="rec-title">📋 水舞舞台 110V/220V 錶號體系查核</div><div class="rec-body">水舞舞台 110V 錶自 2026/06月起連續四期從帳單消失（此前每月穩定 281–407 度）。220V 錶度數同期偏低且波動：<strong style="color:#c084fc">06月 22度 → 07月 80度 → 08月 107度 → 09月 49度</strong>。<br><br>兩者可能存在錶號整併或負載重分配關係，但實際情況待確認，故獨立列舉便於回溯：<br>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-family:var(--mono);font-size:12px;margin-top:8px">
-            <div style="background:var(--bg1);padding:8px;border-radius:4px"><div style="color:var(--t4);font-size:10px;margin-bottom:3px">水舞舞台 110V</div><div style="color:var(--t2)">05月 327度 $1,733<br>06–07月 <span style="color:#a3a3a3">⋯ 斷點</span></div></div>
-            <div style="background:var(--bg1);padding:8px;border-radius:4px"><div style="color:var(--t4);font-size:10px;margin-bottom:3px">水舞舞台 220V</div><div style="color:var(--t2)">05月 55度 $292<br>06月 22度 $121<br><strong style="color:#c084fc">07月 80度 $440</strong></div></div>
+            <div style="background:var(--bg1);padding:8px;border-radius:4px"><div style="color:var(--t4);font-size:10px;margin-bottom:3px">水舞舞台 110V</div><div style="color:var(--t2)">05月 327度 $1,733<br>06–09月 <span style="color:#a3a3a3">⋯ 斷點</span></div></div>
+            <div style="background:var(--bg1);padding:8px;border-radius:4px"><div style="color:var(--t4);font-size:10px;margin-bottom:3px">水舞舞台 220V</div><div style="color:var(--t2)">05月 55度 $292<br>06月 22度 $121<br>07月 80度 $440<br>08月 107度 $589<br><strong style="color:#c084fc">09月 49度 $270</strong></div></div>
           </div>
-          <br>建議發文查證：① 110V 錶是否被移除／併入 220V？② 220V 度數突增是否為承接 110V 負載？③ 錶號變動生效日？未釐清前依帳單原樣入帳，備註「錶號變動待確認」。</div></div>
+          <br>建議發文查證：① 110V 錶是否被移除／併入 220V？② 220V 度數是否為承接 110V 負載？③ 錶號變動生效日？未釐清前依帳單原樣入帳，備註「錶號變動待確認」。</div></div>
         </div>
         <div class="rec-item" style="border-left:3px solid var(--red)">
           <div class="rec-num" style="background:rgba(232,82,42,.2);color:var(--red)">4</div>
-          <div><div class="rec-title">🔥 夏季用電推估｜實測 vs 預估對照（延伸 08、09 月）</div><div class="rec-body">先前預估 07月 $525k–$580k 區間，實測落點 <strong style="color:var(--green)">$513,667，較樂觀情境下緣還低 2.2%</strong>，顯示夏季用電未如原先擔憂持續攀升，而是進入平台期。以 07月為新基準，延伸推估 08、09 月：<br><br>
+          <div><div class="rec-title">🔥 夏季用電推估｜實測 vs 預估對照（6–9月已全數結算）</div><div class="rec-body">先前預估 07月 $525k–$580k 區間，實測 <strong style="color:var(--green)">$513,667，較樂觀情境下緣還低 2.2%</strong>。08月實測 $524,437 未超過原設定的 $555k 門檻，夏季未續升；09月實測 $496,336。6–9月合計 <strong style="color:var(--green)">$2,047,785</strong>，落在原推估 $2.02M–$2.11M 區間內：<br><br>
           <div style="overflow-x:auto"><table style="width:100%;font-size:12px;margin-top:8px">
             <thead><tr style="background:var(--bg1)">
               <th style="text-align:left;padding:8px;color:var(--t4)">月份</th>
@@ -492,32 +506,32 @@ td:not(.highlight-row td){border-left:3px solid transparent}
             <tbody>
               <tr><td style="padding:8px;font-weight:700">2026/06月</td><td style="padding:8px;color:var(--t3)">基準</td><td class="mono" style="padding:8px;text-align:right;color:var(--t3)">—</td><td class="mono" style="padding:8px;text-align:right;color:var(--t1);font-weight:700">$513,345</td><td style="padding:8px;color:var(--t4)">首月基準</td></tr>
               <tr style="background:rgba(34,197,94,.06)"><td style="padding:8px;font-weight:700">2026/07月</td><td style="padding:8px;color:var(--t3)">樂觀 (原預估)</td><td class="mono" style="padding:8px;text-align:right;color:var(--gold)">$525k</td><td class="mono" style="padding:8px;text-align:right;color:var(--green);font-weight:700">$513,667</td><td style="padding:8px;color:var(--green)">✓ 低於預估 2.2%</td></tr>
-              <tr><td style="padding:8px;font-weight:700" rowspan="2">2026/08月<br><span style="font-weight:400;font-size:10px;color:var(--t4)">最熱月</span></td><td style="padding:8px;color:var(--t3)">平緩情境 (空調 ~40k)</td><td class="mono" style="padding:8px;text-align:right;color:var(--gold)">$510–520k</td><td class="mono" style="padding:8px;text-align:right;color:var(--t4)">待實測</td><td style="padding:8px;color:var(--t4)">若延續 07月趨勢</td></tr>
-              <tr><td style="padding:8px;color:var(--t3)">上行情境 (空調 42–45k)</td><td class="mono" style="padding:8px;text-align:right;color:#fca5a5">$530–555k</td><td class="mono" style="padding:8px;text-align:right;color:var(--t4)">待實測</td><td style="padding:8px;color:var(--t4)">若 8月比 6–7月更熱</td></tr>
-              <tr><td style="padding:8px;font-weight:700" rowspan="2">2026/09月<br><span style="font-weight:400;font-size:10px;color:var(--t4)">夏季末月</span></td><td style="padding:8px;color:var(--t3)">回落情境 (空調 ~35–38k)</td><td class="mono" style="padding:8px;text-align:right;color:var(--green)">$480–500k</td><td class="mono" style="padding:8px;text-align:right;color:var(--t4)">待實測</td><td style="padding:8px;color:var(--t4)">中下旬轉涼</td></tr>
-              <tr><td style="padding:8px;color:var(--t3)">高溫延續 (空調 ~40k)</td><td class="mono" style="padding:8px;text-align:right;color:var(--gold)">$510–520k</td><td class="mono" style="padding:8px;text-align:right;color:var(--t4)">待實測</td><td style="padding:8px;color:var(--t4)">與 07月接近</td></tr>
-              <tr style="border-top:2px solid var(--border);background:rgba(58,123,213,.04)"><td colspan="2" style="padding:8px;font-weight:700;color:#93c5fd">夏季合計推估 (6–9月)</td><td class="mono" style="padding:8px;text-align:right;color:#93c5fd;font-weight:700">$2.02M–$2.11M</td><td class="mono" style="padding:8px;text-align:right;color:var(--t4)">6+7月 $1.027M</td><td style="padding:8px;color:var(--t3);font-size:11px">已完成 51%</td></tr>
+              <tr><td style="padding:8px;font-weight:700" rowspan="2">2026/08月<br><span style="font-weight:400;font-size:10px;color:var(--t4)">最熱月</span></td><td style="padding:8px;color:var(--t3)">平緩情境 (空調 ~40k)</td><td class="mono" style="padding:8px;text-align:right;color:var(--gold)">$510–520k</td><td class="mono" style="padding:8px;text-align:right;color:var(--t1);font-weight:700">$524,437</td><td style="padding:8px;color:var(--gold)">略高於平緩上緣 0.8%</td></tr>
+              <tr><td style="padding:8px;color:var(--t3)">上行情境 (空調 42–45k)</td><td class="mono" style="padding:8px;text-align:right;color:#fca5a5">$530–555k</td><td class="mono" style="padding:8px;text-align:right;color:var(--t4)">—</td><td style="padding:8px;color:var(--green)">✓ 未達上行區間</td></tr>
+              <tr><td style="padding:8px;font-weight:700" rowspan="2">2026/09月<br><span style="font-weight:400;font-size:10px;color:var(--t4)">夏季末月</span></td><td style="padding:8px;color:var(--t3)">回落情境 (空調 ~35–38k)</td><td class="mono" style="padding:8px;text-align:right;color:var(--green)">$480–500k</td><td class="mono" style="padding:8px;text-align:right;color:var(--green);font-weight:700">$496,336</td><td style="padding:8px;color:var(--green)">✓ 落入回落情境</td></tr>
+              <tr><td style="padding:8px;color:var(--t3)">高溫延續 (空調 ~40k)</td><td class="mono" style="padding:8px;text-align:right;color:var(--gold)">$510–520k</td><td class="mono" style="padding:8px;text-align:right;color:var(--t4)">—</td><td style="padding:8px;color:var(--t4)">未發生</td></tr>
+              <tr style="border-top:2px solid var(--border);background:rgba(58,123,213,.04)"><td colspan="2" style="padding:8px;font-weight:700;color:#93c5fd">夏季合計推估 (6–9月)</td><td class="mono" style="padding:8px;text-align:right;color:#93c5fd;font-weight:700">$2.02M–$2.11M</td><td class="mono" style="padding:8px;text-align:right;color:var(--t4)">6–9月 $2.048M</td><td style="padding:8px;color:var(--green);font-size:11px">✓ 落入推估區間</td></tr>
             </tbody>
           </table></div>
-          <br>建議：① 現金流管控依合計推估上緣 $2.11M 預留；② 8月是最熱月為夏季壓力測試點；③ 10月費率轉非夏季後預期回落至 $195k–$220k 水位；④ 若 08月實測超過 $555k，代表原「平台期」假設失敗，應啟動空調專項體檢。</div></div>
+          <br>結論：① 夏季實際支出 $2.05M，落在推估區間中段，現金流預留 $2.11M 足夠；② 08月未超過 $555k 門檻，不需啟動空調專項體檢；③ 10月費率轉非夏季（$5.3/度）後預期回落，2025 同期（10/26–11/25）為 $195,189 可作對照。</div></div>
         </div>
         <div class="rec-item" style="border-left:3px solid var(--gold)">
           <div class="rec-num" style="background:rgba(240,168,48,.2);color:var(--gold)">5</div>
-          <div><div class="rec-title">備戰夏季空調費用：對照去年數據超前規劃</div><div class="rec-body">去年 06–09 月空調費用由 $59,904 飆升至 $94,688。今年夏季應提前完成：①空調設備保養與濾網清潔；②大型設備排程最佳化；③評估智慧溫控或分時段節能方案，目標將夏季空調費控制在去年峰值以下。</div></div>
+          <div><div class="rec-title">備戰夏季空調費用：對照去年數據超前規劃</div><div class="rec-body">2025 年 06–09 月空調費用由 $59,904 升至尖峰 $94,688；2026 年同期為 $220,264、$218,680、$218,680、$203,104，約為去年峰值的 2.1–2.3 倍，未達成「控制在去年峰值以下」的目標。明年夏季前應提前完成：①空調設備保養與濾網清潔；②大型設備排程最佳化；③評估智慧溫控或分時段節能方案；④向魚市場確認 2026 年起空調用電量級提高（04月起 28k 度以上）的原因。</div></div>
         </div>
         <div class="rec-item" style="border-left:3px solid var(--blue)">
           <div class="rec-num" style="background:rgba(58,123,213,.2);color:var(--blue)">6</div>
-          <div><div class="rec-title">警衛室用電異常確認</div><div class="rec-body">警衛室冬季三期降幅達 41%，遠超氣溫影響的合理範圍。建議現場確認監視器主機、照明系統及其他常駐設備是否有異動，確保計費數字的準確性，並釐清是否有設備關閉或量表異常。</div></div>
+          <div><div class="rec-title">警衛室抄表讀數重複確認</div><div class="rec-body">警衛室 07、08、09月三期讀數完全相同（56257→62124，均 5,867度 / $32,269），疑似魚市場手抄未更新或沿用上期數字；冬季降幅 41% 已於春夏回升，不再列為異常。建議向台中市魚市場推廣課確認實際抄表日期與讀數，若有更正可能有退補。</div></div>
         </div>
         <div class="rec-item" style="border-left:3px solid var(--green)">
           <div class="rec-num" style="background:rgba(34,197,94,.2);color:var(--green)">7</div>
-          <div><div class="rec-title">建立年度電費基準線與預警機制</div><div class="rec-body">已有完整一年週期＋跨夏季數據：非夏季基準 $159k–$195k，2026 夏季平台期 $513k–$514k（06、07月連續兩月）。建議為各主要節點設定月度正常波動區間：① 空調 ACMP1 夏季 38k–42k 度、非夏季 <1k 度；② 廣告燈全年 150–200 度（07月 256度為異常）；③ 水產街電錶★ 夏季 20k–24k 度。任一項單月超出區間 ±15% 觸發現場查核。</div></div>
+          <div><div class="rec-title">建立年度電費基準線與預警機制</div><div class="rec-body">已有跨夏季數據：非夏季基準 $159k–$195k（2025/11–2026/03月），2026 夏季 $496k–$524k（06–09月），04–05月為過渡期 $383k–$424k。建議為各主要節點設定月度正常波動區間：① 空調 ACMP1 夏季 36k–41k 度、冬季 <5k 度；② 廣告燈正常 150–260 度，03月 29度、09月 0度 為偏低異常（疑未抄表或電錶故障）；③ 水產街電錶★ 夏季 22k–24k 度。任一項單月超出區間 ±15% 觸發現場查核。</div></div>
         </div>
       </div>
 
       <div class="rpt-closing">
         <div class="rpt-closing-lbl">結語</div>
-        <div class="rpt-closing-body">本年度十二期數據顯示，2026 夏季用電已呈現「<strong style="color:var(--gold)">高水位平台期</strong>」訊號：06、07 月連續兩月電費維持在 $513k 水準（$513,345 / $513,667），空調 ACMP1 首次月降 -0.7%，未如原推估持續飆升。夏季合計已完成 51%，全季推估 $2.02M–$2.11M。<br><br>然平台期並非解除警戒，07月出現三項新觀察點：① <strong style="color:#c084fc">廣告燈用電暴增 +55%</strong>（戶外照明理應穩定，需查核）；② <strong style="color:#c084fc">水舞舞台 220V 度數 +263%</strong> 疑與 110V 消失有錶號整併關係；③ 公設電費首見退補條目。建議下個月工作重點：待 08 月帳單驗證平台期假設，若實測 $555k 以內代表夏季壓力受控，可啟動空調節能方案評估；若超出則觸發專項體檢。</div>
+        <div class="rpt-closing-body">本年度十六期數據（缺 2025/10月帳單）顯示，2026 夏季用電呈現「<strong style="color:var(--gold)">高水位平台期</strong>」並於 09月回落：06–09月電費 $513,345 → $513,667 → $524,437（全期最高）→ $496,336，夏季合計 $2,047,785，落在原推估 $2.02M–$2.11M 區間內，空調 ACMP1 09月降至 36,928度（-7.1%）。<br><br>09月帳單的三項觀察點：① <strong style="color:#c084fc">警衛室手抄 07–09月三期讀數相同</strong>（疑未更新）；② <strong style="color:#c084fc">廣告燈 09月 0度</strong>（電錶或抄表異常）；③ <strong style="color:#c084fc">水產街電錶 08月 $130,108 創高後 09月首次回落</strong>。建議下個月工作重點：待 10月帳單確認費率轉非夏季後的回落幅度；向魚市場查證警衛室與廣告燈抄表；取得酷樂邦、匹克王 09月通知單後補入承租戶分頁。</div>
       </div>
       <div class="rpt-credit">本報告資料來源：台中市魚市場股份有限公司公共費用帳單　｜　分析製作：漁人町管理部</div>
     </div>
@@ -629,6 +643,32 @@ const RAW = [
       {name:"外展B",usage:1827,amt:9683},
       {name:"水產街電錶★",usage:11933,amt:63245},
     ]},
+  { period:"01/26–02/25", label:"02月", year:2026, total:158708,
+    items:[
+      {name:"哈魚碼頭(B廠區)",usage:10032,amt:53170},
+      {name:"水舞舞台110V",usage:325,amt:1723},
+      {name:"水舞舞台220V",usage:55,amt:292},
+      {name:"漁人町手抄(警衛室)",usage:3753,amt:19891},
+      {name:"廣告燈(環中路圍牆)",usage:252,amt:1336},
+      {name:"照明1L1",usage:1267,amt:6715},
+      {name:"空調ACMP1",usage:592,amt:3138},
+      {name:"公設電費1R1",usage:null,amt:289},
+      {name:"外展B",usage:1810,amt:9593},
+      {name:"水產街電錶★",usage:11804,amt:62561},
+    ]},
+  { period:"02/26–03/25", label:"03月", year:2026, total:180884,
+    items:[
+      {name:"哈魚碼頭(B廠區)",usage:10872,amt:57622},
+      {name:"水舞舞台110V",usage:281,amt:1489},
+      {name:"水舞舞台220V",usage:62,amt:329},
+      {name:"漁人町手抄(警衛室)",usage:3991,amt:21152},
+      {name:"廣告燈(環中路圍牆)",usage:29,amt:154},
+      {name:"照明1L1",usage:1123,amt:5949},
+      {name:"空調ACMP1",usage:4560,amt:24168},
+      {name:"公設電費1R1",usage:null,amt:268},
+      {name:"外展B",usage:1681,amt:8909},
+      {name:"水產街電錶★",usage:11480,amt:60844},
+    ]},
   { period:"03/26–04/25", label:"04月", year:2026, total:383158,
     items:[
       {name:"哈魚碼頭(B廠區)",usage:16704,amt:88531},
@@ -725,7 +765,7 @@ const fmt=n=>n!=null?Number(n).toLocaleString('zh-TW'):'—';
 const ZH_NUMS=['零','一','二','三','四','五','六','七','八','九','十','十一','十二','十三','十四','十五','十六','十七','十八','十九','二十'];
 const N_ZH=ZH_NUMS[RAW.length]||RAW.length;
 const SUBTITLES={
-  overview:`2025/04/26 ～ 2026/09/25　共${N_ZH}期帳單（02–03月帳單缺漏）`,
+  overview:`2025/04/26 ～ 2026/09/25　共${N_ZH}期帳單（2025/10月帳單缺漏）`,
   trend:`月度趨勢分析　共${N_ZH}期資料`,
   detail:`各期用電項目明細　共${N_ZH}期`,
   tenant:`酷樂邦農漁冷鏈實業　分租電錶月度應收追蹤<br><span style="font-size:12px;color:var(--t4)">※ 船池機房由酷樂邦與漁人町各負擔 50%</span>`,
@@ -841,10 +881,10 @@ function buildPBars(){
 /* ── SPOTS ── */
 function buildSpots(){
   const spots=[
-    {lbl:'全期最高月電費',val:'2026/07月 $513,667',sub:'較06月 +0.06%，用電進入平台期',c:'#e8522a'},
-    {lbl:'空調ACMP1 平台期訊號',val:'2026/07月 39,760度 $218,680',sub:'首次月降(-0.7%)，連兩月維持 40k',c:'#f0a830'},
-    {lbl:'廣告燈用電異常暴增 ⚠',val:'2026/07月 256度 (+55%)',sub:'戶外照明用電理應穩定，需查核',c:'#a855f7'},
-    {lbl:'水產街電錶★ 累計',val:'2026/07月 $125,070（22,740度）',sub:'12期累計 $442,111，續居第二',c:'#3a7bd5'},
+    {lbl:'全期最高月電費',val:'2026/08月 $524,437',sub:'較07月 +2.1%，09月回落至 $496,336（-5.4%）',c:'#e8522a'},
+    {lbl:'空調ACMP1 夏季回落',val:'2026/09月 36,928度 $203,104',sub:'較08月 -7.1%，07–08月維持 39,760度',c:'#f0a830'},
+    {lbl:'廣告燈用電歸零 ⚠',val:'2026/09月 0度',sub:'帳單讀數未更新或電錶異常，需向魚市場查核',c:'#a855f7'},
+    {lbl:'水產街電錶★ 累計',val:'2026/09月 $123,459（22,447度）',sub:'12期累計 $1,066,488，續居第二',c:'#3a7bd5'},
   ];
   document.getElementById('spot-list').innerHTML=spots.map(s=>`<div class="spot">
     <div class="spot-dot" style="background:${s.c}"></div>
