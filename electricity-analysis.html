@@ -755,6 +755,18 @@ const RAW = [
       {name:"水產街電錶★",usage:22447,amt:123459},
     ]},
 ];
+/* ── 照明1L1 三家分攤註記 ─────────────────────────────────
+   帳單金額＝漁人町與鄰居「大間漁場」電表對分後漁人町的 50%；
+   該 50% 再由宝夾町、匹克王、漁人町三家各 1/3 分攤（匹克王 1/3 對外請款，其餘屬內帳）。
+   帳單金額維持原樣（總額已驗算），僅於 2026/04 起各期加註各家分攤額。 */
+(function(){
+  const start=RAW.findIndex(d=>d.year===2026&&d.period==="03/26–04/25");
+  RAW.forEach((d,i)=>{
+    if(start<0||i<start) return;
+    const it=d.items.find(x=>x.name==="照明1L1");
+    if(it&&it.amt!=null&&!it.note) it.note=`三家分租：宝夾町／匹克王／漁人町各 1/3＝約 $${Math.round(it.amt/3).toLocaleString('zh-TW')}（帳單金額已是對分大間漁場後的 50%）`;
+  });
+})();
 const COLORS=["#e8522a","#f0a830","#3a7bd5","#22c55e","#a855f7","#ec4899","#14b8a6","#f97316","#64748b","#ef4444"];
 const MONTH_LABELS=RAW.map(d=>d.label);
 const CHART_LABELS=RAW.map(d=>`'${String(d.year).slice(2)} ${d.label}`);
@@ -964,8 +976,11 @@ function buildDetail(){
    key = "year|period"。只有列在此表的月份才顯示金額。
 ──────────────────────────────────────────────────────── */
 const KL_TOTALS={
-  "2026|06/26–07/25":8658,   // 酷樂邦 07月通知單 總計
-  "2026|07/26–08/25":8259,   // 酷樂邦 08月通知單 總計
+  "2026|04/26–05/25":5419,   // 酷樂邦 05月 含稅總計（發票 CA17550922）
+  "2026|05/26–06/25":11510,  // 酷樂邦 06月 含稅總計（發票 CA17550921）
+  "2026|06/26–07/25":8658,   // 酷樂邦 07月 含稅總計（發票 CA17550920）
+  "2026|07/26–08/25":8259,   // 酷樂邦 08月 含稅總計（以此為準；已開發票 8,672 待更正）
+  "2026|08/26–09/25":8133,   // 酷樂邦 09月 含稅總計（請款單 Excel 核算）
 };
 function buildTenantReport(){
   const zhanA_rate=getShareRate('外展A');
@@ -990,8 +1005,8 @@ function buildTenantReport(){
   const totalReceivable=active.reduce((s,r)=>s+r.total,0);
   const totalZhanAUsage=active.reduce((s,r)=>s+r.zhanA_usage,0);
   const totalChuanUsage=active.reduce((s,r)=>s+r.chuan_usage,0);
-  const totalZhanAShare=active.reduce((s,r)=>s+r.zhanA_share,0);
-  const totalChuanShare=active.reduce((s,r)=>s+r.chuan_share,0);
+  const totalZhanAShare=active.reduce((s,r)=>s+Math.round(r.zhanA_share),0);
+  const totalChuanShare=active.reduce((s,r)=>s+Math.round(r.chuan_share),0);
   const latest=[...rows].reverse().find(r=>r.total!=null)||rows[rows.length-1];
   const activeMonths=active.length;
 
@@ -1077,19 +1092,36 @@ function buildTenantReport(){
 }
 
 /* ── 匹克王 (PICKLE KING) RECEIVABLE ──────────────────────
-   依台中魚市場提供之匹克王電費通知單逐月輸入。
-   無通知單月份不推算、不回溯 — 大原則：內帳僅依對應通知單計算。
-   來源：Image「匹克王」2026/08 電費通知單
+   應收金額＝請款單 Excel（匹克王_電費繳費通知.xlsx）各月分頁「含稅總計」，內含稅，不外加 5%。
+   4–9月與已開發票逐月核對；7月通知單與發票為 275,901（未稅外加稅，多開 13,138），此處 7月放實收 275,901（＝項目加總 262,763＋外加稅 13,138）。
+   長廊照明 1L1：正確算法＝魚市場帳單 1L1 金額 ÷ 3（4、5、7月通知單用完整讀數差，多算一倍，已於回測列管）。
 ──────────────────────────────────────────────────────── */
 const PK_RAW=[
+  { period:"03/26–04/25", label:"04月", year:2026,
+    acmp1_amt:151622, light_share:100,
+    submeter_amt:25509, water_amt:0,
+    total:177231, light_note:"長廊公設電費 $100（4月僅收此項，當期照明補收併入5月）", },
+  { period:"04/26–05/25", label:"05月", year:2026,
+    acmp1_amt:172992, light_share:8335,
+    submeter_amt:33798, water_amt:3578,
+    total:218703, light_note:"4月長廊 4,320＋5月長廊 4,115－4月退費 100（通知單算法；魚市場帳單金額÷3 應為 2,160＋2,057）", },
+  { period:"05/26–06/25", label:"06月", year:2026,
+    acmp1_amt:220264, light_share:2097, light_amt_full:6292,
+    submeter_amt:32159, water_amt:2205,
+    total:256725, },
+  { period:"06/26–07/25", label:"07月", year:2026,
+    acmp1_amt:218680, light_share:4090,
+    submeter_amt:33781, water_amt:6212,
+    tax_extra:13138,
+    total:275901, light_note:"通知單算法 2,231度×5.5÷3＝4,090（魚市場帳單 6,135÷3＝2,045）；通知單與發票將項目加總 262,763 當未稅再外加稅 13,138，實收 275,901", },
   { period:"07/26–08/25", label:"08月", year:2026,
-    acmp1_usage:39760, acmp1_amt:218680,
-    light_usage:1103,  light_amt_full:6067,
-    light_share:2022,
-    submeter_usage:5975, submeter_amt:32863,
-    water_amt:2407,                 // 自來水(冷氣)
-    total:255972,                    // 通知單「總計」原始金額，不自行加稅
-  },
+    acmp1_amt:218680, light_share:2022, light_amt_full:6067,
+    submeter_amt:32863, water_amt:2407,
+    total:255972, },
+  { period:"08/26–09/25", label:"09月", year:2026,
+    acmp1_amt:203104, light_share:1997, light_amt_full:5990,
+    submeter_amt:32109, water_amt:2495,
+    total:239705, },
 ];
 
 function buildPKReport(){
@@ -1128,14 +1160,14 @@ function buildPKReport(){
       <th class="tr">應收金額</th>
     </tr></thead>
     <tbody>${rowsDesc.map(r=>{
-      const lightTitle=`原值 $${fmt(r.light_amt_full)} ÷ 3`;
+      const lightTitle=r.light_note?r.light_note:(r.light_amt_full?`魚市場帳單 $${fmt(r.light_amt_full)} ÷ 3`:'');
       return`<tr class="tenant-row-匹克王">
         <td><span class="kpi-yr-tag" data-year="${r.year}">${r.year}</span> ${r.period}</td>
         <td class="mono tr">${fmtAmt(r.acmp1_amt)}</td>
         <td class="mono tr" title="${lightTitle}" style="cursor:help;text-decoration:underline dotted rgba(148,163,184,.4);text-underline-offset:3px">${fmtAmt(r.light_share)}</td>
         <td class="mono tr">${fmtAmt(r.submeter_amt)}</td>
         <td class="mono tr" style="color:var(--t3)">${fmtAmt(r.water_amt)}</td>
-        <td class="mono tr" style="color:var(--gold);font-weight:700">${fmtAmt(r.total)}</td>
+        <td class="mono tr" style="color:var(--gold);font-weight:700"${r.tax_extra?` title="項目加總 $${fmt(r.total-r.tax_extra)}＋外加稅 $${fmt(r.tax_extra)}（多開，待抵扣）" `:''}>${fmtAmt(r.total)}${r.tax_extra?'*':''}</td>
       </tr>`;
     }).join('')}
     <tr style="border-top:2px solid var(--gold);background:rgba(240,168,48,.08)">
@@ -1149,9 +1181,9 @@ function buildPKReport(){
     </tbody></table>`;
 
   document.getElementById('pk-table-note').textContent=
-    `↳ 金額依台中魚市場通知單原樣輸入（含自來水），應收金額即通知單總額`;
+    `↳ 金額＝實際請款（含稅，4–9月）。5月含4月長廊補收與退費；* 7月＝項目加總 262,763＋外加稅 13,138（多開）；長廊照明 4、5、7月多算已列管，合計已多收 19,401，預計 11月核算、從 10月電費扣除。`;
 
-  // Chart — 依可用期間繪製（目前僅 08月，未來累加）
+  // Chart — 依可用期間繪製
   const chOpts={
     responsive:true, maintainAspectRatio:false,
     plugins:{legend:{display:true,labels:{color:'#64748b',font:{size:10},boxWidth:12}},title:{display:false}},
