@@ -355,6 +355,7 @@ footer .credit {
 .dlg-title { font-weight:700; font-size:1.05rem; margin-bottom:14px; }
 #loginDialog label { display:block; font-size:0.82rem; color:var(--ink-muted); margin-bottom:8px; }
 #loginDialog input { width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:4px; font-size:1rem; font-family:inherit; }
+.pw-hint { margin-top:8px; font-size:0.78rem; color:var(--ink-muted); }
 .dlg-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:14px; }
 .dlg-ok, .dlg-cancel { padding:8px 18px; border-radius:4px; font-size:0.9rem; cursor:pointer; font-family:inherit; border:1px solid var(--border); background:#fff; color:var(--ink-muted); }
 .dlg-ok { background:var(--accent); color:#fff; border-color:var(--accent); }
@@ -484,6 +485,7 @@ footer .credit {
     <div class="dlg-title">營運部登入</div>
     <label for="pw">請輸入密碼</label>
     <input type="password" id="pw" placeholder="密碼" autocomplete="off">
+    <div class="pw-hint">密碼提示：ft＋漁人町生日 4 碼</div>
     <div class="login-msg" id="loginMsg" role="alert"></div>
     <div class="dlg-actions">
       <button type="button" class="dlg-cancel" id="dlgCancel">取消</button>
